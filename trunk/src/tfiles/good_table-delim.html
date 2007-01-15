@@ -1,0 +1,41 @@
+<h1><a name="section_1">Delimited Table</a></h1>
+
+<p>This one was a border table from which I removed the divider lines.
+</p>
+<table border="1" summary="">
+<tr><td>Schema</td><td>Name</td><td>Type</td><td>Owner</td></tr>
+<tr><td>public</td><td>actor_episodes</td><td>view</td><td>kat</td></tr>
+<tr><td>public</td><td>actors</td><td>table</td><td>kat</td></tr>
+<tr><td>public</td><td>copyable</td><td>view</td><td>kat</td></tr>
+<tr><td>public</td><td>episode_recording</td><td>view</td><td>kat</td></tr>
+<tr><td>public</td><td>episodes</td><td>table</td><td>kat</td></tr>
+<tr><td>public</td><td>episodes_title_id_seq</td><td>sequence</td><td>kat</td></tr>
+<tr><td>public</td><td>pal_recordings</td><td>view</td><td>kat</td></tr>
+<tr><td>public</td><td>recordings</td><td>table</td><td>kat</td></tr>
+<tr><td>public</td><td>sorted_eps</td><td>view</td><td>kat</td></tr>
+<tr><td>public</td><td>tapes</td><td>table</td><td>kat</td></tr>
+<tr><td>public</td><td>unrecorded</td><td>view</td><td>kat</td></tr>
+<tr><td>public</td><td>wanting</td><td>view</td><td>kat</td></tr>
+</table>
+
+<p>And this is a homegrown one.
+</p>
+<table border="1" summary="">
+<tr><td>Fred</td><td>Nurk</td><td>lives</td></tr>
+<tr><td>Kerr</td><td>Avon</td><td>is wonderfule</td></tr>
+<tr><td>&nbsp;</td><td>Servalan</td><td>has no first name</td></tr>
+</table>
+
+<p>And the next one has a caption, and a possibly tricky delimiter.
+</p>
+<table border="1" summary="">
+<caption>Actors</caption>
+<tr><td>Paul</td><td>Darrow</td></tr>
+<tr><td>Jackie</td><td>Pierce</td></tr>
+</table>
+
+<p>Note that a CSV table doesn't work for delimiter stuff,
+because it isn't <em>bounded</em> by commas.
+</p>
+<p>Fred,Nurk<br/>
+Joe,Schmoe</p>

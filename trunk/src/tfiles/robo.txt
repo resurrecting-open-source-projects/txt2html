@@ -1,0 +1,33 @@
+Type:     cmu.cs.robotics
+Topic:    Robotics Seminar, Prof. John Canny, Friday Oct 11, 3:30, Adamson Wing, Baker Hall
+Dates:    11-Oct-91
+Time:     3:30
+Place:    Adamson Wing, Baker Hall
+PostedBy: me on 11-Oct-91 at 01:39 from H.GP.CS.CMU.EDU (Michael Erdmann)
+Abstract: 
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         ***** Friendly Reminder:  Robotics Seminar Today!! *****
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+   Date:    11-Oct-91
+   Time:    3:30 (Refreshments at 3:15)
+   Place:   Adamson Wing, Baker Hall
+
+			    RISC-Robotics
+
+			      John Canny
+			    U.C. Berkeley
+
+   RISC in a robotics context stands for Reduced Intricacy in Sensing and
+   Control.  But it shares the same philosophy as RISC computer design.
+   The idea is to replace complicated manipulation and sensing steps with
+   combinations of simple ones.  Industrial robotics research has focussed
+   on anthropomorphism in the hope that once robots become sufficiently
+   human-like, they will be able to solve all the tasks that they are
+   currently incapable of doing.  This approach is seductive and has led
+   researchers further and further away from the real problems that
+   hinder the proliferation of robots in manufacturing.  The enthusiasm
+   for robotics in industry which reached a peak in the mid 80's has all
+   but disappeared after a protracted lack of progress on these problems.
