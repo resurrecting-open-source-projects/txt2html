@@ -216,7 +216,8 @@ empty, in which case no DOCTYPE declaration is output.
 
 =item --eight_bit_clean | -8
 
-disable Latin-1 character entity naming
+If false, convert Latin-1 characters to HTML entities.
+If true, this conversion is disabled.
 (default: false)
 
 =item --escape_HTML_chars | --escape_chars | -ec
@@ -839,7 +840,7 @@ sub process_args ($) {
 	'caps_tag|capstag|ct=s',
 	'custom_heading_regexp|heading|H=s@',
 	'default_link_dict|dict=s',
-	'demoronize',
+	'demoronize!',
 	'dict_debug|db=n',
 	'doctype|dt=s',
 	'eight_bit_clean|8!',
@@ -878,6 +879,7 @@ sub process_args ($) {
 	'underline_length_tolerance|ulength|ul=n',
 	'underline_offset_tolerance|uoffset|uo=n',
 	'unhyphenation|unhyphenate!',
+	'utf8',
 	'use_mosaic_header|mosaic|mh!',
 	'use_preformat_marker|preformat_marker|pm!',
 	'xhtml!',

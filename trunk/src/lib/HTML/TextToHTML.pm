@@ -339,7 +339,7 @@ Debug mode for link dictionaries Bitwise-Or what you want to see:
     doctype=>I<doctype>
 
 This gets put in the DOCTYPE field at the top of the document, unless it's
-empty.  (default : "-//W3C//DTD HTML 3.2 Final//EN")
+empty.  (default : "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd")
 If --xhtml is true, the contents of this is ignored, unless it's
 empty, in which case no DOCTYPE declaration is output.
 
@@ -347,7 +347,9 @@ empty, in which case no DOCTYPE declaration is output.
 
     eight_bit_clean=>1
 
-disable Latin-1 character entity naming
+If false, convert Latin-1 characters to HTML entities.
+If true, this conversion is disabled; also "demoronize" is set to
+false, since this also changes 8-bit characters.
 (default: false)
 
 =item escape_HTML_chars
@@ -445,6 +447,15 @@ This defines what character (or string) is taken to be the delimiter of
 text which is to be interpreted as italic (that is, to be given a EM
 tag).  If this is empty, no italicising of text will be done.
 (default: *)
+
+=item underline_delimiter
+
+    underline_delimiter=>I<string>
+
+This defines what character (or string) is taken to be the delimiter of
+text which is to be interpreted as underlined (that is, to be given a U
+tag).  If this is empty, no underlining of text will be done.
+(default: _)
 
 =item links_dictionaries
 
@@ -1059,6 +1070,7 @@ sub args
             }
         }
     }
+    $self->deal_with_options();
     if ($self->{debug})
     {
         print STDERR Dumper($self);
@@ -1606,7 +1618,7 @@ sub process_para ($$;%)
         }
     }
 
-    # apply links and bold/italic formatting
+    # apply links and bold/italic/underline formatting
     if ($para !~ /^\s*$/)
     {
         $self->apply_links(
@@ -1635,7 +1647,7 @@ sub process_para ($$;%)
     }
 
     # convert remaining Microsoft character codes into sensible HTML
-    if ($self->{demoronize})
+    if ($self->{demoronize} && !$self->{eight_bit_clean})
     {
         $para = demoronize_code($para);
     }
@@ -1888,7 +1900,8 @@ sub init_our_data ($)
     $self->{default_link_dict}     =
       ($ENV{HOME} ? "$ENV{HOME}/.txt2html.dict" : '.txt2html.dict');
     $self->{dict_debug}                 = 0;
-    $self->{doctype}                    = "-//W3C//DTD HTML 3.2 Final//EN";
+    $self->{doctype}                    = '-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd';
     $self->{demoronize}                 = 1;
     $self->{eight_bit_clean}            = 0;
     $self->{escape_HTML_chars}          = 1;
@@ -1929,6 +1942,7 @@ sub init_our_data ($)
     };
     $self->{title}                      = '';
     $self->{titlefirst}                 = 0;
+    $self->{underline_delimiter}        = '_';
     $self->{underline_length_tolerance} = 1;
     $self->{underline_offset_tolerance} = 1;
     $self->{unhyphenation}              = 1;
@@ -1942,6 +1956,7 @@ sub init_our_data ($)
     $self->{__num_heading_styles} = 0;
     $self->{__links_table}        = {};
     $self->{__links_table_order}  = [];
+    $self->{__links_table_patterns} = {};
     $self->{__search_patterns}    = [];
     $self->{__repl_code}          = [];
     $self->{__prev_para_action}   = 0;
@@ -1956,28 +1971,151 @@ sub init_our_data ($)
     #
     # The global links data
     #
-    # This is stored in the DATA handle, after the __DATA__ at
-    # the end of this file; but because the test scripts (and possibly
-    # other scripts) don't just create one instance of this object,
-    # we have to remember the position of the DATA handle
-    # and reset it after we've read from it, just in case
-    # we have to read from it again.
-    # This also means that we don't close it, either.  Hope that doesn't
-    # cause a problem...
-    #
-    my $curpos = tell(DATA);    # remember the __DATA__ position
-    my @lines  = ();
-    while (<DATA>)
-    {
-        # skip lines that start with '#'
-        next if /^\#/;
-        # skip lines that end with unescaped ':'
-        next if /^.*[^\\]:\s*$/;
-        push @lines, $_;
-    }
-    # reset the data handle to the start, just in case
-    seek(DATA, $curpos, 0);
-    $self->{__global_links_data} = join('', @lines);
+    my $system_dict = <<'EOT';
+#
+# Global links dictionary file for HTML::TextToHTML
+# http://www.katspace.com/tools/text_to_html
+# http://txt2html.sourceforge.net/
+# based on links dictionary for Seth Golub's txt2html
+# http://www.aigeek.com/txt2html/
+#
+# This dictionary contains some patterns for converting obvious URLs,
+# ftp sites, hostnames, email addresses and the like to hrefs.
+#
+# Original adapted from the html.pl package by Oscar Nierstrasz in
+# the Software Archive of the Software Composition Group
+# http://iamwww.unibe.ch/~scg/Src/
+#
+
+# Some people even like to mark the URL label explicitly <URL:foo:label>
+/&lt;URL:([-\w\.\/:~_\@]+):([a-zA-Z0-9'() ]+)&gt;/ -h-> <A HREF="$1">$2</A>
+
+# Some people like to mark URLs explicitly <URL:foo>
+/&lt;URL:\s*(\S+?)\s*&gt;/ -h-> <A HREF="$1">$1</A>
+
+#  <http://site>
+/&lt;(http:\S+?)\s*&gt;/ -h-> &lt;<A HREF="$1">$1</A>&gt;
+
+# Urls: <service>:<rest-of-url>
+
+|snews:[\w\.]+|        -> $&
+|news:[\w\.]+|         -> $&
+|nntp:[\w/\.:+\-]+|    -> $&
+|http:[\w/\.:\@+\-~\%#?=&;,]+[\w/]|  -> $&
+|shttp:[\w/\.:+\-~\%#?=&;,]+| -> $&
+|https:[\w/\.:+\-~\%#?=&;,]+| -> $&
+|file:[\w/\.:+\-]+|     -> $&
+|ftp:[\w/\.:+\-]+|      -> $&
+|wais:[\w/\.:+\-]+|     -> $&
+|gopher:[\w/\.:+\-]+|   -> $&
+|telnet:[\w/\@\.:+\-]+|   -> $&
+
+
+# catch some newsgroups to avoid confusion with sites:
+|([^\w\-/\.:\@>])(alt\.[\w\.+\-]+[\w+\-]+)|    -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(bionet\.[\w\.+\-]+[\w+\-]+)| -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(bit\.[\w\.+\-]+[\w+\-]+)|    -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(biz\.[\w\.+\-]+[\w+\-]+)|    -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(clari\.[\w\.+\-]+[\w+\-]+)|  -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(comp\.[\w\.+\-]+[\w+\-]+)|   -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(gnu\.[\w\.+\-]+[\w+\-]+)|    -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(humanities\.[\w\.+\-]+[\w+\-]+)| 
+          -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(k12\.[\w\.+\-]+[\w+\-]+)|    -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(misc\.[\w\.+\-]+[\w+\-]+)|   -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(news\.[\w\.+\-]+[\w+\-]+)|   -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(rec\.[\w\.+\-]+[\w+\-]+)|    -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(soc\.[\w\.+\-]+[\w+\-]+)|    -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(talk\.[\w\.+\-]+[\w+\-]+)|   -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(us\.[\w\.+\-]+[\w+\-]+)|     -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(ch\.[\w\.+\-]+[\w+\-]+)|     -h-> $1<A HREF="news:$2">$2</A>
+|([^\w\-/\.:\@>])(de\.[\w\.+\-]+[\w+\-]+)|     -h-> $1<A HREF="news:$2">$2</A>
+
+# FTP locations (with directory):
+# anonymous@<site>:<path>
+|(anonymous\@)([[:alpha:]][\w\.+\-]+\.[[:alpha:]]{2,}):(\s*)([\w\d+\-/\.]+)|
+  -h-> $1<A HREF="ftp://$2/$4">$2:$4</A>$3
+
+# ftp@<site>:<path>
+|(ftp\@)([[:alpha:]][\w\.+\-]+\.[[:alpha:]]{2,}):(\s*)([\w\d+\-/\.]+)|
+  -h-> $1<A HREF="ftp://$2/$4">$2:$4</A>$3
+
+# Email address
+|[[:alnum:]_\+\-\.]+\@([[:alnum:]][\w\.+\-]+\.[[:alpha:]]{2,})|
+  -> mailto:$&
+
+# <site>:<path>
+|([^\w\-/\.:\@>])([[:alpha:]][\w\.+\-]+\.[[:alpha:]]{2,}):(\s*)([\w\d+\-/\.]+)|
+  -h-> $1<A HREF="ftp://$2/$4">$2:$4</A>$3
+
+# NB: don't confuse an http server with a port number for
+# an FTP location!
+# internet number version: <internet-num>:<path>
+|([^\w\-/\.:\@])(\d{2,}\.\d{2,}\.\d+\.\d+):([\w\d+\-/\.]+)|
+  -h-> $1<A HREF="ftp://$2/$3">$2:$3</A>
+
+# telnet <site> <port>
+|telnet ([[:alpha:]][\w+\-]+(\.[\w\.+\-]+)+\.[[:alpha:]]{2,})\s+(\d{2,4})|
+  -h-> telnet <A HREF="telnet://$1:$3/">$1 $3</A>
+
+# ftp <site>
+|ftp ([[:alpha:]][\w+\-]+(\.[\w\.+\-]+)+\.[[:alpha:]]{2,})|
+  -h-> ftp <A HREF="ftp://$1/">$1</A>
+
+# host with "ftp" in the machine name
+|\b([[:alpha:]][\w])*ftp[\w]*(\.[\w+\-]+){2,}| -h-> ftp <A HREF="ftp://$&/">$&</A>
+
+# ftp.foo.net/blah/
+|ftp(\.[\w\@:-]+)+/\S+| -> ftp://$&
+
+# www.thehouse.org/txt2html/
+|www(\.[\w\@:-]+)+/\S+| -> http://$&
+
+# host with "www" in the machine name
+|\b([[:alpha:]][\w])*www[\w]*(\.[\w+\-]+){2,}| -> http://$&/
+
+# <site> <port>
+|([[:alpha:]][\w+\-]+\.[\w+\-]+\.[[:alpha:]]{2,})\s+(\d{2,4})|
+  -h-> <A HREF="telnet://$1:$2/">$1 $2</A>
+
+# just internet numbers with port:
+|([^\w\-/\.:\@])(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s+(\d{1,4})|
+  -h-> $1<A HREF="telnet://$2:$3">$2 $3</A>
+
+# just internet numbers:
+|([^\w\-/\.:\@])(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})|
+  -h-> $1<A HREF="telnet://$2">$2</A>
+
+# RFCs
+/RFC ?(\d+)/ -i-> http://www.cis.ohio-state.edu/rfc/rfc$1.txt
+
+# Mark _underlined stuff_ as <U>underlined stuff</U>
+# Don't mistake variable names for underlines, and
+# take account of possible trailing punctuation
+#/([ \t\n])_([[:alpha:]][[:alnum:]\s-]*[[:alpha:]])_([\s\.;:,\!\?])/ -h-> $1<U>$2</U>$3
+
+# Seth and his amazing conversion program    :-)
+
+"Seth Golub"  -o-> http://www.aigeek.com/
+"txt2html"    -o-> http://txt2html.sourceforge.net/
+
+# Kathryn and her amazing modules 8-)
+"Kathryn Andersen"  -o-> http://www.katspace.com/
+"HTML::TextToHTML"  -o-> http://www.katspace.com/tools/text_to_html/
+"hypertoc"          -o-> http://www.katspace.com/tools/hypertoc/
+"HTML::GenToc"      -o-> http://www.katspace.com/tools/hypertoc/
+
+# End of global dictionary
+EOT
+
+    # pre-parse the above data by removing unwanted lines
+    # skip lines that start with '#'
+    $system_dict =~ s/^\#.*$//mg;
+    # skip lines that end with unescaped ':'
+    $system_dict =~ s/^.*[^\\]:\s*$//mg;
+
+    $self->{__global_links_data} = $system_dict;
+
 }    # init_our_data
 
 #---------------------------------------------------------------#
@@ -1992,25 +2130,6 @@ sub deal_with_options ($)
 {
     my $self = shift;
 
-    if ($self->{links_dictionaries})
-    {
-        # only put into the links dictionaries files which are readable
-        my @dict_files = @{$self->{links_dictionaries}};
-        $self->args(links_dictionaries => []);
-
-        foreach my $ld (@dict_files)
-        {
-            if (-r $ld)
-            {
-                $self->{'make_links'} = 1;
-                $self->args(['--links_dictionaries', $ld]);
-            }
-            else
-            {
-                print STDERR "Can't find or read link-file $ld\n";
-            }
-        }
-    }
     if (!$self->{make_links})
     {
         $self->{'links_dictionaries'} = 0;
@@ -2564,7 +2683,7 @@ sub listprefix ($$)
     my $number_match    = '(\d+|[^\W\d])';
     if ($bullets_ordered)
     {
-        $number_match = '(\d+|[a-zA-Z]|[' . "${bullets_ordered}])";
+        $number_match = '(\d+|[[:alpha:]]|[' . "${bullets_ordered}])";
     }
     $self->{__number_match} = $number_match;
     my $term_match = '(\w\w+)';
@@ -3146,7 +3265,7 @@ sub is_delim_table ($%)
     }
     # figure out if the row starts with a possible delimiter
     my $delim = '';
-    if ($rows[0] =~ /^\s*([^a-zA-Z0-9])/)
+    if ($rows[0] =~ /^\s*([^[:alnum:]])/)
     {
         $delim = $1;
         # have to get rid of ^ and [] and \
@@ -3620,7 +3739,7 @@ sub make_delim_table ($%)
     }
     # figure out the delimiter
     my $delim = '';
-    if ($rows[0] =~ /^\s*([^a-zA-Z0-9])/)
+    if ($rows[0] =~ /^\s*([^[:alnum:]])/)
     {
         $delim = $1;
     }
@@ -4145,11 +4264,7 @@ sub iscaps
 
     my $min_caps_len = $self->{min_caps_length};
 
-    # This is ugly, but I don't know a better way to do it.
-    # (And, yes, I could use the literal characters instead of the
-    # numeric codes, but this keeps the script 8-bit clean, which will
-    # save someone a big headache when they transfer via ASCII ftp.
-/^[^a-z\341\343\344\352\353\354\363\370\337\373\375\342\345\347\350\355\357\364\365\376\371\377\340\346\351\360\356\361\362\366\372\374<]*[A-Z\300\301\302\303\304\305\306\307\310\311\312\313\314\315\316\317\320\321\322\323\324\325\326\330\331\332\333\334\335\336]{$min_caps_len,}[^a-z\341\343\344\352\353\354\363\370\337\373\375\342\345\347\350\355\357\364\365\376\371\377\340\346\351\360\356\361\362\366\372\374<]*$/;
+    /^[^[:lower:]<]*[[:upper:]]{$min_caps_len,}[^[:lower:]<]*$/;
 }    # iscaps
 
 sub caps
@@ -4188,15 +4303,15 @@ sub do_delim
 
     if ($delim eq '#')  
     {
-        if (${$line_ref} =~ m/\B#([a-zA-Z])#\B/s)
+        if (${$line_ref} =~ m/\B#([[:alpha:]])#\B/s)
 	{
-	    ${$line_ref} =~ s/\B#([a-zA-Z])#\B/<${tag}>$1<\/${tag}>/gs;
+	    ${$line_ref} =~ s/\B#([[:alpha:]])#\B/<${tag}>$1<\/${tag}>/gs;
 	}
 	# special treatment of # for the #num case and the #link case
 	if (${$line_ref} !~ m/<[aA]/)
 	{
 	    ${$line_ref} =~
-s/#([^0-9#](?![^#]*(?:<li>|<LI>|<P>|<p>))[^#]*[^# \t\n])#/<${tag}>$1<\/${tag}>/gs;
+s/#([^\d#](?![^#]*(?:<li>|<LI>|<P>|<p>))[^#]*[^# \t\n])#/<${tag}>$1<\/${tag}>/gs;
 	}
 	else
 	{
@@ -4204,7 +4319,7 @@ s/#([^0-9#](?![^#]*(?:<li>|<LI>|<P>|<p>))[^#]*[^# \t\n])#/<${tag}>$1<\/${tag}>/g
 	    my $linkme = '';
 	    my $unmatched = ${$line_ref};
 	    while ($unmatched =~ 
-		   m/#([^0-9#](?![^#]*(?:<li>|<LI>|<P>|<p>))[^#]*[^# \t\n])#/s)
+		   m/#([^\d#](?![^#]*(?:<li>|<LI>|<P>|<p>))[^#]*[^# \t\n])#/s)
 	    {
 		$line_with_links .= $`;
 		$linkme = $&;
@@ -4212,7 +4327,7 @@ s/#([^0-9#](?![^#]*(?:<li>|<LI>|<P>|<p>))[^#]*[^# \t\n])#/<${tag}>$1<\/${tag}>/g
 		if (!$self->in_link_context($linkme, $line_with_links))
 		{
 		    $linkme =~
-			s/#([^0-9#](?![^#]*(?:<li>|<LI>|<P>|<p>))[^#]*[^# \t\n])#/<${tag}>$1<\/${tag}>/gs;
+			s/#([^\d#](?![^#]*(?:<li>|<LI>|<P>|<p>))[^#]*[^# \t\n])#/<${tag}>$1<\/${tag}>/gs;
 		}
 		$line_with_links .= $linkme;
 	    }
@@ -4223,20 +4338,33 @@ s/#([^0-9#](?![^#]*(?:<li>|<LI>|<P>|<p>))[^#]*[^# \t\n])#/<${tag}>$1<\/${tag}>/g
     {
         ${$line_ref} =~
 s/\^((?![^^]*(?:<li>|<LI>|<p>|<P>))(\w|["'<>])[^^]*)\^/<${tag}>$1<\/${tag}>/gs;
-        ${$line_ref} =~ s/\B\^([a-zA-Z])\^\B/<${tag}>$1<\/${tag}>/gs;
+        ${$line_ref} =~ s/\B\^([[:alpha:]])\^\B/<${tag}>$1<\/${tag}>/gs;
+    }
+    elsif ($delim eq '_')
+    {
+        if (${$line_ref} =~ m/\B_([[:alpha:]])_\B/s)
+	{
+	    ${$line_ref} =~ s/\B_([[:alpha:]])_\B/<${tag}>$1<\/${tag}>/gs;
+	}
+	# need to make sure that _ delimiters are not mistaken for
+	# a_variable_name
+        ${$line_ref} =~
+	    s#(?<![_[:alnum:]])_([^_]+?[[:alnum:]"'\.\?\&;:<>])_#<${tag}>$1</${tag}>#gs;
     }
     elsif (length($delim) eq 1)    # one-character, general
     {
+        if (${$line_ref} =~ m/\B[${delim}]([[:alpha:]])[${delim}]\B/s)
+	{
+	    ${$line_ref} =~ s/\B[${delim}]([[:alpha:]])[${delim}]\B/<${tag}>$1<\/${tag}>/gs;
+	}
         ${$line_ref} =~
-s/(?<![${delim}])[${delim}](?![^${delim}]*(?:<li>|<LI>|<p>|<P>))((\w|["'<>])[^${delim}]*)[${delim}]/<${tag}>$1<\/${tag}>/gs;
-        ${$line_ref} =~
-          s/\B[${delim}]([a-zA-Z])[${delim}]\B/<${tag}>$1<\/${tag}>/gs;
+	    s#(?<![${delim}])[${delim}]([^${delim}]+?[[:alnum:]"'\.\?\&;:<>])[${delim}]#<${tag}>$1</${tag}>#gs;
     }
     else
     {
         ${$line_ref} =~
 s/(?<!${delim})${delim}((\w|["'])(\w|[-\s\.;:,!?"'])*[^\s])${delim}/<${tag}>$1<\/${tag}>/gs;
-        ${$line_ref} =~ s/${delim}]([a-zA-Z])${delim}/<${tag}>$1<\/${tag}>/gs;
+        ${$line_ref} =~ s/${delim}]([[:alpha:]])${delim}/<${tag}>$1<\/${tag}>/gs;
     }
 }    # do_delim
 
@@ -4279,25 +4407,36 @@ sub glob2regexp
     join('', "\\b", $regexp, "\\b");
 }    # glob2regexp
 
-sub add_regexp_to_links_table ($$$$)
+sub add_regexp_to_links_table ($%)
 {
     my $self = shift;
-    my ($key, $URL, $switches) = @_;
+    my %args = (
+        label => undef,
+        pattern => undef,
+        url => undef,
+        switches => undef,
+        @_
+    );
+    my $label = $args{label};
+    my $pattern = $args{pattern};
+    my $URL = $args{url};
+    my $switches = $args{switches};
 
     # No sense adding a second one if it's already in there.
     # It would never get used.
-    if (!$self->{__links_table}->{$key})
+    if (!$self->{__links_table}->{$label})
     {
 
         # Keep track of the order they were added so we can
         # look for matches in the same order
-        push(@{$self->{__links_table_order}}, ($key));
+        push(@{$self->{__links_table_order}}, ($label));
 
-        $self->{__links_table}->{$key}        = $URL;      # Put it in The Table
-        $self->{__links_switch_table}->{$key} = $switches;
+	$self->{__links_table_patterns}->{$label} = $pattern;
+        $self->{__links_table}->{$label}        = $URL;      # Put it in The Table
+        $self->{__links_switch_table}->{$label} = $switches;
         my $ind = @{$self->{__links_table_order}} - 1;
         print STDERR " (", $ind,
-          ")\tKEY: $key\n\tVALUE: $URL\n\tSWITCHES: $switches\n\n"
+          ")\tLABEL: $label \tPATTERN: $pattern\n\tVALUE: $URL\n\tSWITCHES: $switches\n\n"
           if ($self->{dict_debug} & 1);
     }
     else
@@ -4305,27 +4444,49 @@ sub add_regexp_to_links_table ($$$$)
         if ($self->{dict_debug} & 1)
         {
             print STDERR " Skipping entry.  Key already in table.\n";
-            print STDERR "\tKEY: $key\n\tVALUE: $URL\n\n";
+            print STDERR "\tLABEL: $label \tPATTERN: $pattern\n\tVALUE: $URL\n\n";
         }
     }
 }    # add_regexp_to_links_table
 
-sub add_literal_to_links_table ($$$$)
+sub add_literal_to_links_table ($%)
 {
     my $self = shift;
-    my ($key, $URL, $switches) = @_;
+    my %args = (
+        label => undef,
+        pattern => undef,
+        url => undef,
+        switches => undef,
+        @_
+    );
+    my $label = $args{label};
+    my $pattern = $args{pattern};
+    my $URL = $args{url};
+    my $switches = $args{switches};
 
-    $key =~ s/(\W)/\\$1/g;    # Escape non-alphanumeric chars
-    $key = "\\b$key\\b";      # Make a regexp out of it
-    $self->add_regexp_to_links_table($key, $URL, $switches);
+    $pattern =~ s/(\W)/\\$1/g;    # Escape non-alphanumeric chars
+    $pattern = "\\b$pattern\\b";      # Make a regexp out of it
+    $self->add_regexp_to_links_table(label=>$label, pattern=>$pattern, url=>$URL, switches=>$switches);
 }    # add_literal_to_links_table
 
-sub add_glob_to_links_table ($$$$)
+sub add_glob_to_links_table ($%)
 {
     my $self = shift;
-    my ($key, $URL, $switches) = @_;
+    my %args = (
+        label => undef,
+        pattern => undef,
+        url => undef,
+        switches => undef,
+        @_
+    );
+    my $label = $args{label};
+    my $pattern = $args{pattern};
+    my $URL = $args{url};
+    my $switches = $args{switches};
 
-    $self->add_regexp_to_links_table(glob2regexp($key), $URL, $switches);
+    $self->add_regexp_to_links_table(pattern=>glob2regexp($pattern),
+	label=>$label,
+	url=>$URL, switches=>$switches);
 }    # add_glob_to_links_table
 
 # Parse the dictionary file.
@@ -4375,24 +4536,24 @@ sub parse_dict ($$$)
         {
             $key = substr($key, 1);
             $key =~ s|/$||;    # Allow them to forget the closing /
-            $self->add_regexp_to_links_table($key, $URL, $switches);
+            $self->add_regexp_to_links_table(pattern=>$key, label=>$key, url=>$URL, switches=>$switches);
         }
         elsif ($key =~ /^\|/)    # alternate regexp format
         {
             $key = substr($key, 1);
             $key =~ s/\|$//;      # Allow them to forget the closing |
             $key =~ s|/|\\/|g;    # Escape all slashes
-            $self->add_regexp_to_links_table($key, $URL, $switches);
+            $self->add_regexp_to_links_table(pattern=>$key, label=>$key, url=>$URL, switches=>$switches);
         }
         elsif ($key =~ /\"/)
         {
             $key = substr($key, 1);
             $key =~ s/\"$//;      # Allow them to forget the closing "
-            $self->add_literal_to_links_table($key, $URL, $switches);
+            $self->add_literal_to_links_table(pattern=>$key, label=>$key, url=>$URL, switches=>$switches);
         }
         else
         {
-            $self->add_glob_to_links_table($key, $URL, $switches);
+            $self->add_glob_to_links_table(pattern=>$key, label=>$key, url=>$URL, switches=>$switches);
         }
     }
 
@@ -4403,15 +4564,16 @@ sub setup_dict_checking ($)
     my $self = shift;
 
     # now create the replace funcs and precomile the regexes
-    my ($URL, $switches, $options, $tag1, $tag2);
+    my ($URL, $switches, $pattern, $options, $tag1, $tag2);
     my ($href, $r_sw);
     my @subs;
     my $i = 0;
-    foreach my $pattern (@{$self->{__links_table_order}})
+    foreach my $label (@{$self->{__links_table_order}})
     {
-        $switches = $self->{__links_switch_table}->{$pattern};
+        $switches = $self->{__links_switch_table}->{$label};
+        $pattern = $self->{__links_table_patterns}->{$label};
 
-        $href = $self->{__links_table}->{$pattern};
+        $href = $self->{__links_table}->{$label};
 
         if (!($switches & $LINK_HTML))
         {
@@ -4549,6 +4711,16 @@ sub apply_links ($%)
             tag             => $tag
         );
     }
+    if ($self->{underline_delimiter})
+    {
+        my $tag = ($self->{lower_case_tags} ? 'u' : 'U');
+        $self->do_delim(
+            line_ref        => $para_ref,
+            line_action_ref => $para_action_ref,
+            delim           => $self->{underline_delimiter},
+            tag             => $tag
+        );
+    }
 
 }    # apply_links
 
@@ -4565,14 +4737,15 @@ sub check_dictionary_links ($%)
     my $line_ref        = $args{line_ref};
     my $line_action_ref = $args{line_action_ref};
 
-    my ($switches, $options, $repl_func);
+    my ($switches, $pattern, $options, $repl_func);
     my ($linkme, $line_with_links);
 
     # for each pattern, check and alter the line
     my $i = 0;
-    foreach my $pattern (@{$self->{__links_table_order}})
+    foreach my $label (@{$self->{__links_table_order}})
     {
-        $switches = $self->{__links_switch_table}->{$pattern};
+        $switches = $self->{__links_switch_table}->{$label};
+        $pattern = $self->{__links_table_patterns}->{$label};
 
         # check the pattern
         if ($switches & $LINK_ONCE)    # Do link only once
@@ -4837,7 +5010,25 @@ sub do_init_call ($)
     {
         push(@{$self->{links_dictionaries}}, ($self->{default_link_dict}))
           if ($self->{make_links} && (-f $self->{default_link_dict}));
-        $self->deal_with_options();
+	if ($self->{links_dictionaries})
+	{
+	    # only put into the links dictionaries files which are readable
+	    my @dict_files = @{$self->{links_dictionaries}};
+	    $self->args(links_dictionaries => []);
+
+	    foreach my $ld (@dict_files)
+	    {
+		if (-r $ld)
+		{
+		    $self->{'make_links'} = 1;
+		    $self->args(['--links_dictionaries', $ld]);
+		}
+		else
+		{
+		    print STDERR "Can't find or read link-file $ld\n";
+		}
+	    }
+	}
         if ($self->{make_links})
         {
             $self->load_dictionary_links();
@@ -5148,147 +5339,3 @@ modify it under the same terms as Perl itself.
 
 #------------------------------------------------------------------------
 1;
-__DATA__
-#
-# Global links dictionary file for HTML::TextToHTML
-# http://www.katspace.com/tools/text_to_html
-# http://txt2html.sourceforge.net/
-# based on links dictionary for Seth Golub's txt2html
-# http://www.aigeek.com/txt2html/
-#
-# This dictionary contains some patterns for converting obvious URLs,
-# ftp sites, hostnames, email addresses and the like to hrefs.
-#
-# Original adapted from the html.pl package by Oscar Nierstrasz in
-# the Software Archive of the Software Composition Group
-# http://iamwww.unibe.ch/~scg/Src/
-#
-
-# Some people even like to mark the URL label explicitly <URL:foo:label>
-/&lt;URL:([-\w\.\/:~_\@]+):([a-zA-Z0-9'() ]+)&gt;/ -h-> <A HREF="$1">$2</A>
-
-# Some people like to mark URLs explicitly <URL:foo>
-/&lt;URL:\s*(\S+?)\s*&gt;/ -h-> <A HREF="$1">$1</A>
-
-#  <http://site>
-/&lt;(http:\S+?)\s*&gt;/ -h-> &lt;<A HREF="$1">$1</A>&gt;
-
-# Urls: <service>:<rest-of-url>
-
-|snews:[\w\.]+|        -> $&
-|news:[\w\.]+|         -> $&
-|nntp:[\w/\.:+\-]+|    -> $&
-|http:[\w/\.:\@+\-~\%#?=&;,]+[\w/]|  -> $&
-|shttp:[\w/\.:+\-~\%#?=&;,]+| -> $&
-|https:[\w/\.:+\-~\%#?=&;,]+| -> $&
-|file:[\w/\.:+\-]+|     -> $&
-|ftp:[\w/\.:+\-]+|      -> $&
-|wais:[\w/\.:+\-]+|     -> $&
-|gopher:[\w/\.:+\-]+|   -> $&
-|telnet:[\w/\@\.:+\-]+|   -> $&
-
-
-# catch some newsgroups to avoid confusion with sites:
-|([^\w\-/\.:\@>])(alt\.[\w\.+\-]+[\w+\-]+)|    -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(bionet\.[\w\.+\-]+[\w+\-]+)| -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(bit\.[\w\.+\-]+[\w+\-]+)|    -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(biz\.[\w\.+\-]+[\w+\-]+)|    -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(clari\.[\w\.+\-]+[\w+\-]+)|  -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(comp\.[\w\.+\-]+[\w+\-]+)|   -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(gnu\.[\w\.+\-]+[\w+\-]+)|    -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(humanities\.[\w\.+\-]+[\w+\-]+)| 
-          -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(k12\.[\w\.+\-]+[\w+\-]+)|    -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(misc\.[\w\.+\-]+[\w+\-]+)|   -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(news\.[\w\.+\-]+[\w+\-]+)|   -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(rec\.[\w\.+\-]+[\w+\-]+)|    -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(soc\.[\w\.+\-]+[\w+\-]+)|    -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(talk\.[\w\.+\-]+[\w+\-]+)|   -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(us\.[\w\.+\-]+[\w+\-]+)|     -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(ch\.[\w\.+\-]+[\w+\-]+)|     -h-> $1<A HREF="news:$2">$2</A>
-|([^\w\-/\.:\@>])(de\.[\w\.+\-]+[\w+\-]+)|     -h-> $1<A HREF="news:$2">$2</A>
-
-# FTP locations (with directory):
-# anonymous@<site>:<path>
-|(anonymous\@)([a-zA-Z][\w\.+\-]+\.[a-zA-Z]{2,}):(\s*)([\w\d+\-/\.]+)|
-  -h-> $1<A HREF="ftp://$2/$4">$2:$4</A>$3
-
-# ftp@<site>:<path>
-|(ftp\@)([a-zA-Z][\w\.+\-]+\.[a-zA-Z]{2,}):(\s*)([\w\d+\-/\.]+)|
-  -h-> $1<A HREF="ftp://$2/$4">$2:$4</A>$3
-
-# Email address
-|[a-zA-Z0-9_\+\-\.]+\@([a-zA-Z0-9][\w\.+\-]+\.[a-zA-Z]{2,})|
-  -> mailto:$&
-
-# <site>:<path>
-|([^\w\-/\.:\@>])([a-zA-Z][\w\.+\-]+\.[a-zA-Z]{2,}):(\s*)([\w\d+\-/\.]+)|
-  -h-> $1<A HREF="ftp://$2/$4">$2:$4</A>$3
-
-# NB: don't confuse an http server with a port number for
-# an FTP location!
-# internet number version: <internet-num>:<path>
-|([^\w\-/\.:\@])(\d{2,}\.\d{2,}\.\d+\.\d+):([\w\d+\-/\.]+)|
-  -h-> $1<A HREF="ftp://$2/$3">$2:$3</A>
-
-# telnet <site> <port>
-|telnet ([a-zA-Z][\w+\-]+(\.[\w\.+\-]+)+\.[a-zA-Z]{2,})\s+(\d{2,4})|
-  -h-> telnet <A HREF="telnet://$1:$3/">$1 $3</A>
-
-# ftp <site>
-|ftp ([a-zA-Z][\w+\-]+(\.[\w\.+\-]+)+\.[a-zA-Z]{2,})|
-  -h-> ftp <A HREF="ftp://$1/">$1</A>
-
-# host with "ftp" in the machine name
-|\b([a-zA-Z][\w])*ftp[\w]*(\.[\w+\-]+){2,}| -h-> ftp <A HREF="ftp://$&/">$&</A>
-
-# ftp.foo.net/blah/
-|ftp(\.[a-zA-Z0-9_\@:-]+)+/\S+| -> ftp://$&
-
-# www.thehouse.org/txt2html/
-|www(\.[a-zA-Z0-9_\@:-]+)+/\S+| -> http://$&
-
-# host with "www" in the machine name
-|\b([a-zA-Z][\w])*www[\w]*(\.[\w+\-]+){2,}| -> http://$&/
-
-# <site> <port>
-|([a-zA-Z][\w+\-]+\.[\w+\-]+\.[a-zA-Z]{2,})\s+(\d{2,4})|
-  -h-> <A HREF="telnet://$1:$2/">$1 $2</A>
-
-# just internet numbers with port:
-|([^\w\-/\.:\@])(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s+(\d{1,4})|
-  -h-> $1<A HREF="telnet://$2:$3">$2 $3</A>
-
-# just internet numbers:
-|([^\w\-/\.:\@])(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})|
-  -h-> $1<A HREF="telnet://$2">$2</A>
-
-# RFCs
-/RFC ?(\d+)/ -i-> http://www.cis.ohio-state.edu/rfc/rfc$1.txt
-
-# This would turn "f^H_o^H_o^H_" into "<U>foo</U>".  Gross, isn't it?
-# Thanks to Mark O'Dell <emark@cns.caltech.edu> for fixing this. 
-#
-# /(.\\010_)+/ -he-> $tmp = $&;$tmp =~ s@\010_@@g;"<U>$tmp</U>"
-# /(_\\010.)+/ -he-> $tmp = $&;$tmp =~ s@_\010@@g;"<U>$tmp</U>"
-# /(.\^H_)+/ -he-> $tmp = $&;$tmp =~ s@\^H_@@g;"<U>$tmp</U>"
-# /(_\^H.)+/ -he-> $tmp = $&;$tmp =~ s@_\^H@@g;"<U>$tmp</U>"
-
-# Mark _underlined stuff_ as <U>underlined stuff</U>
-# Don't mistake variable names for underlines, and
-# take account of possible trailing punctuation
-/([ \t\n])_([a-z][a-z0-9 -]*[a-z])_([ \t\n\.;:,\!\?])/ -hi-> $1<U>$2</U>$3
-
-# Seth and his amazing conversion program    :-)
-
-"Seth Golub"  -io-> http://www.aigeek.com/
-"txt2html"    -io-> http://txt2html.sourceforge.net/
-
-# Kathryn and her amazing modules 8-)
-"Kathryn Andersen"  -io-> http://www.katspace.com/
-"HTML::TextToHTML"  -io-> http://www.katspace.com/tools/text_to_html/
-"hypertoc"          -io-> http://www.katspace.com/tools/hypertoc/
-"HTML::GenToc"      -io-> http://www.katspace.com/tools/hypertoc/
-
-# End of global dictionary
-

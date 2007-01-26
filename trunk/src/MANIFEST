@@ -46,6 +46,8 @@ tfiles/good_table-border.html
 tfiles/good_table-delim.html
 tfiles/good_table-pgsql.html
 tfiles/good_table-pgsql2.html
+tfiles/good_umlauttest.html
+tfiles/good_utf8.html
 tfiles/good_xhtml_sample.html
 tfiles/heading1.txt
 tfiles/hyphens.txt
@@ -73,5 +75,7 @@ tfiles/table-border.txt
 tfiles/table-delim.txt
 tfiles/table-pgsql.txt
 tfiles/table-pgsql2.txt
+tfiles/umlauttest.txt
+tfiles/utf8.txt
 TODO
 version.txt

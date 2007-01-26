@@ -2,7 +2,7 @@
 
 #########################
 
-use Test::More tests => 8;
+use Test::More tests => 12;
 use HTML::TextToHTML;
 
 #########################
@@ -161,5 +161,54 @@ $result = compare('tfiles/good_links3.html', 'links3.html');
 ok($result, 'test file matches original example exactly');
 if ($result) {
     unlink('links3.html');
+}
+
+$conv = new HTML::TextToHTML();
+#
+# bugs : file with umlauts not doing italics and unterlines correctly
+#
+$result = $conv->txt2html(
+system_link_dict=>"txt2html.dict",
+default_link_dict=>"",
+make_tables=>0,
+infile=>["tfiles/umlauttest.txt"],
+outfile=>"umlauttest.html",
+custom_heading_regexp=>[],
+xhtml=>1,
+#debug=>1,
+#dict_debug=>15,
+);
+ok($result, 'converted umlauttest.txt');
+
+# compare the files
+$result = compare('tfiles/good_umlauttest.html', 'umlauttest.html');
+ok($result, 'test file matches original example exactly');
+if ($result) {
+    unlink('umlauttest.html');
+}
+
+#
+# bugs : UTF-8 characters are being wrongly zapped
+#
+$result = $conv->txt2html(
+system_link_dict=>"txt2html.dict",
+default_link_dict=>"",
+make_anchors=>0,
+infile=>["tfiles/utf8.txt"],
+outfile=>"utf8.html",
+custom_heading_regexp=>[],
+xhtml=>1,
+extract=>1,
+eight_bit_clean=>1,
+#debug=>1,
+#dict_debug=>15,
+);
+ok($result, 'converted utf8.txt');
+
+# compare the files
+$result = compare('tfiles/good_utf8.html', 'utf8.html');
+ok($result, 'test file matches original example exactly');
+if ($result) {
+    unlink('utf8.html');
 }
 
