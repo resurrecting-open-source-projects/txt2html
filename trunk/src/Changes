@@ -1,6 +1,11 @@
 Revision history for txt2html
 =============================
 
+2.45 Fri 26th January 2007
+	- fixed bug with umlauts
+	- fixed bug with UTF-8 characters
+	- added --underline_delimiter option.
+
 2.44 Tue 17th January 2006
 	- fixed bug with delimiter tables
 	- minor documentation fixes
