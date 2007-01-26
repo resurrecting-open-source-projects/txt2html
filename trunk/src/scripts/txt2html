@@ -9,11 +9,11 @@ txt2html - convert plain text file to HTML.
 
 =head1 VERSION
 
-This describes version B<2.44> of txt2html.
+This describes version B<2.45> of txt2html.
 
 =cut
 
-our $VERSION = '2.44';
+our $VERSION = '2.45';
 
 =head1 SYNOPSIS
 
@@ -38,7 +38,7 @@ txt2html [ --append_file I<filename> ] [ --append_head I<filename> ]
     [ --preserve_indent ] [ --short_line_length I<n> ]
     [ --style_url I<stylesheet_url> ] [ --tab_width I<n> ]
     [ --table_type I<type>=0/1 ] [ --title I<title> ] [ --titlefirst ]
-    [ --underline_length_tolerance I<n> ]
+    [ --underline_delimiter I<string> ] [ --underline_length_tolerance I<n> ]
     [ --underline_offset_tolerance I<n> ] [ --unhyphenation ]
     [ --use_mosaic_header ] [ --use_preformat_marker ] [ --xhtml ] [file ...]
 
@@ -441,14 +441,24 @@ You can specify a title.  Otherwise it will use a blank one.
 
 Use the first non-blank line as the title.
 
+=item --underline_delimiter I<string>
+
+This defines what character (or string) is taken to be the delimiter of
+text which is to be interpreted as underlined (that is, to be given a <U>
+tag).  If this is empty, then no underlining of text will be done.
+This is NOT the same as the following "underline" options, which are
+about underlining of "header" sections.
+(default: _)
+
 =item --underline_length_tolerance I<n> | --ulength I<n> | -ul I<n>
 
-How much longer or shorter can underlines be and still be underlines?
+How much longer or shorter can header underlines be and still be header
+underlines?
 (default: 1)
 
 =item --underline_offset_tolerance I<n> | --uoffset I<n> | -uo I<n>
 
-How far offset can underlines be and still be underlines?
+How far offset can header underlines be and still be header underlines?
 (default: 1)
 
 =item --unhyphenation | --unhypnenate | -u
@@ -876,6 +886,7 @@ sub process_args ($) {
 	'table_type=n%',
 	'title|t=s',
 	'titlefirst|tf!',
+	'underline_delimiter=s',
 	'underline_length_tolerance|ulength|ul=n',
 	'underline_offset_tolerance|uoffset|uo=n',
 	'unhyphenation|unhyphenate!',
