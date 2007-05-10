@@ -74,7 +74,7 @@ Go to the Admin/Files section and follow the instructions.
 You will need to ftp upload the .tar.gz file to upload.sourceforge.net
 /incoming directory before doing certain steps.
 
-One also needs to update the web-page.  Cd to txt2html_web/htdocs on
+One also needs to update the web-page.  Cd to txt2html/web/htdocs on
 your home machine, and edit index.html to update the version number.
 Then do
 	make del_cpfiles

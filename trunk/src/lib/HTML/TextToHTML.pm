@@ -271,17 +271,23 @@ If an empty tag is given, then no tag will be put around all-caps lines.
 
 =item custom_heading_regexp
 
-    custom_heading_regexp=>I<regexp>
+    custom_heading_regexp=>\@custom_headings
 
-Add a regexp for headings.  Header levels are assigned by regexp
-in order seen When a line matches a custom header regexp, it is tagged as
-a header.  If it's the first time that particular regexp has matched,
-the next available header level is associated with it and applied to
-the line.  Any later matches of that regexp will use the same header level.
-Therefore, if you want to match numbered header lines, you could use
-something like this:
+Add patterns for headings.  Header levels are assigned by regexp in the
+order seen in the input text. When a line matches a custom header
+regexp, it is tagged as a header.  If it's the first time that
+particular regexp has matched, the next available header level is
+associated with it and applied to the line.  Any later matches of that
+regexp will use the same header level.  Therefore, if you want to match
+numbered header lines, you could use something like this:
 
-    -H '^ *\d+\. \w+' -H '^ *\d+\.\d+\. \w+' -H '^ *\d+\.\d+\.\d+\. \w+'
+    my @custom_headings = ('^ *\d+\. \w+',
+			   '^ *\d+\.\d+\. \w+',
+			   '^ *\d+\.\d+\.\d+\. \w+');
+
+    ...
+	custom_heading_regexp=>\@custom_headings,
+    ...
 
 Then lines like
 
@@ -292,10 +298,10 @@ Then lines like
 Would be marked as H1, H2, and H3 (assuming they were found in that
 order, and that no other header styles were encountered).
 If you prefer that the first one specified always be H1, the second
-always be H2, the third H3, etc, then use the -EH/--explicit-headings
+always be H2, the third H3, etc, then use the "explicit_headings"
 option.
 
-This is a multi-valued option.
+This expects a reference to an array of strings.
 
 (default: none)
 
