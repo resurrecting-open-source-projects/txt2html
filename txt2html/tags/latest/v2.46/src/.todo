@@ -1,0 +1,53 @@
+<todo version="0.1.19">
+    <note priority="veryhigh" time="1103402282" done="1104916692">
+        fix documentation for lower_case_tags
+    </note>
+    <note priority="veryhigh" time="1115500043" done="1115512400">
+        add back in a Makefile.PL
+    </note>
+    <note priority="veryhigh" time="1115512441" done="1115512448">
+        solve the problem with finding the system links dictionary
+        <comment>
+            moved the contents into the __DATA__ handle
+        </comment>
+    </note>
+    <note priority="veryhigh" time="1168285284" done="1169073046">
+        change over to subversion
+        <comment>
+            had to start fresh, the cvs2svn didn't work
+        </comment>
+    </note>
+    <note priority="high" time="1169159342">
+        try to make this more thread-safe
+    </note>
+    <note priority="medium" time="1099887576">
+        add in an "obfustcate email addresses" facility
+    </note>
+    <note priority="medium" time="1099887627">
+        convert (c) (r) and (tm) to the correct entities (add to links)
+    </note>
+    <note priority="medium" time="1099887645">
+        add optional "enhanced" definition lists detection, which does Term: Defintion
+    </note>
+    <note priority="medium" time="1099887659">
+        recognise and reproduce different Ordered List styles.
+    </note>
+    <note priority="medium" time="1099887670">
+        links-per-section
+    </note>
+    <note priority="medium" time="1099887692">
+        tables with multi-line cells
+    </note>
+    <note priority="medium" time="1099887738">
+        option to add section-numbers to headers (not just header anchors)
+        <note priority="medium" time="1099887760">
+            allow starting section number to be user-defined
+        </note>
+    </note>
+    <note priority="medium" time="1106451742">
+        make this more efficient
+    </note>
+    <note priority="medium" time="1116331791">
+        make a proper CGI script as an example
+    </note>
+</todo>

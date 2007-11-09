@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta name="generator" content="HTML::TextToHTML v2.46"/>
+</head>
+<body>
+ 
+<p>For Grand Falls E1 events (loss of service for a long time) huge
+LOG files (200-300 thousand of lines) is a very typical and
+complicating characteristics. Many process (SWERRs, TRAPs, INFOs,
+etc) run in parallel and it is very important to understand what
+caused what. I want to suggest some tips that can make easier
+analysis of such log files.
+ 
+</p><ol>
+  <li>First of all learn ALL logs AT THE BEGINNING of the event.
+   It is very important to understand what process began first.
+   You should understand the meaning of EVERY log here.
+ 
+  </li><li>Unix tool awk could be very useful for logs files processing.
+   Here are some simplest examples of its using.
+ 
+  <ol>
+    <li>Cutting all logs of some definite type:
+  </li></ol>
+</li></ol>
+<pre>
+               awk '/PM189/,length &lt; 2' inp_file &gt; out_file
+                       ^           ^
+                       |           |
+      Where:    Pattern in the   End condition
+              first line of log  of log (empty string)
+</pre>
+ 
+<p> b) Cutting all lines BEFORE lines with some pattern:
+ 
+</p><p>    awk '/INV CLASS/{print str;next}{str=$0}' inp_file &gt; out_file
+</p><pre>
+              ^          ^       ^      ^
+       Where: |          |       |      |
+              |     Output prev  |    Save full line
+           Pattern     line    Go to
+                              next line
+</pre>
+ 
+<p> c) Cutting all lines TWO lines BEFORE lines with some pattern:
+ 
+</p><p>awk '/cp 35/{print str1;next}{str1=str;str=$0}' inp_file &gt; out_file
+ 
+</p><p> d) Prepare exec for site in the form: QDN dn
+</p><pre>
+                                       QDN dn
+                                       . . .
+</pre>
+ 
+<p> awk '/  DN /{print "QDN " $8}' inp_file | sort | uniq &gt; out_file
+</p><pre>
+          ^                 ^
+ Where:   |                 |
+          |           Field number in line
+</pre>
+<p>   Selection pattern  that contains dn
+ 
+</p><p>3. If you need to answer question like that:
+ 
+</p><p>   "What dn's that appear in logs of type A appear in logs of type B
+   too ?" (For example, how many dn's that appear in AUDT203 logs
+   appear in logs of TPTSWER cp 35 - inter integrity lost ?)
+ 
+</p><p>   you could use the next procedure:
+ 
+</p><ol>
+  <li>Use 2a) for cutting all AUDT203 logs into one file and cp 35
+       logs into another.
+ 
+  </li><li>Use 2d) for producing of sorted list of dn's from these two
+       new files.
+ 
+  </li><li>Use tool comm in the form:
+ 
+</li></ol>
+<p>         comm dn_list1_file dn_list2_file &gt; out_file
+ 
+</p><pre>
+       and in the out_file you will see three columns - in the
+       third one common dn's will appear.
+</pre>
+</body>
+</html>

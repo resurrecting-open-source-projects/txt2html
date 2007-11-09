@@ -1,0 +1,38 @@
+Definition Lists
+=================
+
+A definition list comprises the following:
+
+Term:
+  The term part of a DL item is a word on a line by itself, ending
+with a colon.
+Definition:
+  The definition part of a DL item is at least one paragraph following
+the term.
+
+  If one has more than one paragraph in the definition, the first line of
+the next paragraph needs to be indented two spaces from where the term
+starts, otherwise we don't know that it belongs to the definition.
+
+This is a new, separate paragraph.
+
+Mixed Lists
+-----------
+
+Yadda_Yadda:
+  a) a meaningless term
+  b) something which Fred Flinstone says
+  c) something with lawn in it
+
+Just to be clear, this is a paragraph.
+
+* Here's some unordered things.
+  Unordered:
+    Something without order.
+* Item 2 in the unordered list.
+
+  Ordered:
+    Something with order.
+
+* This should be item 3 in the unordered list.
+

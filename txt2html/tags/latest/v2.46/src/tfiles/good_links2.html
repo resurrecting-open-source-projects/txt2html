@@ -1,0 +1,50 @@
+<P>This is a test file with some bizzare lines
+
+<P>These get converted:
+
+<PRE>
+I'm going to ftp <A HREF="ftp://ftp.howdy.com/">ftp.howdy.com</A>     yay!!
+I'm going to ftp <A HREF="ftp://abbaftp.howdy.com/">abbaftp.howdy.com</A>     yay!!
+I'm going to ftp <A HREF="ftp://ftpabba.howdy.com/">ftpabba.howdy.com</A>     yay!!
+I'm going to ftp <A HREF="ftp://abftpba.howdy.com/">abftpba.howdy.com</A>     yay!!
+I'm going to ftp <A HREF="ftp://a_ftp_a.howdy.com/">a_ftp_a.howdy.com</A>     yay!!
+I'm going to ***ftp <A HREF="ftp://a_ftp_a.howdy.com/">a_ftp_a.howdy.com</A>***     yay!!
+</PRE>
+<P>These are correctly not converted:
+
+<PRE>
+I'm going to 9bftpba.howdy.com     yay!!
+I'm going to -bftpba.howdy.com     yay!!
+I'm going to ***-bftpba.howdy.com***     yay!!
+</PRE>
+<P>These test beginning and end of line conversions:
+
+<P>ftp <A HREF="ftp://ftp.howdy.com/">ftp.howdy.com</A>     yay!!<BR>
+I'm going to ftp <A HREF="ftp://ftp.howdy.com/">ftp.howdy.com</A><BR>
+ftp <A HREF="ftp://ftp.howdy.com/">ftp.howdy.com</A>
+
+<P>The same jazz but with www in the name:
+ 
+<P>These get converted:
+
+<PRE>
+I'm going to <A HREF="http://www.howdy.com/">www.howdy.com</A>     yay!!
+I'm going to <A HREF="http://abbawww.howdy.com/">abbawww.howdy.com</A>     yay!!
+I'm going to <A HREF="http://wwwabba.howdy.com/">wwwabba.howdy.com</A>     yay!!
+I'm going to <A HREF="http://abwwwba.howdy.com/">abwwwba.howdy.com</A>     yay!!
+I'm going to <A HREF="http://a_www_a.howdy.com/">a_www_a.howdy.com</A>     yay!!
+I'm going to ***<A HREF="http://a_www_a.howdy.com/">a_www_a.howdy.com</A>***     yay!!
+</PRE>
+<P>These are correctly not converted:
+
+<PRE>
+I'm going to 9bwwwba.howdy.com     yay!!
+I'm going to -bwwwba.howdy.com     yay!!
+I'm going to ***-bwwwba.howdy.com***     yay!!
+</PRE>
+<P>These test beginning and end of line conversions:
+
+<P><A HREF="http://www.howdy.com/">www.howdy.com</A>     yay!!<BR>
+I'm going to <A HREF="http://www.howdy.com/">www.howdy.com</A><BR>
+<A HREF="http://www.howdy.com/">www.howdy.com</A>
+
