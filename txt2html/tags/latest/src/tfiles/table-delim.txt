@@ -1,0 +1,36 @@
+Delimited Table
+===============
+
+This one was a border table from which I removed the divider lines.
+
+| Schema |         Name          |   Type   | Owner |
+| public | actor_episodes        | view     | kat   |
+| public | actors                | table    | kat   |
+| public | copyable              | view     | kat   |
+| public | episode_recording     | view     | kat   |
+| public | episodes              | table    | kat   |
+| public | episodes_title_id_seq | sequence | kat   |
+| public | pal_recordings        | view     | kat   |
+| public | recordings            | table    | kat   |
+| public | sorted_eps            | view     | kat   |
+| public | tapes                 | table    | kat   |
+| public | unrecorded            | view     | kat   |
+| public | wanting               | view     | kat   |
+
+And this is a homegrown one.
+
+:Fred:Nurk:lives:
+:Kerr:Avon:is wonderfule:
+::Servalan:has no first name:
+
+And the next one has a caption, and a possibly tricky delimiter.
+
+	     Actors
+	& Paul & Darrow &
+	& Jackie & Pierce &
+
+Note that a CSV table doesn't work for delimiter stuff,
+because it isn't *bounded* by commas.
+
+Fred,Nurk
+Joe,Schmoe
