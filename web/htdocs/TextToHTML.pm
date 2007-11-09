@@ -2558,6 +2558,7 @@ sub shortline ($%)
     }
 
 Is this a mailheader line?
+
 =cut
 sub is_mailheader ($%)
 {
@@ -3318,6 +3319,7 @@ Check if the given paragraph-array is a Postgresql table
 (the ascii format produced by Postgresql)
 
 A PGSQL table can start with an optional table-caption,
+
     then it has a row of column headings separated by |
     then it has a row of ------+-----
     then it has one or more rows of column values separated by |
@@ -3381,6 +3383,7 @@ sub is_pgsql_table ($%)
 Check if the given paragraph-array is a Border table.
 
 A BORDER table can start with an optional table-caption,
+
     then it has a row of +------+-----+
     then it has a row of column headings separated by |
     then it has a row of +------+-----+
@@ -4226,6 +4229,7 @@ sub endpreformat ($%)
 		     prev_action_ref);
 
 Detect and process a preformatted section.
+
 =cut
 sub preformat ($%)
 {
@@ -4297,6 +4301,7 @@ sub preformat ($%)
     $anchor = $self->make_new_anchor($heading_level);
 
 Make a new anchor.
+
 =cut
 sub make_new_anchor ($$)
 {
@@ -4331,6 +4336,7 @@ sub make_new_anchor ($$)
     $self->anchor_mail($line_ref);
 
 Make an anchor for a mail section.
+
 =cut
 sub anchor_mail ($$)
 {
@@ -4356,6 +4362,7 @@ sub anchor_mail ($$)
     $self->anchor_heading($heading_level, $line_ref);
 
 Make an anchor for a heading.
+
 =cut
 sub anchor_heading ($$$)
 {
@@ -4390,6 +4397,7 @@ sub anchor_heading ($$$)
     $self->heading_level($style);
 
 Add a new heading style if this is a new heading style.
+
 =cut
 sub heading_level ($$)
 {
@@ -4486,8 +4494,9 @@ sub is_heading ($%)
     $self->heading(line_ref=>$line_ref,
 	next_ref=>$next_ref);
 
-Make a heading
-Assumes is_heading is true
+Make a heading.
+Assumes is_heading is true.
+
 =cut
 sub heading ($%)
 {
@@ -4530,6 +4539,7 @@ sub heading ($%)
     }
 
 Check if the given line matches a custom heading.
+
 =cut
 sub is_custom_heading ($%)
 {
@@ -4552,6 +4562,7 @@ sub is_custom_heading ($%)
     $self->custom_heading(line_ref=>$line_ref);
 
 Make a custom heading.  Assumes is_custom_heading is true.
+
 =cut
 sub custom_heading ($%)
 {
@@ -4593,6 +4604,7 @@ sub custom_heading ($%)
     $self->unhyphenate_para($para_ref);
 
 Join up hyphenated words that are split across lines.
+
 =cut
 sub unhyphenate_para ($$)
 {
@@ -4619,6 +4631,7 @@ s/(\s*)([^\W\d_]*)\-\n(\s*)([^\W\d_]+[\)\}\]\.,:;\'\"\>]*\s*)/$1$2$4\n$3/gs;
     $self->tagline($tag, $line_ref);
 
 Put the given tag around the given line.
+
 =cut
 sub tagline ($$$)
 {
@@ -4640,6 +4653,7 @@ sub tagline ($$$)
     }
 
 Check if a line is all capitals.
+
 =cut
 sub iscaps
 {
@@ -4657,6 +4671,7 @@ sub iscaps
 		line_action_ref=>$line_action_ref);
 
 Detect and deal with an all-caps line.
+
 =cut
 sub caps
 {
@@ -4686,6 +4701,7 @@ sub caps
 
 Deal with a line which has words delimited by the given delimiter;
 this is used to deal with italics, bold and underline formatting.
+
 =cut
 sub do_delim
 {
@@ -4774,6 +4790,7 @@ s/(?<!${delim})${delim}((\w|["'])(\w|[-\s\.;:,!?"'])*[^\s])${delim}/<${tag}>$1<\
     $regexp = glob2regexp($glob);
 
 Convert very simple globs to regexps
+
 =cut
 sub glob2regexp
 {
@@ -4821,6 +4838,7 @@ sub glob2regexp
 				     switches=>$switches);
 
 Add the given regexp "link definition" to the links table.
+
 =cut
 sub add_regexp_to_links_table ($%)
 {
@@ -4872,6 +4890,7 @@ sub add_regexp_to_links_table ($%)
 				      switches=>$switches);
 
 Add the given literal "link definition" to the links table.
+
 =cut
 sub add_literal_to_links_table ($%)
 {
@@ -4901,6 +4920,7 @@ sub add_literal_to_links_table ($%)
 				   switches=>$switches);
 
 Add the given glob "link definition" to the links table.
+
 =cut
 sub add_glob_to_links_table ($%)
 {
@@ -4928,6 +4948,7 @@ sub add_glob_to_links_table ($%)
 
 Parse the dictionary file.
 (see also load_dictionary_links, for things that were stripped)
+
 =cut
 sub parse_dict ($$$)
 {
@@ -5002,6 +5023,7 @@ sub parse_dict ($$$)
     $self->setup_dict_checking();
 
 Set up the dictionary checking.
+
 =cut
 sub setup_dict_checking ($)
 {
@@ -5132,6 +5154,7 @@ sub in_link_context ($$$)
 		       para_action_ref=>$para_action_ref);
 
 Apply links and formatting to this paragraph.
+
 =cut
 sub apply_links ($%)
 {
@@ -5192,6 +5215,7 @@ sub apply_links ($%)
 
 Check (and alter if need be) the bits in this line matching
 the patterns in the link dictionary.
+
 =cut
 sub check_dictionary_links ($%)
 {
@@ -5298,6 +5322,7 @@ sub check_dictionary_links ($%)
     $self->load_dictionary_links();
 
 Load the dictionary links.
+
 =cut
 sub load_dictionary_links ($)
 {
@@ -5340,6 +5365,7 @@ sub load_dictionary_links ($)
 
 Extra stuff needed for the beginning:
 HTML headers, and prepending a file if desired.
+
 =cut
 sub do_file_start ($$$)
 {
