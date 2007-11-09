@@ -80,7 +80,7 @@ Then do
 	make del_cpfiles
 	make cpfiles
 	make
-	cvs commit
+	svn commit
 	cd ..
 	make install
 
