@@ -1,0 +1,21 @@
+## Test on pre-in-list
+
+txt2html.pl -p 7 -pb 1
+
+Here is an example bad file:
+
+ 1. text (should be translated as <LI>) (there should be *no* </OL> tag
+at this point)
+       preformatted text..
+       ... and more 
+     
+ 2. this *should* be translated as <LI>
+
+## Test on mail_quote-in-pre_explicit
+
+<pre>
+Here is the actuall file content. 
+Maybe more lines.
+> 1	 more
+> 2	 more
+</pre>
