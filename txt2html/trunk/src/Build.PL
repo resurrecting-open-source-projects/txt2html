@@ -1,7 +1,9 @@
 use Module::Build;
 my $build = Module::Build->new(
     module_name	=> 'HTML::TextToHTML',
+    license		=> 'perl',
     dist_name		=> 'txt2html',
+    dist_author		=> 'Kathryn Andersen',
     dist_version_from	=> 'scripts/txt2html',
     requires		=> {
 		'perl'	=> '5.6.1',
@@ -16,12 +18,6 @@ my $build = Module::Build->new(
 		'Module::Build' => 0.26
     	},
     script_files	=> ['scripts/txt2html'],
-    dist_author		=> 'Kathryn Andersen',
-    license		=> 'perl',
+    create_makefile_pl => 'passthrough',
 );
 $build->create_build_script;
-
-# create the Makefile.PL
-use Module::Build::Compat;
-print "creating Makefile.PL\n";
-Module::Build::Compat->create_makefile_pl('passthrough', $build);

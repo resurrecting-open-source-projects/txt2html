@@ -9,11 +9,11 @@ HTML::TextToHTML - convert plain text file to HTML.
 
 =head1 VERSION
 
-This describes version B<2.45> of HTML::TextToHTML.
+This describes version B<2.46> of HTML::TextToHTML.
 
 =cut
 
-our $VERSION = '2.45';
+our $VERSION = '2.46';
 
 =head1 SYNOPSIS
 
@@ -1879,13 +1879,22 @@ sub txt2html ($;$)
     return 1;
 }
 
+=head1 PRIVATE METHODS
+
+These are methods used internally, only of interest to developers.
+
+=cut
+
 #---------------------------------------------------------------#
 # Init-related subroutines
 
-#--------------------------------#
-# Name: init_our_data
-# Args:
-#   $self
+=head2 init_our_data
+
+$self->init_our_data();
+
+Initializes the internal object data.
+
+=cut
 sub init_our_data ($)
 {
     my $self = shift;
@@ -2127,11 +2136,13 @@ EOT
 #---------------------------------------------------------------#
 # txt2html-related subroutines
 
-#--------------------------------#
-# Name: deal_with_options
-#   do extra processing related to particular options
-# Args:
-#   $self
+=head2 deal_with_options
+
+$self->deal_with_options();
+
+do extra processing related to particular options
+
+=cut
 sub deal_with_options ($)
 {
     my $self = shift;
@@ -2203,6 +2214,13 @@ sub deal_with_options ($)
     $self->{'lower_case_tags'} = 1 if ($self->{xhtml});
 }
 
+=head2 escape
+
+$newtext = escape($text);
+
+Escape & < and >
+
+=cut
 sub escape ($)
 {
     my ($text) = @_;
@@ -2212,9 +2230,16 @@ sub escape ($)
     return $text;
 }
 
-#     Added by Alan Jackson, alan at ajackson dot org, and based
-#     on the demoronize script by John Walker, http://www.fourmilab.ch/
-# Convert Microsoft character entities into characters.
+=head2 demoronize_char
+
+$newtext = demoronize_char($text);
+
+Convert Microsoft character entities into characters.
+
+Added by Alan Jackson, alan at ajackson dot org, and based
+on the demoronize script by John Walker, http://www.fourmilab.ch/
+
+=cut
 sub demoronize_char($)
 {
     my $s = shift;
@@ -2245,7 +2270,13 @@ sub demoronize_char($)
     return $s;
 }
 
-# convert Microsoft character entities into HTML code
+=head2 demoronize_code
+
+$newtext = demoronize_code($text);
+
+convert Microsoft character entities into HTML code
+
+=cut
 sub demoronize_code($)
 {
     my $s = shift;
@@ -2261,13 +2292,23 @@ sub demoronize_code($)
     return $s;
 }
 
-# output the tag wanted (add the <> and the / if necessary)
-# - output in lower or upper case
-# - do tag-related processing
-# options:
-#   tag_type=>'start' | tag_type=>'end' | tag_type=>'empty'
-#   (default start)
-#   inside_tag=>string (default empty)
+=head2 get_tag
+
+$tag = $self->get_tag($in_tag);
+
+$tag = $self->get_tag($in_tag,
+	tag_type=>'start',
+	inside_tag=>'');
+
+output the tag wanted (add the <> and the / if necessary)
+- output in lower or upper case
+- do tag-related processing
+options:
+  tag_type=>'start' | tag_type=>'end' | tag_type=>'empty'
+  (default start)
+  inside_tag=>string (default empty)
+
+=cut
 sub get_tag ($$;%)
 {
     my $self   = shift;
@@ -2382,7 +2423,13 @@ sub get_tag ($$;%)
     return $out_tag;
 }    # get_tag
 
-# close the open tag
+=head2 close_tag
+
+$tag = $self->close_tag($in_tag);
+
+close the open tag
+
+=cut
 sub close_tag ($$)
 {
     my $self   = shift;
@@ -2414,6 +2461,15 @@ sub close_tag ($$)
     return $out_tag;
 }
 
+=head2 hrule
+
+   $self->hrule(para_lines_ref=>$para_lines,
+	     para_action_ref=>$para_action,
+	     ind=>0);
+
+Deal with horizontal rules.
+
+=cut
 sub hrule ($%)
 {
     my $self = shift;
@@ -2443,6 +2499,17 @@ sub hrule ($%)
     }
 }
 
+=head2 shortline
+
+    $self->shortline(line_ref=>$line_ref,
+		     line_action_ref=>$line_action_ref,
+		     prev_ref=>$prev_ref,
+		     prev_action_ref=>$prev_action_ref,
+		     prev_line_len=>$prev_line_len);
+
+Deal with short lines.
+
+=cut
 sub shortline ($%)
 {
     my $self = shift;
@@ -2483,6 +2550,15 @@ sub shortline ($%)
     }
 }
 
+=head2 is_mailheader
+
+    if ($self->is_mailheader(rows_ref=>$rows_ref))
+    {
+	...
+    }
+
+Is this a mailheader line?
+=cut
 sub is_mailheader ($%)
 {
     my $self = shift;
@@ -2503,6 +2579,13 @@ sub is_mailheader ($%)
 
 }    # is_mailheader
 
+=head2 mailheader
+
+    $self->mailheader(rows_ref=>$rows_ref);
+
+Deal with a mailheader.
+
+=cut
 sub mailheader ($%)
 {
     my $self = shift;
@@ -2550,6 +2633,17 @@ sub mailheader ($%)
 
 }    # mailheader
 
+=head2 mailquote
+
+    $self->mailquote(line_ref=>$line_ref,
+		     line_action_ref=>$line_action_ref,
+		     prev_ref=>$prev_ref,
+		     prev_action_ref=>$prev_action_ref,
+		     next_ref=>$next_ref);
+
+Deal with quoted mail.
+
+=cut
 sub mailquote ($%)
 {
     my $self = shift;
@@ -2588,13 +2682,33 @@ sub mailquote ($%)
     }
 }
 
-# Subtracts modes listed in $mask from $vector.
+=head2 subtract_modes
+    
+    $newvector = subtract_modes($vector, $mask);
+
+Subtracts modes listed in $mask from $vector.
+
+=cut
 sub subtract_modes ($$)
 {
     my ($vector, $mask) = @_;
     return ($vector | $mask) - $mask;
 }
 
+=head2 paragraph
+
+    $self->paragraph(line_ref=>$line_ref,
+		     line_action_ref=>$line_action_ref,
+		     prev_ref=>$prev_ref,
+		     prev_action_ref=>$prev_action_ref,
+		     line_indent=>$line_indent,
+		     prev_indent=>$prev_indent,
+		     is_fragment=>$is_fragment,
+		     ind=>$ind);
+
+Detect paragraph indentation.
+
+=cut
 sub paragraph ($%)
 {
     my $self = shift;
@@ -2677,6 +2791,13 @@ sub paragraph ($%)
     }
 }
 
+=head2 listprefix
+
+    ($prefix, $number, $rawprefix, $term) = $self->listprefix($line);
+
+Detect and parse a list item.
+
+=cut
 sub listprefix ($$)
 {
     my $self = shift;
@@ -2736,6 +2857,21 @@ sub listprefix ($$)
     ($prefix, $number, $rawprefix, $term);
 }    # listprefix
 
+=head2 startlist
+
+    $self->startlist(prefix=>$prefix,
+		     number=>0,
+		     rawprefix=>$rawprefix,
+		     term=>$term,
+		     para_lines_ref=>$para_lines_ref,
+		     para_action_ref=>$para_action_ref,
+		     ind=>0,
+		     prev_ref=>$prev_ref,
+		     total_prefix=>$total_prefix);
+
+Start a list.
+
+=cut
 sub startlist ($%)
 {
     my $self = shift;
@@ -2797,7 +2933,15 @@ sub startlist ($%)
     1;
 }    # startlist
 
-# End N lists
+=head2 endlist
+
+    $self->endlist(num_lists=>0,
+	prev_ref=>$prev_ref,
+	line_action_ref=>$line_action_ref);
+
+End N lists
+
+=cut
 sub endlist ($%)
 {
     my $self = shift;
@@ -2843,6 +2987,16 @@ sub endlist ($%)
     $self->{__mode} ^= $LIST if (!$self->{__listnum});
 }    # endlist
 
+=head2 continuelist
+
+    $self->continuelist(para_lines_ref=>$para_lines_ref,
+			para_action_ref=>$para_action_ref,
+			ind=>0,
+			term=>$term);
+
+Continue a list.
+
+=cut
 sub continuelist ($%)
 {
     my $self = shift;
@@ -2891,6 +3045,17 @@ sub continuelist ($%)
     $para_action_ref->[$ind] |= $LIST;
 }    # continuelist
 
+=head2 liststuff
+
+    $self->liststuff(para_lines_ref=>$para_lines_ref,
+		     para_action_ref=>$para_action_ref,
+		     para_line_indent_ref=>$para_line_indent_ref,
+		     ind=>0,
+		     prev_ref=>$prev_ref);
+
+Process a list (higher-level method).
+
+=cut
 sub liststuff ($%)
 {
     my $self = shift;
@@ -3041,7 +3206,14 @@ sub liststuff ($%)
     $para_line_indent_ref->[$ind] = length($total_prefix) if $islist;
 }    # liststuff
 
-# figure out the table type of this table, if any
+=head2 get_table_type
+
+    $table_type = $self->get_table_type(rows_ref=>$rows_ref,
+					para_len=>0);
+
+Figure out the table type of this table, if any
+
+=cut
 sub get_table_type ($%)
 {
     my $self = shift;
@@ -3075,7 +3247,16 @@ sub get_table_type ($%)
     return $table_type;
 }
 
-# check if the given paragraph-array is an aligned table
+=head2 is_aligned_table
+
+    if ($self->is_aligned_table(rows_ref=>$rows_ref, para_len=>0))
+    {
+	...
+    }
+
+Check if the given paragraph-array is an aligned table
+
+=cut
 sub is_aligned_table ($%)
 {
     my $self = shift;
@@ -3126,6 +3307,23 @@ sub is_aligned_table ($%)
     }
 }
 
+=head2 is_pgsql_table
+
+    if ($self->is_pgsql_table(rows_ref=>$rows_ref, para_len=>0))
+    {
+	...
+    }
+
+Check if the given paragraph-array is a Postgresql table
+(the ascii format produced by Postgresql)
+
+A PGSQL table can start with an optional table-caption,
+    then it has a row of column headings separated by |
+    then it has a row of ------+-----
+    then it has one or more rows of column values separated by |
+    then it has a row-count (N rows)
+
+=cut
 sub is_pgsql_table ($%)
 {
     my $self = shift;
@@ -3137,12 +3335,7 @@ sub is_pgsql_table ($%)
     my $rows_ref = $args{rows_ref};
     my $para_len = $args{para_len};
 
-    # a PGSQL table can start with an optional table-caption,
-    # then it has a row of column headings separated by |
-    # then it has a row of ------+-----
-    # then it has one or more rows of column values separated by |
-    # then it has a row-count (N rows)
-    # Thus it must have at least 4 rows.
+    # A PGSQL table must have at least 4 rows (see above).
     if (@{$rows_ref} < 4)
     {
         return 0;
@@ -3178,6 +3371,23 @@ sub is_pgsql_table ($%)
     return 1;
 }
 
+=head2 is_border_table
+
+    if ($self->is_border_table(rows_ref=>$rows_ref, para_len=>0))
+    {
+	...
+    }
+
+Check if the given paragraph-array is a Border table.
+
+A BORDER table can start with an optional table-caption,
+    then it has a row of +------+-----+
+    then it has a row of column headings separated by |
+    then it has a row of +------+-----+
+    then it has one or more rows of column values separated by |
+    then it has a row of +------+-----+
+
+=cut
 sub is_border_table ($%)
 {
     my $self = shift;
@@ -3189,13 +3399,7 @@ sub is_border_table ($%)
     my $rows_ref = $args{rows_ref};
     my $para_len = $args{para_len};
 
-    # a BORDER table can start with an optional table-caption,
-    # then it has a row of +------+-----+
-    # then it has a row of column headings separated by |
-    # then it has a row of +------+-----+
-    # then it has one or more rows of column values separated by |
-    # then it has a row of +------+-----+
-    # Thus it must have at least 5 rows.
+    # A BORDER table must have at least 5 rows (see above)
     # And note that it could be indented with spaces
     if (@{$rows_ref} < 5)
     {
@@ -3236,6 +3440,23 @@ sub is_border_table ($%)
     return 1;
 }    # is_border_table
 
+=head2 is_delim_table
+
+    if ($self->is_delim_table(rows_ref=>$rows_ref, para_len=>0))
+    {
+	...
+    }
+
+Check if the given paragraph-array is a Delimited table.
+
+A DELIM table can start with an optional table-caption,
+then it has at least two rows which start and end and are
+punctuated by a non-alphanumeric delimiter.
+
+    | val1 | val2 |
+    | val3 | val4 |
+
+=cut
 sub is_delim_table ($%)
 {
     my $self = shift;
@@ -3247,12 +3468,6 @@ sub is_delim_table ($%)
     my $rows_ref = $args{rows_ref};
     my $para_len = $args{para_len};
 
-    # a DELIM table can start with an optional table-caption,
-    # then it has at least two rows which start and end and are
-    # punctuated by a non-alphanumeric delimiter.
-    #
-    # | val1 | val2 |
-    # | val3 | val4 |
     #
     # And note that it could be indented with spaces
     if (@{$rows_ref} < 2)
@@ -3317,6 +3532,15 @@ sub is_delim_table ($%)
     return 1;
 }    # is_delim_table
 
+=head2 tablestuff
+
+    $self->tablestuff(table_type=>0,
+		      rows_ref=>$rows_ref,
+		      para_len=>0);
+
+Process a table.
+
+=cut
 sub tablestuff ($%)
 {
     my $self = shift;
@@ -3345,6 +3569,14 @@ sub tablestuff ($%)
     }
 }    # tablestuff
 
+=head2 make_aligned_table
+
+    $self->make_aligned_table(rows_ref=>$rows_ref,
+			      para_len=>0);
+
+Make an Aligned table.
+
+=cut
 sub make_aligned_table ($%)
 {
     my $self = shift;
@@ -3478,6 +3710,14 @@ sub make_aligned_table ($%)
     }
 }    # make_aligned_table
 
+=head2 make_pgsql_table
+
+    $self->make_pgsql_table(rows_ref=>$rows_ref,
+			      para_len=>0);
+
+Make a PGSQL table.
+
+=cut
 sub make_pgsql_table ($%)
 {
     my $self = shift;
@@ -3598,6 +3838,14 @@ sub make_pgsql_table ($%)
     @{$rows_ref} = @tab_lines;
 }    # make_pgsql_table
 
+=head2 make_border_table
+
+    $self->make_border_table(rows_ref=>$rows_ref,
+			     para_len=>0);
+
+Make a BORDER table.
+
+=cut
 sub make_border_table ($%)
 {
     my $self = shift;
@@ -3722,6 +3970,14 @@ sub make_border_table ($%)
     @{$rows_ref} = @tab_lines;
 }    # make_border_table
 
+=head2 make_delim_table
+
+    $self->make_delim_table(rows_ref=>$rows_ref,
+			    para_len=>0);
+
+Make a Delimited table.
+
+=cut
 sub make_delim_table ($%)
 {
     my $self = shift;
@@ -3818,7 +4074,16 @@ sub make_delim_table ($%)
     @{$rows_ref} = @tab_lines;
 }    # make_delim_table
 
-# Returns true if the passed string is considered to be preformatted
+=head2 is_preformatted
+
+    if ($self->is_preformatted($line))
+    {
+	...
+    }
+
+Returns true if the passed string is considered to be preformatted.
+
+=cut
 sub is_preformatted ($$)
 {
     my $self = shift;
@@ -3832,8 +4097,13 @@ sub is_preformatted ($$)
     return $result;
 }
 
-# modifies the given string,
-# and returns the front preformatted part
+=head2 split_end_explicit_preformat
+
+    $front = $self->split_end_explicit_preformat(para_ref=>$para_ref);
+
+Modifies the given string, and returns the front preformatted part.
+
+=cut
 sub split_end_explicit_preformat ($%)
 {
     my $self = shift;
@@ -3873,6 +4143,16 @@ sub split_end_explicit_preformat ($%)
     return $pre_str;
 }    # split_end_explicit_preformat
 
+=head2 endpreformat
+
+    $self->endpreformat(para_lines_ref=>$para_lines_ref,
+			para_action_ref=>$para_action_ref,
+			ind=>0,
+			prev_ref=>$prev_ref);
+
+End a preformatted section.
+
+=cut
 sub endpreformat ($%)
 {
     my $self = shift;
@@ -3936,6 +4216,17 @@ sub endpreformat ($%)
     }
 }    # endpreformat
 
+=head2 preformat
+
+    $self->preformat(mode_ref=>$mode_ref,
+		     line_ref=>$line_ref,
+		     line_action_ref=>$line_action_ref,
+		     prev_ref=>$prev_ref,
+		     next_ref=>$next_ref,
+		     prev_action_ref);
+
+Detect and process a preformatted section.
+=cut
 sub preformat ($%)
 {
     my $self = shift;
@@ -4001,6 +4292,12 @@ sub preformat ($%)
     }
 }    # preformat
 
+=head2 make_new_anchor
+
+    $anchor = $self->make_new_anchor($heading_level);
+
+Make a new anchor.
+=cut
 sub make_new_anchor ($$)
 {
     my $self          = shift;
@@ -4029,6 +4326,12 @@ sub make_new_anchor ($$)
     $anchor;
 }    # make_new_anchor
 
+=head2 anchor_mail
+
+    $self->anchor_mail($line_ref);
+
+Make an anchor for a mail section.
+=cut
 sub anchor_mail ($$)
 {
     my $self     = shift;
@@ -4048,6 +4351,12 @@ sub anchor_mail ($$)
     }
 }    # anchor_mail
 
+=head2 anchor_heading
+
+    $self->anchor_heading($heading_level, $line_ref);
+
+Make an anchor for a heading.
+=cut
 sub anchor_heading ($$$)
 {
     my $self     = shift;
@@ -4076,6 +4385,12 @@ sub anchor_heading ($$$)
     }
 }    # anchor_heading
 
+=head2 heading_level
+
+    $self->heading_level($style);
+
+Add a new heading style if this is a new heading style.
+=cut
 sub heading_level ($$)
 {
     my $self = shift;
@@ -4086,6 +4401,16 @@ sub heading_level ($$)
     $self->{__heading_styles}->{$style};
 }    # heading_level
 
+=head2 is_ul_list_line
+
+    if ($self->is_ul_list_line($line))
+    {
+	...
+    }
+
+Tests if this line starts a UL list item.
+
+=cut
 sub is_ul_list_line ($%)
 {
     my $self = shift;
@@ -4103,6 +4428,18 @@ sub is_ul_list_line ($%)
     return 0;
 }
 
+=head2 is_heading
+
+    if ($self->is_heading(line_ref=>$line_ref, next_ref=>$next_ref))
+    {
+	...
+    }
+
+Tests if this line is a heading.  Needs to take account of the
+next line, because a standard heading is defined by "underlining"
+the text of the heading.
+
+=cut
 sub is_heading ($%)
 {
     my $self = shift;
@@ -4144,8 +4481,14 @@ sub is_heading ($%)
 
 }    # is_heading
 
-# make a heading
-# assumes is_heading is true
+=head2 heading
+    
+    $self->heading(line_ref=>$line_ref,
+	next_ref=>$next_ref);
+
+Make a heading
+Assumes is_heading is true
+=cut
 sub heading ($%)
 {
     my $self = shift;
@@ -4179,7 +4522,15 @@ sub heading ($%)
     $self->anchor_heading($self->{__heading_level}, $line_ref);
 }    # heading
 
-# check if the given line matches a custom heading
+=head2 is_custom_heading
+
+    if ($self->is_custom_heading($line))
+    {
+	...
+    }
+
+Check if the given line matches a custom heading.
+=cut
 sub is_custom_heading ($%)
 {
     my $self = shift;
@@ -4196,6 +4547,12 @@ sub is_custom_heading ($%)
     return 0;
 }    # is_custom_heading
 
+=head2 custom_heading
+
+    $self->custom_heading(line_ref=>$line_ref);
+
+Make a custom heading.  Assumes is_custom_heading is true.
+=cut
 sub custom_heading ($%)
 {
     my $self = shift;
@@ -4231,6 +4588,12 @@ sub custom_heading ($%)
     }
 }    # custom_heading
 
+=head2 unhyphenate_para
+
+    $self->unhyphenate_para($para_ref);
+
+Join up hyphenated words that are split across lines.
+=cut
 sub unhyphenate_para ($$)
 {
     my $self     = shift;
@@ -4251,6 +4614,12 @@ sub unhyphenate_para ($$)
 s/(\s*)([^\W\d_]*)\-\n(\s*)([^\W\d_]+[\)\}\]\.,:;\'\"\>]*\s*)/$1$2$4\n$3/gs;
 }    # unhyphenate_para
 
+=head2 tagline
+
+    $self->tagline($tag, $line_ref);
+
+Put the given tag around the given line.
+=cut
 sub tagline ($$$)
 {
     my $self     = shift;
@@ -4263,6 +4632,15 @@ sub tagline ($$$)
     ${$line_ref} =~ s/^\s*(.*)$/${tag1}$1${tag2}\n/;
 }    # tagline
 
+=head2 iscaps
+
+    if ($self->iscaps($line))
+    {
+	...
+    }
+
+Check if a line is all capitals.
+=cut
 sub iscaps
 {
     my $self = shift;
@@ -4273,6 +4651,13 @@ sub iscaps
     /^[^[:lower:]<]*[[:upper:]]{$min_caps_len,}[^[:lower:]<]*$/;
 }    # iscaps
 
+=head2 caps
+
+    $self->caps(line_ref=>$line_ref,
+		line_action_ref=>$line_action_ref);
+
+Detect and deal with an all-caps line.
+=cut
 sub caps
 {
     my $self = shift;
@@ -4292,6 +4677,16 @@ sub caps
     }
 }    # caps
 
+=head2 do_delim
+
+    $self->do_delim(line_ref=>$line_ref,
+		    line_action_ref=>$line_action_ref,
+		    delim=>'*',
+		    tag=>'STRONG');
+
+Deal with a line which has words delimited by the given delimiter;
+this is used to deal with italics, bold and underline formatting.
+=cut
 sub do_delim
 {
     my $self = shift;
@@ -4374,7 +4769,12 @@ s/(?<!${delim})${delim}((\w|["'])(\w|[-\s\.;:,!?"'])*[^\s])${delim}/<${tag}>$1<\
     }
 }    # do_delim
 
-# Convert very simple globs to regexps
+=head2 glob2regexp
+
+    $regexp = glob2regexp($glob);
+
+Convert very simple globs to regexps
+=cut
 sub glob2regexp
 {
     my ($glob) = @_;
@@ -4413,6 +4813,15 @@ sub glob2regexp
     join('', "\\b", $regexp, "\\b");
 }    # glob2regexp
 
+=head2 add_regexp_to_links_table
+
+    $self->add_regexp_to_links_table(label=>$label,
+				     pattern=>$pattern,
+				     url=>$url,
+				     switches=>$switches);
+
+Add the given regexp "link definition" to the links table.
+=cut
 sub add_regexp_to_links_table ($%)
 {
     my $self = shift;
@@ -4455,6 +4864,15 @@ sub add_regexp_to_links_table ($%)
     }
 }    # add_regexp_to_links_table
 
+=head2 add_literal_to_links_table
+
+    $self->add_literal_to_links_table(label=>$label,
+				      pattern=>$pattern,
+				      url=>$url,
+				      switches=>$switches);
+
+Add the given literal "link definition" to the links table.
+=cut
 sub add_literal_to_links_table ($%)
 {
     my $self = shift;
@@ -4475,6 +4893,15 @@ sub add_literal_to_links_table ($%)
     $self->add_regexp_to_links_table(label=>$label, pattern=>$pattern, url=>$URL, switches=>$switches);
 }    # add_literal_to_links_table
 
+=head2 add_glob_to_links_table
+
+    $self->add_glob_to_links_table(label=>$label,
+				   pattern=>$pattern,
+				   url=>$url,
+				   switches=>$switches);
+
+Add the given glob "link definition" to the links table.
+=cut
 sub add_glob_to_links_table ($%)
 {
     my $self = shift;
@@ -4495,8 +4922,13 @@ sub add_glob_to_links_table ($%)
 	url=>$URL, switches=>$switches);
 }    # add_glob_to_links_table
 
-# Parse the dictionary file.
-# (see also load_dictionary_links, for things that were stripped)
+=head2 parse_dict
+    
+    $self->parse_dict($dictfile, $dict);
+
+Parse the dictionary file.
+(see also load_dictionary_links, for things that were stripped)
+=cut
 sub parse_dict ($$$)
 {
     my $self = shift;
@@ -4565,6 +4997,12 @@ sub parse_dict ($$$)
 
 }    # parse_dict
 
+=head2 setup_dict_checking
+
+    $self->setup_dict_checking();
+
+Set up the dictionary checking.
+=cut
 sub setup_dict_checking ($)
 {
     my $self = shift;
@@ -4642,6 +5080,17 @@ EOT
     eval "$codes";
 }    # setup_dict_checking
 
+=head2 in_link_context
+
+    if ($self->in_link_context($match, $before))
+    {
+	...
+    }
+
+Check if we are inside a link (<a ...>); certain kinds of substitution are
+not allowed here.
+
+=cut
 sub in_link_context ($$$)
 {
     my $self = shift;
@@ -4677,7 +5126,13 @@ sub in_link_context ($$$)
       );                              # one opened after last close
 }    # in_link_context
 
-# apply links and formatting to this paragraph
+=head2 apply_links
+
+    $self->apply_links(para_ref=>$para_ref,
+		       para_action_ref=>$para_action_ref);
+
+Apply links and formatting to this paragraph.
+=cut
 sub apply_links ($%)
 {
     my $self = shift;
@@ -4730,8 +5185,14 @@ sub apply_links ($%)
 
 }    # apply_links
 
-# Check (and alter if need be) the bits in this line matching
-# the patterns in the link dictionary.
+=head2 check_dictionary_links
+
+    $self->check_dictionary_links(line_ref=>$line_ref,
+				  line_action_ref=>$line_action_ref);
+
+Check (and alter if need be) the bits in this line matching
+the patterns in the link dictionary.
+=cut
 sub check_dictionary_links ($%)
 {
     my $self = shift;
@@ -4832,6 +5293,12 @@ sub check_dictionary_links ($%)
     ${$line_action_ref} |= $LINK;
 }    # check_dictionary_links
 
+=head2 load_dictionary_links
+
+    $self->load_dictionary_links();
+
+Load the dictionary links.
+=cut
 sub load_dictionary_links ($)
 {
     my $self = shift;
@@ -4867,13 +5334,13 @@ sub load_dictionary_links ($)
     $self->setup_dict_checking();
 }    # load_dictionary_links
 
-# do_file_start
-#    extra stuff needed for the beginning
-# Args:
-#   $self
-#   $para
-# Return:
-#   processed $para string
+=head2 do_file_start
+
+    $self->do_file_start($outhandle, $para);
+
+Extra stuff needed for the beginning:
+HTML headers, and prepending a file if desired.
+=cut
 sub do_file_start ($$$)
 {
     my $self      = shift;
@@ -4895,14 +5362,16 @@ sub do_file_start ($$$)
                 print $outhandle
                   '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
                   "\n";
+		print $outhandle $self->get_tag('HTML',
+		    inside_tag => ' xmlns="http://www.w3.org/1999/xhtml"'), "\n";
             }
             else
             {
                 print $outhandle '<!DOCTYPE HTML PUBLIC "', $self->{doctype},
                   "\">\n";
+		print $outhandle $self->get_tag('HTML'), "\n";
             }
         }
-        print $outhandle $self->get_tag('HTML'), "\n";
         print $outhandle $self->get_tag('HEAD'), "\n";
 
         # if --titlefirst is set and --title isn't, use the first line
@@ -5005,9 +5474,14 @@ sub do_file_start ($$$)
     }
 }    # do_file_start
 
-# do_init_call
-# certain things, like reading link dictionaries, need to be
-# done once
+=head2 do_init_call
+
+    $self->do_init_call();
+
+Certain things, like reading link dictionaries, need to be done only
+once.
+
+=cut
 sub do_init_call ($)
 {
     my $self = shift;

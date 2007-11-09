@@ -9,7 +9,7 @@ META.yml			Module meta-data (added by MakeMaker)
 old_version.txt
 README
 scripts/txt2html
-t/00_dist.test
+t/00_dist.t
 t/10para.t
 t/20tfiles.t
 t/25handles.t

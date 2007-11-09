@@ -1,6 +1,11 @@
 Revision history for txt2html
 =============================
 
+2.46 Fri 9th November 2007
+	- updated docs on custom_heading_regexp
+	- fixed bug with xhtml output
+	- documented all undocumented functions
+
 2.45 Fri 26th January 2007
 	- fixed bug with umlauts
 	- fixed bug with UTF-8 characters
