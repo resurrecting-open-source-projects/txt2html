@@ -1,0 +1,46 @@
+This is a test file with some bizzare lines
+
+These get converted:
+
+I'm going to ftp.howdy.com     yay!!
+I'm going to abbaftp.howdy.com     yay!!
+I'm going to ftpabba.howdy.com     yay!!
+I'm going to abftpba.howdy.com     yay!!
+I'm going to a_ftp_a.howdy.com     yay!!
+I'm going to ***a_ftp_a.howdy.com***     yay!!
+
+These are correctly not converted:
+
+I'm going to 9bftpba.howdy.com     yay!!
+I'm going to -bftpba.howdy.com     yay!!
+I'm going to ***-bftpba.howdy.com***     yay!!
+
+These test beginning and end of line conversions:
+
+ftp.howdy.com     yay!!
+I'm going to ftp.howdy.com
+ftp.howdy.com
+
+The same jazz but with www in the name:
+ 
+These get converted:
+
+I'm going to www.howdy.com     yay!!
+I'm going to abbawww.howdy.com     yay!!
+I'm going to wwwabba.howdy.com     yay!!
+I'm going to abwwwba.howdy.com     yay!!
+I'm going to a_www_a.howdy.com     yay!!
+I'm going to ***a_www_a.howdy.com***     yay!!
+
+These are correctly not converted:
+
+I'm going to 9bwwwba.howdy.com     yay!!
+I'm going to -bwwwba.howdy.com     yay!!
+I'm going to ***-bwwwba.howdy.com***     yay!!
+
+These test beginning and end of line conversions:
+
+www.howdy.com     yay!!
+I'm going to www.howdy.com
+www.howdy.com
+

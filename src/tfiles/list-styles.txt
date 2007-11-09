@@ -1,0 +1,50 @@
+STRATEGISKA BESLUTSSTÖDSSYSTEM
+==============================
+
+Syfte
+=====
+Syftet med detta examensarbete är att studera vilka behov av beslutsunderlag som finns samt att i detta sammanhang undersöka vilka krav man bör ställa på informationssystem för beslutsstöd.
+
+Avgränsningar
+=============
+Vi kommer endast att rikta in oss på stödet för företags strategiska beslut i samband med expansion på främmande länders marknader. Vi avser endast att studera dessa behov och krav ur beslutsfattarens synvinkel.
+
+Innehåll
+========
+
+* Människan
+	- Beslutsprocessen
+	- Perception
+		- Läshastighet
+	- Hur tolkas informationen
+	- Parametermängd
+
+* Organisationen
+	- Informationsflödet
+	- Förändringar
+
+* Marknaden
+	- Hur ser dagens informationssystem ut?
+	- Effektivitet
+	- Dagens tillvägagångssätt
+
+* Tekniken
+	- Medium för spridning
+	- Statisk respektive dynamisk information
+	- Databaser
+	- Säkerhet
+		- Affärshemligheter
+	- Agenter (robotar)
+
+
+Bakgrund
+========
+I dagens samhälle av allt intensivare produktion av information och även behov av information måste beslutsfattarna allt snabbare fatta viktiga beslut. Med marknadernas utveckling mot allt snabbare faktorrörelser på det internationella planet måste även de strategiska besluten ofta fattas mycket snabbt. Man måste trots detta skaffa sig ett adekvat beslutsunderlag, vilket naturligtvis tar en viss tid, tid som man kanske inte har!
+
+Beslutsfattare behöver alltså hjälp från automatiserade verktyg. Frågor man ställs inför i detta sammanhang är bl.a. hur bör beslutsunderlagen utformas och vilka krav bör ställas på informationssystemen som förser beslutsfattarna med beslutsunderlagen.
+
+
+Tillvägagångssätt
+=================
+Kvalitativ undersökning genom intervjuer med företags beslutsfattare på olika nivåer, främst ansvariga för internationella marknader.
+Kvantitativ studie genom att undersöka vidtagna åtgärder vi olika företags etableringar utomlands, samt försöka relatera dessa till de uppnådda resultaten och sedan jämföra med hemmamarknaden.

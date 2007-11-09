@@ -1,0 +1,23 @@
+<p>## Test on pre-in-list
+</p>
+<p><a href="http://txt2html.sourceforge.net/">txt2html</a>.pl -p 7 -pb 1
+</p>
+<p>Here is an example bad file:
+</p>
+<ol>
+  <li>text (should be translated as &lt;LI&gt;) (there should be <em>no</em> &lt;/OL&gt; tag
+at this point)
+<p>       preformatted text..
+       ... and more 
+     
+  <li>this <em>should</em> be translated as &lt;LI&gt;
+</li></ol>
+</p><p>## Test on mail_quote-in-pre_explicit
+</p>
+<pre class='quote_explicit'>
+Here is the actuall file content. 
+Maybe more lines.
+&gt; 1      more
+&gt; 2      more
+</pre>
+
