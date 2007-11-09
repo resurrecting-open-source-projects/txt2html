@@ -4,7 +4,7 @@
 <head>
 <title>HTML::TextToHTML - convert plain text file to HTML.</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:Gentoo@mithril.katspace.homelinux.org" />
+<link rev="made" href="mailto:Gentoo@colbrand.katspace.org" />
 </head>
 
 <body style="background-color: white">
@@ -1184,26 +1184,7 @@ options:
     {
         ...
     }</pre>
-<p>Is this a mailheader line?
-=cut
-sub is_mailheader ($%)
-{
-    my $self = shift;
-    my %args = (
-        rows_ref =&gt; undef,
-        @_
-    );
-    my $rows_ref = $args{rows_ref};</p>
-<pre>
-    # a mail header is assumed to be the whole
-    # paragraph which starts with a From , From: or Newsgroups: line</pre>
-<pre>
-    if ($rows_ref-&gt;[0] =~ /^(From:?)|(Newsgroups:) /)
-    {
-        return 1;
-    }
-    return 0;</pre>
-<p>}    # is_mailheader</p>
+<p>Is this a mailheader line?</p>
 <p>
 </p>
 <h2><a name="mailheader">mailheader</a></h2>
@@ -1313,11 +1294,12 @@ sub is_mailheader ($%)
     }</pre>
 <p>Check if the given paragraph-array is a Postgresql table
 (the ascii format produced by Postgresql)</p>
-<p>A PGSQL table can start with an optional table-caption,
+<p>A PGSQL table can start with an optional table-caption,</p>
+<pre>
     then it has a row of column headings separated by |
     then it has a row of ------+-----
     then it has one or more rows of column values separated by |
-    then it has a row-count (N rows)</p>
+    then it has a row-count (N rows)</pre>
 <p>
 </p>
 <h2><a name="is_border_table">is_border_table</a></h2>
@@ -1327,12 +1309,13 @@ sub is_mailheader ($%)
         ...
     }</pre>
 <p>Check if the given paragraph-array is a Border table.</p>
-<p>A BORDER table can start with an optional table-caption,
+<p>A BORDER table can start with an optional table-caption,</p>
+<pre>
     then it has a row of +------+-----+
     then it has a row of column headings separated by |
     then it has a row of +------+-----+
     then it has one or more rows of column values separated by |
-    then it has a row of +------+-----+</p>
+    then it has a row of +------+-----+</pre>
 <p>
 </p>
 <h2><a name="is_delim_table">is_delim_table</a></h2>
@@ -1418,181 +1401,31 @@ punctuated by a non-alphanumeric delimiter.</p>
                      prev_ref=&gt;$prev_ref,
                      next_ref=&gt;$next_ref,
                      prev_action_ref);</pre>
-<p>Detect and process a preformatted section.
-=cut
-sub preformat ($%)
-{
-    my $self = shift;
-    my %args = (
-        mode_ref        =&gt; undef,
-        line_ref        =&gt; undef,
-        line_action_ref =&gt; undef,
-        prev_ref        =&gt; undef,
-        next_ref        =&gt; undef,
-        prev_action_ref =&gt; undef,
-        @_
-    );
-    my $mode_ref        = $args{mode_ref};
-    my $line_ref        = $args{line_ref};
-    my $line_action_ref = $args{line_action_ref};
-    my $prev_ref        = $args{prev_ref};
-    my $next_ref        = $args{next_ref};
-    my $prev_action_ref = $args{prev_action_ref};</p>
-<pre>
-    my $tag = '';
-    if ($self-&gt;{use_preformat_marker})
-    {
-        my $pstart = $self-&gt;{preformat_start_marker};
-        if (${$line_ref} =~ /$pstart/io)
-        {
-            if (${$prev_ref} =~ s/&lt;P&gt;$//)
-            {
-                pop @{$self-&gt;{__tags}};
-            }
-            $tag =
-              $self-&gt;get_tag('PRE', inside_tag =&gt; &quot; class='quote_explicit'&quot;);
-            ${$line_ref} = &quot;${tag}\n&quot;;
-            ${$mode_ref}        |= $PRE | $PRE_EXPLICIT;
-            ${$line_action_ref} |= $PRE;
-            return;
-        }
-    }</pre>
-<pre>
-    if (
-           !(${$line_action_ref} &amp; $MAILQUOTE)
-        &amp;&amp; !(${$prev_action_ref} &amp; $MAILQUOTE)
-        &amp;&amp; (
-            $self-&gt;{preformat_trigger_lines} == 0
-            || (
-                $self-&gt;is_preformatted(${$line_ref})
-                &amp;&amp; (
-                    $self-&gt;{preformat_trigger_lines} == 1
-                    || (defined $next_ref
-                        &amp;&amp; $self-&gt;is_preformatted(${$next_ref}))
-                )
-            )
-        )
-      )
-    {
-        if (${$prev_ref} =~ s/&lt;P&gt;$//)
-        {
-            pop @{$self-&gt;{__tags}};
-        }
-        $tag = $self-&gt;get_tag('PRE');
-        ${$line_ref} =~ s/^/${tag}\n/;
-        ${$mode_ref}        |= $PRE;
-        ${$line_action_ref} |= $PRE;
-    }
-}    # preformat</pre>
+<p>Detect and process a preformatted section.</p>
 <p>
 </p>
 <h2><a name="make_new_anchor">make_new_anchor</a></h2>
 <pre>
     $anchor = $self-&gt;make_new_anchor($heading_level);</pre>
-<p>Make a new anchor.
-=cut
-sub make_new_anchor ($$)
-{
-    my $self          = shift;
-    my $heading_level = shift;</p>
-<pre>
-    my ($anchor, $i);</pre>
-<pre>
-    return sprintf(&quot;%d&quot;, $self-&gt;{__non_header_anchor}++) if (!$heading_level);</pre>
-<pre>
-    $anchor = &quot;section&quot;;
-    $self-&gt;{__heading_count}-&gt;[$heading_level - 1]++;</pre>
-<pre>
-    # Reset lower order counters
-    for ($i = @{$self-&gt;{__heading_count}}; $i &gt; $heading_level; $i--)
-    {
-        $self-&gt;{__heading_count}-&gt;[$i - 1] = 0;
-    }</pre>
-<pre>
-    for ($i = 0; $i &lt; $heading_level; $i++)
-    {
-        $self-&gt;{__heading_count}-&gt;[$i] = 1
-          if !$self-&gt;{__heading_count}-&gt;[$i];    # In case they skip any
-        $anchor .= sprintf(&quot;_%d&quot;, $self-&gt;{__heading_count}-&gt;[$i]);
-    }
-    chomp($anchor);
-    $anchor;
-}    # make_new_anchor</pre>
+<p>Make a new anchor.</p>
 <p>
 </p>
 <h2><a name="anchor_mail">anchor_mail</a></h2>
 <pre>
     $self-&gt;anchor_mail($line_ref);</pre>
-<p>Make an anchor for a mail section.
-=cut
-sub anchor_mail ($$)
-{
-    my $self     = shift;
-    my $line_ref = shift;</p>
-<pre>
-    if ($self-&gt;{make_anchors})
-    {
-        my ($anchor) = $self-&gt;make_new_anchor(0);
-        if ($self-&gt;{lower_case_tags})
-        {
-            ${$line_ref} =~ s/([^ ]*)/&lt;a name=&quot;$anchor&quot;&gt;$1&lt;\/a&gt;/;
-        }
-        else
-        {
-            ${$line_ref} =~ s/([^ ]*)/&lt;A NAME=&quot;$anchor&quot;&gt;$1&lt;\/A&gt;/;
-        }
-    }
-}    # anchor_mail</pre>
+<p>Make an anchor for a mail section.</p>
 <p>
 </p>
 <h2><a name="anchor_heading">anchor_heading</a></h2>
 <pre>
     $self-&gt;anchor_heading($heading_level, $line_ref);</pre>
-<p>Make an anchor for a heading.
-=cut
-sub anchor_heading ($$$)
-{
-    my $self     = shift;
-    my $level    = shift;
-    my $line_ref = shift;</p>
-<pre>
-    if ($self-&gt;{dict_debug} &amp; 8)
-    {
-        print STDERR &quot;anchor_heading: &quot;, ${$line_ref}, &quot;\n&quot;;
-    }
-    if ($self-&gt;{make_anchors})
-    {
-        my ($anchor) = $self-&gt;make_new_anchor($level);
-        if ($self-&gt;{lower_case_tags})
-        {
-            ${$line_ref} =~ s/(&lt;h.&gt;)(.*)(&lt;\/h.&gt;)/$1&lt;a name=&quot;$anchor&quot;&gt;$2&lt;\/a&gt;$3/;
-        }
-        else
-        {
-            ${$line_ref} =~ s/(&lt;H.&gt;)(.*)(&lt;\/H.&gt;)/$1&lt;A NAME=&quot;$anchor&quot;&gt;$2&lt;\/A&gt;$3/;
-        }
-    }
-    if ($self-&gt;{dict_debug} &amp; 8)
-    {
-        print STDERR &quot;anchor_heading(after): &quot;, ${$line_ref}, &quot;\n&quot;;
-    }
-}    # anchor_heading</pre>
+<p>Make an anchor for a heading.</p>
 <p>
 </p>
 <h2><a name="heading_level">heading_level</a></h2>
 <pre>
     $self-&gt;heading_level($style);</pre>
-<p>Add a new heading style if this is a new heading style.
-=cut
-sub heading_level ($$)
-{
-    my $self = shift;</p>
-<pre>
-    my ($style) = @_;
-    $self-&gt;{__heading_styles}-&gt;{$style} = ++$self-&gt;{__num_heading_styles}
-      if !$self-&gt;{__heading_styles}-&gt;{$style};
-    $self-&gt;{__heading_styles}-&gt;{$style};
-}    # heading_level</pre>
+<p>Add a new heading style if this is a new heading style.</p>
 <p>
 </p>
 <h2><a name="is_ul_list_line">is_ul_list_line</a></h2>
@@ -1620,41 +1453,8 @@ the text of the heading.</p>
 
     $self-&gt;heading(line_ref=&gt;$line_ref,
         next_ref=&gt;$next_ref);</pre>
-<p>Make a heading
-Assumes is_heading is true
-=cut
-sub heading ($%)
-{
-    my $self = shift;
-    my %args = (
-        line_ref =&gt; undef,
-        next_ref =&gt; undef,
-        @_
-    );
-    my $line_ref = $args{line_ref};
-    my $next_ref = $args{next_ref};</p>
-<pre>
-    my ($hoffset, $heading) = ${$line_ref} =~ /^(\s*)(.+)$/;
-    $hoffset = &quot;&quot; unless defined($hoffset);
-    $heading = &quot;&quot; unless defined($heading);
-    $heading =~ s/&amp;[^;]+;/X/g;    # Unescape chars so we get an accurate length
-    my ($uoffset, $underline) = ${$next_ref} =~ /^(\s*)(\S+)\s*$/;
-    $uoffset   = &quot;&quot; unless defined($uoffset);
-    $underline = &quot;&quot; unless defined($underline);</pre>
-<pre>
-    $underline = substr($underline, 0, 1);</pre>
-<pre>
-    # Call it a different style if the heading is in all caps.
-    $underline .= &quot;C&quot; if $self-&gt;iscaps(${$line_ref});
-    ${$next_ref} = &quot; &quot;;           # Eat the underline
-    $self-&gt;{__heading_level} = $self-&gt;heading_level($underline);
-    if ($self-&gt;{escape_HTML_chars})
-    {
-        ${$line_ref} = escape(${$line_ref});
-    }
-    $self-&gt;tagline(&quot;H&quot; . $self-&gt;{__heading_level}, $line_ref);
-    $self-&gt;anchor_heading($self-&gt;{__heading_level}, $line_ref);
-}    # heading</pre>
+<p>Make a heading.
+Assumes is_heading is true.</p>
 <p>
 </p>
 <h2><a name="is_custom_heading">is_custom_heading</a></h2>
@@ -1663,108 +1463,25 @@ sub heading ($%)
     {
         ...
     }</pre>
-<p>Check if the given line matches a custom heading.
-=cut
-sub is_custom_heading ($%)
-{
-    my $self = shift;
-    my %args = (
-        line =&gt; undef,
-        @_
-    );
-    my $line = $args{line};</p>
-<pre>
-    foreach my $reg (@{$self-&gt;{custom_heading_regexp}})
-    {
-        return 1 if ($line =~ /$reg/);
-    }
-    return 0;
-}    # is_custom_heading</pre>
+<p>Check if the given line matches a custom heading.</p>
 <p>
 </p>
 <h2><a name="custom_heading">custom_heading</a></h2>
 <pre>
     $self-&gt;custom_heading(line_ref=&gt;$line_ref);</pre>
-<p>Make a custom heading.  Assumes is_custom_heading is true.
-=cut
-sub custom_heading ($%)
-{
-    my $self = shift;
-    my %args = (
-        line_ref =&gt; undef,
-        @_
-    );
-    my $line_ref = $args{line_ref};</p>
-<pre>
-    my $level;
-    my $i = 0;
-    foreach my $reg (@{$self-&gt;{custom_heading_regexp}})
-    {
-        if (${$line_ref} =~ /$reg/)
-        {
-            if ($self-&gt;{explicit_headings})
-            {
-                $level = $i + 1;
-            }
-            else
-            {
-                $level = $self-&gt;heading_level(&quot;Cust&quot; . $i);
-            }
-            if ($self-&gt;{escape_HTML_chars})
-            {
-                ${$line_ref} = escape(${$line_ref});
-            }
-            $self-&gt;tagline(&quot;H&quot; . $level, $line_ref);
-            $self-&gt;anchor_heading($level, $line_ref);
-            last;
-        }
-        $i++;
-    }
-}    # custom_heading</pre>
+<p>Make a custom heading.  Assumes is_custom_heading is true.</p>
 <p>
 </p>
 <h2><a name="unhyphenate_para">unhyphenate_para</a></h2>
 <pre>
     $self-&gt;unhyphenate_para($para_ref);</pre>
-<p>Join up hyphenated words that are split across lines.
-=cut
-sub unhyphenate_para ($$)
-{
-    my $self     = shift;
-    my $para_ref = shift;</p>
-<pre>
-    # Treating this whole paragraph as one string, look for
-    # 1 - whitespace
-    # 2 - a word (ending in a hyphen, followed by a newline)
-    # 3 - whitespace (starting on the next line)
-    # 4 - a word with its punctuation
-    # Substitute this with
-    # 1-whitespace 2-word 4-word newline 3-whitespace
-    # We preserve the 3-whitespace because we don't want to mess up
-    # our existing indentation.
-    ${$para_ref} =~
-      /(\s*)([^\W\d_]*)\-\n(\s*)([^\W\d_]+[\)\}\]\.,:;\'\&quot;\&gt;]*\s*)/s;
-    ${$para_ref} =~
-s/(\s*)([^\W\d_]*)\-\n(\s*)([^\W\d_]+[\)\}\]\.,:;\'\&quot;\&gt;]*\s*)/$1$2$4\n$3/gs;
-}    # unhyphenate_para</pre>
+<p>Join up hyphenated words that are split across lines.</p>
 <p>
 </p>
 <h2><a name="tagline">tagline</a></h2>
 <pre>
     $self-&gt;tagline($tag, $line_ref);</pre>
-<p>Put the given tag around the given line.
-=cut
-sub tagline ($$$)
-{
-    my $self     = shift;
-    my $tag      = shift;
-    my $line_ref = shift;</p>
-<pre>
-    chomp ${$line_ref};    # Drop newline
-    my $tag1 = $self-&gt;get_tag($tag);
-    my $tag2 = $self-&gt;close_tag($tag);
-    ${$line_ref} =~ s/^\s*(.*)$/${tag1}$1${tag2}\n/;
-}    # tagline</pre>
+<p>Put the given tag around the given line.</p>
 <p>
 </p>
 <h2><a name="iscaps">iscaps</a></h2>
@@ -1773,43 +1490,14 @@ sub tagline ($$$)
     {
         ...
     }</pre>
-<p>Check if a line is all capitals.
-=cut
-sub iscaps
-{
-    my $self = shift;
-    local ($_) = @_;</p>
-<pre>
-    my $min_caps_len = $self-&gt;{min_caps_length};</pre>
-<pre>
-    /^[^[:lower:]&lt;]*[[:upper:]]{$min_caps_len,}[^[:lower:]&lt;]*$/;
-}    # iscaps</pre>
+<p>Check if a line is all capitals.</p>
 <p>
 </p>
 <h2><a name="caps">caps</a></h2>
 <pre>
     $self-&gt;caps(line_ref=&gt;$line_ref,
                 line_action_ref=&gt;$line_action_ref);</pre>
-<p>Detect and deal with an all-caps line.
-=cut
-sub caps
-{
-    my $self = shift;
-    my %args = (
-        line_ref        =&gt; undef,
-        line_action_ref =&gt; undef,
-        @_
-    );
-    my $line_ref        = $args{line_ref};
-    my $line_action_ref = $args{line_action_ref};</p>
-<pre>
-    if (   $self-&gt;{caps_tag}
-        &amp;&amp; $self-&gt;iscaps(${$line_ref}))
-    {
-        $self-&gt;tagline($self-&gt;{caps_tag}, $line_ref);
-        ${$line_action_ref} |= $CAPS;
-    }
-}    # caps</pre>
+<p>Detect and deal with an all-caps line.</p>
 <p>
 </p>
 <h2><a name="do_delim">do_delim</a></h2>
@@ -1819,133 +1507,13 @@ sub caps
                     delim=&gt;'*',
                     tag=&gt;'STRONG');</pre>
 <p>Deal with a line which has words delimited by the given delimiter;
-this is used to deal with italics, bold and underline formatting.
-=cut
-sub do_delim
-{
-    my $self = shift;
-    my %args = (
-        line_ref        =&gt; undef,
-        line_action_ref =&gt; undef,
-        delim           =&gt; '*',
-        tag             =&gt; 'STRONG',
-        @_
-    );
-    my $line_ref        = $args{line_ref};
-    my $line_action_ref = $args{line_action_ref};
-    my $delim           = $args{delim};
-    my $tag             = $args{tag};</p>
-<pre>
-    if ($delim eq '#')  
-    {
-        if (${$line_ref} =~ m/\B#([[:alpha:]])#\B/s)
-        {
-            ${$line_ref} =~ s/\B#([[:alpha:]])#\B/&lt;${tag}&gt;$1&lt;\/${tag}&gt;/gs;
-        }
-        # special treatment of # for the #num case and the #link case
-        if (${$line_ref} !~ m/&lt;[aA]/)
-        {
-            ${$line_ref} =~
-s/#([^\d#](?![^#]*(?:&lt;li&gt;|&lt;LI&gt;|&lt;P&gt;|&lt;p&gt;))[^#]*[^# \t\n])#/&lt;${tag}&gt;$1&lt;\/${tag}&gt;/gs;
-        }
-        else
-        {
-            my $line_with_links = '';
-            my $linkme = '';
-            my $unmatched = ${$line_ref};
-            while ($unmatched =~ 
-                   m/#([^\d#](?![^#]*(?:&lt;li&gt;|&lt;LI&gt;|&lt;P&gt;|&lt;p&gt;))[^#]*[^# \t\n])#/s)
-            {
-                $line_with_links .= $`;
-                $linkme = $&amp;;
-                $unmatched = $';
-                if (!$self-&gt;in_link_context($linkme, $line_with_links))
-                {
-                    $linkme =~
-                        s/#([^\d#](?![^#]*(?:&lt;li&gt;|&lt;LI&gt;|&lt;P&gt;|&lt;p&gt;))[^#]*[^# \t\n])#/&lt;${tag}&gt;$1&lt;\/${tag}&gt;/gs;
-                }
-                $line_with_links .= $linkme;
-            }
-            ${$line_ref} = $line_with_links . $unmatched;
-        }
-    }
-    elsif ($delim eq '^')
-    {
-        ${$line_ref} =~
-s/\^((?![^^]*(?:&lt;li&gt;|&lt;LI&gt;|&lt;p&gt;|&lt;P&gt;))(\w|[&quot;'&lt;&gt;])[^^]*)\^/&lt;${tag}&gt;$1&lt;\/${tag}&gt;/gs;
-        ${$line_ref} =~ s/\B\^([[:alpha:]])\^\B/&lt;${tag}&gt;$1&lt;\/${tag}&gt;/gs;
-    }
-    elsif ($delim eq '_')
-    {
-        if (${$line_ref} =~ m/\B_([[:alpha:]])_\B/s)
-        {
-            ${$line_ref} =~ s/\B_([[:alpha:]])_\B/&lt;${tag}&gt;$1&lt;\/${tag}&gt;/gs;
-        }
-        # need to make sure that _ delimiters are not mistaken for
-        # a_variable_name
-        ${$line_ref} =~
-            s#(?&lt;![_[:alnum:]])_([^_]+?[[:alnum:]&quot;'\.\?\&amp;;:&lt;&gt;])_#&lt;${tag}&gt;$1&lt;/${tag}&gt;#gs;
-    }
-    elsif (length($delim) eq 1)    # one-character, general
-    {
-        if (${$line_ref} =~ m/\B[${delim}]([[:alpha:]])[${delim}]\B/s)
-        {
-            ${$line_ref} =~ s/\B[${delim}]([[:alpha:]])[${delim}]\B/&lt;${tag}&gt;$1&lt;\/${tag}&gt;/gs;
-        }
-        ${$line_ref} =~
-            s#(?&lt;![${delim}])[${delim}]([^${delim}]+?[[:alnum:]&quot;'\.\?\&amp;;:&lt;&gt;])[${delim}]#&lt;${tag}&gt;$1&lt;/${tag}&gt;#gs;
-    }
-    else
-    {
-        ${$line_ref} =~
-s/(?&lt;!${delim})${delim}((\w|[&quot;'])(\w|[-\s\.;:,!?&quot;'])*[^\s])${delim}/&lt;${tag}&gt;$1&lt;\/${tag}&gt;/gs;
-        ${$line_ref} =~ s/${delim}]([[:alpha:]])${delim}/&lt;${tag}&gt;$1&lt;\/${tag}&gt;/gs;
-    }
-}    # do_delim</pre>
+this is used to deal with italics, bold and underline formatting.</p>
 <p>
 </p>
 <h2><a name="glob2regexp">glob2regexp</a></h2>
 <pre>
     $regexp = glob2regexp($glob);</pre>
-<p>Convert very simple globs to regexps
-=cut
-sub glob2regexp
-{
-    my ($glob) = @_;</p>
-<pre>
-    # Escape funky chars
-    $glob =~ s/[^\w\[\]\*\?\|\\]/\\$&amp;/g;
-    my ($regexp, $i, $len, $escaped) = (&quot;&quot;, 0, length($glob), 0);</pre>
-<pre>
-    for (; $i &lt; $len; $i++)
-    {
-        my $char = substr($glob, $i, 1);
-        if ($escaped)
-        {
-            $escaped = 0;
-            $regexp .= $char;
-            next;
-        }
-        if ($char eq &quot;\\&quot;)
-        {
-            $escaped = 1;
-            next;
-            $regexp .= $char;
-        }
-        if ($char eq &quot;?&quot;)
-        {
-            $regexp .= &quot;.&quot;;
-            next;
-        }
-        if ($char eq &quot;*&quot;)
-        {
-            $regexp .= &quot;.*&quot;;
-            next;
-        }
-        $regexp .= $char;    # Normal character
-    }
-    join('', &quot;\\b&quot;, $regexp, &quot;\\b&quot;);
-}    # glob2regexp</pre>
+<p>Convert very simple globs to regexps</p>
 <p>
 </p>
 <h2><a name="add_regexp_to_links_table">add_regexp_to_links_table</a></h2>
@@ -1954,49 +1522,7 @@ sub glob2regexp
                                      pattern=&gt;$pattern,
                                      url=&gt;$url,
                                      switches=&gt;$switches);</pre>
-<p>Add the given regexp ``link definition'' to the links table.
-=cut
-sub add_regexp_to_links_table ($%)
-{
-    my $self = shift;
-    my %args = (
-        label =&gt; undef,
-        pattern =&gt; undef,
-        url =&gt; undef,
-        switches =&gt; undef,
-        @_
-    );
-    my $label = $args{label};
-    my $pattern = $args{pattern};
-    my $URL = $args{url};
-    my $switches = $args{switches};</p>
-<pre>
-    # No sense adding a second one if it's already in there.
-    # It would never get used.
-    if (!$self-&gt;{__links_table}-&gt;{$label})
-    {</pre>
-<pre>
-        # Keep track of the order they were added so we can
-        # look for matches in the same order
-        push(@{$self-&gt;{__links_table_order}}, ($label));</pre>
-<pre>
-        $self-&gt;{__links_table_patterns}-&gt;{$label} = $pattern;
-        $self-&gt;{__links_table}-&gt;{$label}        = $URL;      # Put it in The Table
-        $self-&gt;{__links_switch_table}-&gt;{$label} = $switches;
-        my $ind = @{$self-&gt;{__links_table_order}} - 1;
-        print STDERR &quot; (&quot;, $ind,
-          &quot;)\tLABEL: $label \tPATTERN: $pattern\n\tVALUE: $URL\n\tSWITCHES: $switches\n\n&quot;
-          if ($self-&gt;{dict_debug} &amp; 1);
-    }
-    else
-    {
-        if ($self-&gt;{dict_debug} &amp; 1)
-        {
-            print STDERR &quot; Skipping entry.  Key already in table.\n&quot;;
-            print STDERR &quot;\tLABEL: $label \tPATTERN: $pattern\n\tVALUE: $URL\n\n&quot;;
-        }
-    }
-}    # add_regexp_to_links_table</pre>
+<p>Add the given regexp ``link definition'' to the links table.</p>
 <p>
 </p>
 <h2><a name="add_literal_to_links_table">add_literal_to_links_table</a></h2>
@@ -2005,27 +1531,7 @@ sub add_regexp_to_links_table ($%)
                                       pattern=&gt;$pattern,
                                       url=&gt;$url,
                                       switches=&gt;$switches);</pre>
-<p>Add the given literal ``link definition'' to the links table.
-=cut
-sub add_literal_to_links_table ($%)
-{
-    my $self = shift;
-    my %args = (
-        label =&gt; undef,
-        pattern =&gt; undef,
-        url =&gt; undef,
-        switches =&gt; undef,
-        @_
-    );
-    my $label = $args{label};
-    my $pattern = $args{pattern};
-    my $URL = $args{url};
-    my $switches = $args{switches};</p>
-<pre>
-    $pattern =~ s/(\W)/\\$1/g;    # Escape non-alphanumeric chars
-    $pattern = &quot;\\b$pattern\\b&quot;;      # Make a regexp out of it
-    $self-&gt;add_regexp_to_links_table(label=&gt;$label, pattern=&gt;$pattern, url=&gt;$URL, switches=&gt;$switches);
-}    # add_literal_to_links_table</pre>
+<p>Add the given literal ``link definition'' to the links table.</p>
 <p>
 </p>
 <h2><a name="add_glob_to_links_table">add_glob_to_links_table</a></h2>
@@ -2034,27 +1540,7 @@ sub add_literal_to_links_table ($%)
                                    pattern=&gt;$pattern,
                                    url=&gt;$url,
                                    switches=&gt;$switches);</pre>
-<p>Add the given glob ``link definition'' to the links table.
-=cut
-sub add_glob_to_links_table ($%)
-{
-    my $self = shift;
-    my %args = (
-        label =&gt; undef,
-        pattern =&gt; undef,
-        url =&gt; undef,
-        switches =&gt; undef,
-        @_
-    );
-    my $label = $args{label};
-    my $pattern = $args{pattern};
-    my $URL = $args{url};
-    my $switches = $args{switches};</p>
-<pre>
-    $self-&gt;add_regexp_to_links_table(pattern=&gt;glob2regexp($pattern),
-        label=&gt;$label,
-        url=&gt;$URL, switches=&gt;$switches);
-}    # add_glob_to_links_table</pre>
+<p>Add the given glob ``link definition'' to the links table.</p>
 <p>
 </p>
 <h2><a name="parse_dict">parse_dict</a></h2>
@@ -2062,157 +1548,13 @@ sub add_glob_to_links_table ($%)
 
     $self-&gt;parse_dict($dictfile, $dict);</pre>
 <p>Parse the dictionary file.
-(see also load_dictionary_links, for things that were stripped)
-=cut
-sub parse_dict ($$$)
-{
-    my $self = shift;</p>
-<pre>
-    my ($dictfile, $dict) = @_;</pre>
-<pre>
-    print STDERR &quot;Parsing dictionary file $dictfile\n&quot;
-      if ($self-&gt;{dict_debug} &amp; 1);</pre>
-<pre>
-    if ($dict =~ /-&gt;\s*-&gt;/)
-    {
-        my $message = &quot;Two consecutive '-&gt;'s found in $dictfile\n&quot;;
-        my $near;</pre>
-<pre>
-        # Print out any useful context so they can find it.
-        ($near) = $dict =~ /([\S ]*\s*-&gt;\s*-&gt;\s*\S*)/;
-        $message .= &quot;\n$near\n&quot; if $near =~ /\S/;
-        die $message;
-    }</pre>
-<pre>
-    my ($key, $URL, $switches, $options);
-    while ($dict =~ /\s*(.+)\s+\-+([iehos]+\-+)?\&gt;\s*(.*\S+)\s*\n/ig)
-    {
-        $key      = $1;
-        $options  = $2;
-        $options  = &quot;&quot; unless defined($options);
-        $URL      = $3;
-        $switches = 0;
-        # Case insensitivity
-        $switches += $LINK_NOCASE if $options =~ /i/i;
-        # Evaluate as Perl code
-        $switches += $LINK_EVAL if $options =~ /e/i;
-        # provides HTML, not just URL
-        $switches += $LINK_HTML if $options =~ /h/i;
-        # Only do this link once
-        $switches += $LINK_ONCE if $options =~ /o/i;
-        # Only do this link once per section
-        $switches += $LINK_SECT_ONCE if $options =~ /s/i;</pre>
-<pre>
-        $key =~ s/\s*$//;    # Chop trailing whitespace</pre>
-<pre>
-        if ($key =~ m|^/|)   # Regexp
-        {
-            $key = substr($key, 1);
-            $key =~ s|/$||;    # Allow them to forget the closing /
-            $self-&gt;add_regexp_to_links_table(pattern=&gt;$key, label=&gt;$key, url=&gt;$URL, switches=&gt;$switches);
-        }
-        elsif ($key =~ /^\|/)    # alternate regexp format
-        {
-            $key = substr($key, 1);
-            $key =~ s/\|$//;      # Allow them to forget the closing |
-            $key =~ s|/|\\/|g;    # Escape all slashes
-            $self-&gt;add_regexp_to_links_table(pattern=&gt;$key, label=&gt;$key, url=&gt;$URL, switches=&gt;$switches);
-        }
-        elsif ($key =~ /\&quot;/)
-        {
-            $key = substr($key, 1);
-            $key =~ s/\&quot;$//;      # Allow them to forget the closing &quot;
-            $self-&gt;add_literal_to_links_table(pattern=&gt;$key, label=&gt;$key, url=&gt;$URL, switches=&gt;$switches);
-        }
-        else
-        {
-            $self-&gt;add_glob_to_links_table(pattern=&gt;$key, label=&gt;$key, url=&gt;$URL, switches=&gt;$switches);
-        }
-    }</pre>
-<p>}    # parse_dict</p>
+(see also load_dictionary_links, for things that were stripped)</p>
 <p>
 </p>
 <h2><a name="setup_dict_checking">setup_dict_checking</a></h2>
 <pre>
     $self-&gt;setup_dict_checking();</pre>
-<p>Set up the dictionary checking.
-=cut
-sub setup_dict_checking ($)
-{
-    my $self = shift;</p>
-<pre>
-    # now create the replace funcs and precomile the regexes
-    my ($URL, $switches, $pattern, $options, $tag1, $tag2);
-    my ($href, $r_sw);
-    my @subs;
-    my $i = 0;
-    foreach my $label (@{$self-&gt;{__links_table_order}})
-    {
-        $switches = $self-&gt;{__links_switch_table}-&gt;{$label};
-        $pattern = $self-&gt;{__links_table_patterns}-&gt;{$label};</pre>
-<pre>
-        $href = $self-&gt;{__links_table}-&gt;{$label};</pre>
-<pre>
-        if (!($switches &amp; $LINK_HTML))
-        {
-            $href =~ s#/#\\/#g;
-            $href = (
-                $self-&gt;{lower_case_tags}
-                ? join('', '&lt;a href=&quot;', $href, '&quot;&gt;$&amp;&lt;\\/a&gt;')
-                : join('', '&lt;A HREF=&quot;', $href, '&quot;&gt;$&amp;&lt;\\/A&gt;')
-            );
-        }
-        else
-        {
-            # change the uppercase tags to lower case
-            if ($self-&gt;{lower_case_tags})
-            {
-                $href =~ s#(&lt;/)([A-Z]*)(&gt;)#${1}\L${2}${3}#g;
-                $href =~ s/(&lt;)([A-Z]*)(&gt;)/${1}\L${2}${3}/g;
-                # and the anchors
-                $href =~ s/(&lt;)(A\s*HREF)([^&gt;]*&gt;)/$1\L$2$3/g;
-            }
-            $href =~ s#/#\\/#g;
-        }</pre>
-<pre>
-        $r_sw = &quot;s&quot;;    # Options for replacing
-        $r_sw .= &quot;i&quot; if ($switches &amp; $LINK_NOCASE);
-        $r_sw .= &quot;e&quot; if ($switches &amp; $LINK_EVAL);</pre>
-<pre>
-        # Generate code for replacements.
-        # Create an anonymous subroutine for each replacement,
-        # and store its reference in an array.
-        # We need to do an &quot;eval&quot; to create these because we need to
-        # be able to treat the *contents* of the $href variable
-        # as if it were perl code, because sometimes the $href
-        # contains things which need to be evaluated, such as $&amp; or $1,
-        # not just those cases where we have a &quot;e&quot; switch.
-        my $code = &lt;&lt;EOT;
-\$self-&gt;{__repl_code}-&gt;[$i] =
-sub {
-my \$al = shift;
-\$al =~ s/$pattern/$href/$r_sw;
-return \$al;
-};
-EOT
-        print STDERR $code if ($self-&gt;{dict_debug} &amp; 2);
-        push @subs, $code;</pre>
-<pre>
-        # compile searching pattern
-        if ($switches &amp; $LINK_NOCASE)    # i
-        {
-            $self-&gt;{__search_patterns}-&gt;[$i] = qr/$pattern/si;
-        }
-        else
-        {
-            $self-&gt;{__search_patterns}-&gt;[$i] = qr/$pattern/s;
-        }
-        $i++;
-    }
-    # now eval the replacements code string
-    my $codes = join('', @subs);
-    eval &quot;$codes&quot;;
-}    # setup_dict_checking</pre>
+<p>Set up the dictionary checking.</p>
 <p>
 </p>
 <h2><a name="in_link_context">in_link_context</a></h2>
@@ -2229,58 +1571,7 @@ not allowed here.</p>
 <pre>
     $self-&gt;apply_links(para_ref=&gt;$para_ref,
                        para_action_ref=&gt;$para_action_ref);</pre>
-<p>Apply links and formatting to this paragraph.
-=cut
-sub apply_links ($%)
-{
-    my $self = shift;
-    my %args = (
-        para_ref        =&gt; undef,
-        para_action_ref =&gt; undef,
-        @_
-    );
-    my $para_ref        = $args{para_ref};
-    my $para_action_ref = $args{para_action_ref};</p>
-<pre>
-    if ($self-&gt;{make_links}
-        &amp;&amp; @{$self-&gt;{__links_table_order}})
-    {
-        $self-&gt;check_dictionary_links(
-            line_ref        =&gt; $para_ref,
-            line_action_ref =&gt; $para_action_ref
-        );
-    }
-    if ($self-&gt;{bold_delimiter})
-    {
-        my $tag = ($self-&gt;{lower_case_tags} ? 'strong' : 'STRONG');
-        $self-&gt;do_delim(
-            line_ref        =&gt; $para_ref,
-            line_action_ref =&gt; $para_action_ref,
-            delim           =&gt; $self-&gt;{bold_delimiter},
-            tag             =&gt; $tag
-        );
-    }
-    if ($self-&gt;{italic_delimiter})
-    {
-        my $tag = ($self-&gt;{lower_case_tags} ? 'em' : 'EM');
-        $self-&gt;do_delim(
-            line_ref        =&gt; $para_ref,
-            line_action_ref =&gt; $para_action_ref,
-            delim           =&gt; $self-&gt;{italic_delimiter},
-            tag             =&gt; $tag
-        );
-    }
-    if ($self-&gt;{underline_delimiter})
-    {
-        my $tag = ($self-&gt;{lower_case_tags} ? 'u' : 'U');
-        $self-&gt;do_delim(
-            line_ref        =&gt; $para_ref,
-            line_action_ref =&gt; $para_action_ref,
-            delim           =&gt; $self-&gt;{underline_delimiter},
-            tag             =&gt; $tag
-        );
-    }</pre>
-<p>}    # apply_links</p>
+<p>Apply links and formatting to this paragraph.</p>
 <p>
 </p>
 <h2><a name="check_dictionary_links">check_dictionary_links</a></h2>
@@ -2288,288 +1579,20 @@ sub apply_links ($%)
     $self-&gt;check_dictionary_links(line_ref=&gt;$line_ref,
                                   line_action_ref=&gt;$line_action_ref);</pre>
 <p>Check (and alter if need be) the bits in this line matching
-the patterns in the link dictionary.
-=cut
-sub check_dictionary_links ($%)
-{
-    my $self = shift;
-    my %args = (
-        line_ref        =&gt; undef,
-        line_action_ref =&gt; undef,
-        @_
-    );
-    my $line_ref        = $args{line_ref};
-    my $line_action_ref = $args{line_action_ref};</p>
-<pre>
-    my ($switches, $pattern, $options, $repl_func);
-    my ($linkme, $line_with_links);</pre>
-<pre>
-    # for each pattern, check and alter the line
-    my $i = 0;
-    foreach my $label (@{$self-&gt;{__links_table_order}})
-    {
-        $switches = $self-&gt;{__links_switch_table}-&gt;{$label};
-        $pattern = $self-&gt;{__links_table_patterns}-&gt;{$label};</pre>
-<pre>
-        # check the pattern
-        if ($switches &amp; $LINK_ONCE)    # Do link only once
-        {
-            $line_with_links = '';
-            if (!$self-&gt;{__done_with_link}-&gt;[$i]
-                &amp;&amp; ${$line_ref} =~ $self-&gt;{__search_patterns}-&gt;[$i])
-            {
-                $self-&gt;{__done_with_link}-&gt;[$i] = 1;
-                $line_with_links .= $`;
-                $linkme = $&amp;;</pre>
-<pre>
-                ${$line_ref} = $';
-                if (!$self-&gt;in_link_context($linkme, $line_with_links))
-                {
-                    print STDERR &quot;Link rule $i matches $linkme\n&quot;
-                      if ($self-&gt;{dict_debug} &amp; 4);</pre>
-<pre>
-                    # call the special subroutine already created to do
-                    # this replacement
-                    $repl_func = $self-&gt;{__repl_code}-&gt;[$i];
-                    $linkme    = &amp;$repl_func($linkme);
-                }
-                $line_with_links .= $linkme;
-            }
-            ${$line_ref} = $line_with_links . ${$line_ref};
-        }
-        elsif ($switches &amp; $LINK_SECT_ONCE)    # Do link only once per section
-        {
-            $line_with_links = '';
-            if (!$self-&gt;{__done_with_sect_link}-&gt;[$i]
-                &amp;&amp; ${$line_ref} =~ $self-&gt;{__search_patterns}-&gt;[$i])
-            {
-                $self-&gt;{__done_with_sect_link}-&gt;[$i] = 1;
-                $line_with_links .= $`;
-                $linkme = $&amp;;</pre>
-<pre>
-                ${$line_ref} = $';
-                if (!$self-&gt;in_link_context($linkme, $line_with_links))
-                {
-                    print STDERR &quot;Link rule $i matches $linkme\n&quot;
-                      if ($self-&gt;{dict_debug} &amp; 4);</pre>
-<pre>
-                    # call the special subroutine already created to do
-                    # this replacement
-                    $repl_func = $self-&gt;{__repl_code}-&gt;[$i];
-                    $linkme    = &amp;$repl_func($linkme);
-                }
-                $line_with_links .= $linkme;
-            }
-            ${$line_ref} = $line_with_links . ${$line_ref};
-        }
-        else
-        {
-            $line_with_links = '';
-            while (${$line_ref} =~ $self-&gt;{__search_patterns}-&gt;[$i])
-            {
-                $line_with_links .= $`;
-                $linkme = $&amp;;</pre>
-<pre>
-                ${$line_ref} = $';
-                if (!$self-&gt;in_link_context($linkme, $line_with_links))
-                {
-                    print STDERR &quot;Link rule $i matches $linkme\n&quot;
-                      if ($self-&gt;{dict_debug} &amp; 4);</pre>
-<pre>
-                    # call the special subroutine already created to do
-                    # this replacement
-                    $repl_func = $self-&gt;{__repl_code}-&gt;[$i];
-                    $linkme    = &amp;$repl_func($linkme);
-                }
-                $line_with_links .= $linkme;
-            }
-            ${$line_ref} = $line_with_links . ${$line_ref};
-        }
-        $i++;
-    }
-    ${$line_action_ref} |= $LINK;
-}    # check_dictionary_links</pre>
+the patterns in the link dictionary.</p>
 <p>
 </p>
 <h2><a name="load_dictionary_links">load_dictionary_links</a></h2>
 <pre>
     $self-&gt;load_dictionary_links();</pre>
-<p>Load the dictionary links.
-=cut
-sub load_dictionary_links ($)
-{
-    my $self = shift;</p>
-<pre>
-    @{$self-&gt;{__links_table_order}} = ();
-    %{$self-&gt;{__links_table}}       = ();</pre>
-<pre>
-    my $dict;
-    foreach $dict (@{$self-&gt;{links_dictionaries}})
-    {
-        next unless $dict;
-        open(DICT, &quot;$dict&quot;) || die &quot;Can't open Dictionary file $dict\n&quot;;</pre>
-<pre>
-        my @lines = ();
-        while (&lt;DICT&gt;)
-        {
-            # skip lines that start with '#'
-            next if /^\#/;
-            # skip lines that end with unescaped ':'
-            next if /^.*[^\\]:\s*$/;
-            push @lines, $_;
-        }
-        close(DICT);
-        my $contents = join('', @lines);
-        $self-&gt;parse_dict($dict, $contents);
-    }
-    # last of all, do the system dictionary, already read in from DATA
-    if ($self-&gt;{__global_links_data})
-    {
-        $self-&gt;parse_dict(&quot;DATA&quot;, $self-&gt;{__global_links_data});
-    }</pre>
-<pre>
-    $self-&gt;setup_dict_checking();
-}    # load_dictionary_links</pre>
+<p>Load the dictionary links.</p>
 <p>
 </p>
 <h2><a name="do_file_start">do_file_start</a></h2>
 <pre>
     $self-&gt;do_file_start($outhandle, $para);</pre>
 <p>Extra stuff needed for the beginning:
-HTML headers, and prepending a file if desired.
-=cut
-sub do_file_start ($$$)
-{
-    my $self      = shift;
-    my $outhandle = shift;
-    my $para      = shift;</p>
-<pre>
-    if (!$self-&gt;{extract})
-    {
-        my @para_lines = split(/\n/, $para);
-        my $first_line = $para_lines[0];</pre>
-<pre>
-        if ($self-&gt;{doctype})
-        {
-            if ($self-&gt;{xhtml})
-            {
-                print $outhandle
-'&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;',
-                  &quot;\n&quot;;
-                print $outhandle
-                  '&quot;<a href="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd</a>&quot;&gt;',
-                  &quot;\n&quot;;
-                print $outhandle $self-&gt;get_tag('HTML',
-                    inside_tag =&gt; ' xmlns=&quot;<a href="http://www.w3.org/1999/xhtml&quot">http://www.w3.org/1999/xhtml&quot</a>;'), &quot;\n&quot;;
-            }
-            else
-            {
-                print $outhandle '&lt;!DOCTYPE HTML PUBLIC &quot;', $self-&gt;{doctype},
-                  &quot;\&quot;&gt;\n&quot;;
-                print $outhandle $self-&gt;get_tag('HTML'), &quot;\n&quot;;
-            }
-        }
-        print $outhandle $self-&gt;get_tag('HEAD'), &quot;\n&quot;;</pre>
-<pre>
-        # if --titlefirst is set and --title isn't, use the first line
-        # as the title.
-        if ($self-&gt;{titlefirst} &amp;&amp; !$self-&gt;{title})
-        {
-            my ($tit) = $first_line =~ /^ *(.*)/;    # grab first line
-            $tit =~ s/ *$//;                         # strip trailing whitespace
-            $tit = escape($tit) if $self-&gt;{escape_HTML_chars};
-            $self-&gt;{'title'} = $tit;
-        }
-        if (!$self-&gt;{title})
-        {
-            $self-&gt;{'title'} = &quot;&quot;;
-        }
-        print $outhandle $self-&gt;get_tag('TITLE'), $self-&gt;{title},
-          $self-&gt;close_tag('TITLE'), &quot;\n&quot;;</pre>
-<pre>
-        if ($self-&gt;{append_head})
-        {
-            open(APPEND, $self-&gt;{append_head})
-              || die &quot;Failed to open &quot;, $self-&gt;{append_head}, &quot;\n&quot;;
-            while (&lt;APPEND&gt;)
-            {
-                print $outhandle $_;
-            }
-            close(APPEND);
-        }</pre>
-<pre>
-        if ($self-&gt;{lower_case_tags})
-        {
-            print $outhandle $self-&gt;get_tag(
-                'META',
-                tag_type   =&gt; 'empty',
-                inside_tag =&gt; &quot; name=\&quot;generator\&quot; content=\&quot;$PROG v$VERSION\&quot;&quot;
-              ),
-              &quot;\n&quot;;
-        }
-        else
-        {
-            print $outhandle $self-&gt;get_tag(
-                'META',
-                tag_type   =&gt; 'empty',
-                inside_tag =&gt; &quot; NAME=\&quot;generator\&quot; CONTENT=\&quot;$PROG v$VERSION\&quot;&quot;
-              ),
-              &quot;\n&quot;;
-        }
-        if ($self-&gt;{style_url})
-        {
-            my $style_url = $self-&gt;{style_url};
-            if ($self-&gt;{lower_case_tags})
-            {
-                print $outhandle $self-&gt;get_tag(
-                    'LINK',
-                    tag_type   =&gt; 'empty',
-                    inside_tag =&gt;
-&quot; rel=\&quot;stylesheet\&quot; type=\&quot;text/css\&quot; href=\&quot;$style_url\&quot;&quot;
-                  ),
-                  &quot;\n&quot;;
-            }
-            else
-            {
-                print $outhandle $self-&gt;get_tag(
-                    'LINK',
-                    tag_type   =&gt; 'empty',
-                    inside_tag =&gt;
-&quot; REL=\&quot;stylesheet\&quot; TYPE=\&quot;text/css\&quot; HREF=\&quot;$style_url\&quot;&quot;
-                  ),
-                  &quot;\n&quot;;
-            }
-        }
-        print $outhandle $self-&gt;close_tag('HEAD'), &quot;\n&quot;;
-        if ($self-&gt;{body_deco})
-        {
-            print $outhandle $self-&gt;get_tag('BODY',
-                inside_tag =&gt; $self-&gt;{body_deco}), &quot;\n&quot;;
-        }
-        else
-        {
-            print $outhandle $self-&gt;get_tag('BODY'), &quot;\n&quot;;
-        }
-    }</pre>
-<pre>
-    if ($self-&gt;{prepend_file})
-    {
-        if (-r $self-&gt;{prepend_file})
-        {
-            open(PREPEND, $self-&gt;{prepend_file});
-            while (&lt;PREPEND&gt;)
-            {
-                print $outhandle $_;
-            }
-            close(PREPEND);
-        }
-        else
-        {
-            print STDERR &quot;Can't find or read file &quot;, $self-&gt;{prepend_file},
-              &quot; to prepend.\n&quot;;
-        }
-    }
-}    # do_file_start</pre>
+HTML headers, and prepending a file if desired.</p>
 <p>
 </p>
 <h2><a name="do_init_call">do_init_call</a></h2>
