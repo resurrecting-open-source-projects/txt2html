@@ -74,22 +74,19 @@ my $conv = new HTML::TextToHTML();
 ok( defined $conv, 'new() returned something' );
 ok( $conv->isa('HTML::TextToHTML'), "  and it's the right class" );
 
-@args = ();
-#push @args, "--debug";
-#push @args, "--dict_debug", "15";
-push @args, "--system_link_dict", "txt2html.dict";
-push @args, "--default_link_dict", "";
-#push @args, "--link_dictionaries", "section.dict";
-push @args, "--infile", "tfiles/sample.txt";
-push @args, "--xhtml"; 
-push @args, "--outfile", "xhtml_sample.html";
-push @args, "--append_file", "tfiles/sample.foot2";
-push @args, "-titlefirst", "--mailmode";
-push @args, "--custom_heading_regexp", '^ *--[\w\s]+-- *$';
-push @args, "--make_tables";
-push @args, "--make_anchors";
-
-$result = $conv->txt2html(\@args);
+my %args = ();
+$args{system_link_dict} = "txt2html.dict";
+$args{default_link_dict} = "";
+$args{infile} = ["tfiles/sample.txt"];
+$args{append_file} = "tfiles/sample.foot2";
+$args{titlefirst} = 1;
+$args{mailmode} = 1;
+$args{custom_heading_regexp} = ['^ *--[\w\s]+-- *$'];
+$args{make_tables} = 1;
+$args{make_anchors} = 1;
+$args{xhtml} = 1; 
+$args{outfile} =  "xhtml_sample.html";
+$result = $conv->txt2html(%args);
 ok($result, 'converted xhtml sample.txt');
 
 # compare the files
