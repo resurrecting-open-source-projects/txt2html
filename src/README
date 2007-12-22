@@ -6,7 +6,7 @@ HTML::TextToHTML - convert plain text file to HTML.
 
 ==== VERSION ====
 
-This describes version ``2.4301'' of HTML::TextToHTML.
+This describes version ``2.50'' of HTML::TextToHTML.
 
 
 ==== DESCRIPTION ====
@@ -37,7 +37,7 @@ merged.
 
 ==== REQUIRES ====
 
-HTML::TextToHTML requires Perl 5.6.1 or later.
+HTML::TextToHTML requires Perl 5.8.1 or later.
 
 For installation, it needs:
 
@@ -56,7 +56,7 @@ For testing, it also needs:
 
 For debugging, it also needs:
 
-    Data::Dumper
+    YAML::Syck
 
 
 ==== INSTALLATION ====
