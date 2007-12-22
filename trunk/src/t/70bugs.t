@@ -2,7 +2,7 @@
 
 #########################
 
-use Test::More tests => 12;
+use Test::More tests => 14;
 use HTML::TextToHTML;
 
 #########################
@@ -210,5 +210,27 @@ $result = compare('tfiles/good_utf8.html', 'utf8.html');
 ok($result, 'test file matches original example exactly');
 if ($result) {
     unlink('utf8.html');
+}
+
+#
+# bugs : italics with punctuation characters , and ! not converted
+#
+$result = $conv->txt2html(
+system_link_dict=>"txt2html.dict",
+default_link_dict=>"",
+make_anchors=>0,
+infile=>["tfiles/punct.txt"],
+outfile=>"punct.html",
+custom_heading_regexp=>[],
+extract=>1,
+eight_bit_clean=>1,
+);
+ok($result, 'converted punct.txt');
+
+# compare the files
+$result = compare('tfiles/good_punct.html', 'punct.html');
+ok($result, 'test file matches original example exactly');
+if ($result) {
+    unlink('punct.html');
 }
 

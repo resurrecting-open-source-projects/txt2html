@@ -39,6 +39,7 @@ tfiles/good_mixed.html
 tfiles/good_news.html
 tfiles/good_pre.html
 tfiles/good_pre2.html
+tfiles/good_punct.html
 tfiles/good_robo.html
 tfiles/good_sample.html
 tfiles/good_table-align.html
@@ -66,6 +67,7 @@ tfiles/mixed.txt
 tfiles/news.txt
 tfiles/pre.txt
 tfiles/pre2.txt
+tfiles/punct.txt
 tfiles/robo.txt
 tfiles/sample.foot
 tfiles/sample.foot2

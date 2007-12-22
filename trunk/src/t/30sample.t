@@ -70,22 +70,19 @@ sub compare {
 # Insert your test code below, the Test module is use()ed here so read
 # its man page ( perldoc Test ) for help writing this test script.
 
-my $conv = new HTML::TextToHTML();
+my $conv = new HTML::TextToHTML(xhtml=>0);
 ok( defined $conv, 'new() returned something' );
 ok( $conv->isa('HTML::TextToHTML'), "  and it's the right class" );
 
 $result = $conv->txt2html(
 system_link_dict=>"txt2html.dict",
 default_link_dict=>"",
-#links_dictionaries=>"section.dict",
 infile=>["tfiles/sample.txt"],
 outfile=>"sample.html",
 append_file=>"tfiles/sample.foot",
 titlefirst=>1, mailmode=>1,
 custom_heading_regexp=>['^ *--[\w\s]+-- *$'],
 make_tables=>1,
-#debug=>1,
-#dict_debug=>15,
 );
 ok($result, 'converted sample.txt');
 

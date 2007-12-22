@@ -6,12 +6,12 @@ my $build = Module::Build->new(
     dist_author		=> 'Kathryn Andersen',
     dist_version_from	=> 'scripts/txt2html',
     requires		=> {
-		'perl'	=> '5.6.1',
+		'perl'	=> '5.8.1',
 		'Getopt::Long' => 0,
 		'Getopt::ArgvFile' => 0,
 		'File::Basename' => 0,
 		'Pod::Usage' => 0,
-		'Data::Dumper' => 0,
+		'YAML::Syck' => 0,
     	},
     build_requires	=> {
 		'Test::More' => 0,

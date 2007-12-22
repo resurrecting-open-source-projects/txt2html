@@ -25,11 +25,11 @@ and everywhere that Matty went
 the truck was *always* found.
 ";
 
-$ok_str = "<P>Matty had a little truck<BR>
-he drove it round and round<BR>
-and everywhere that Matty went<BR>
-the truck was <EM>always</EM> found.
-";
+$ok_str = "<p>Matty had a little truck<br/>
+he drove it round and round<br/>
+and everywhere that Matty went<br/>
+the truck was <em>always</em> found.
+</p>";
 
 $out_str = $conv->process_para($test_str);
 ok($out_str, 'converted sample string');
@@ -48,12 +48,12 @@ $test_str = "Here is my list:
 4. Pickles
 ";
 
-$ok_str = "<P>Here is my list:
-<OL>
-  <LI>Spam
-  <LI>Jam
-  <LI>Ham
-  <LI>Pickles</OL>
+$ok_str = "<p>Here is my list:
+</p><ol>
+  <li>Spam
+  </li><li>Jam
+  </li><li>Ham
+  </li><li>Pickles</li></ol>
 ";
 
 $out_str = $conv->process_chunk($test_str);
@@ -84,10 +84,10 @@ and everywhere that Matty went
 the truck was *always* found.
 ";
 
-$ok_str = "Matty had a little truck<BR>
-he drove it round and round<BR>
-and everywhere that Matty went<BR>
-the truck was <EM>always</EM> found.
+$ok_str = "Matty had a little truck<br/>
+he drove it round and round<br/>
+and everywhere that Matty went<br/>
+the truck was <em>always</em> found.
 ";
 
 $out_str = $conv->process_chunk($test_str, is_fragment=>1);
@@ -101,7 +101,7 @@ is($out_str, $ok_str, 'compare converted string with OK string');
 #
 $test_str = "I like to look at http://www.example.com a lot";
 
-$ok_str = 'I like to look at <A HREF="http://www.example.com">http://www.example.com</A> a lot';
+$ok_str = 'I like to look at <a href="http://www.example.com">http://www.example.com</a> a lot';
 
 $out_str = $conv->process_para($test_str, is_fragment=>1);
 ok($out_str, 'converted sample string with URL');
@@ -116,7 +116,7 @@ $test_str = "We have a line alone
 FULL OF CAPS AND FURY
 ";
 
-$ok_str = "We have a line alone<BR>
+$ok_str = "We have a line alone<br/>
 FULL OF CAPS AND FURY
 ";
 
@@ -137,9 +137,9 @@ You are --really krazy--.
 -----------------
 ";
 
-$ok_str = "I am <STRONG>bold</STRONG>,<BR>
-You are <EM>really krazy</EM>.
-<HR>
+$ok_str = "I am <strong>bold</strong>,<br/>
+You are <em>really krazy</em>.
+<hr/>
 ";
 
 $conv->args(bold_delimiter=>'^',
@@ -157,9 +157,9 @@ You are --really krazy--.
 -----------------
 ";
 
-$ok_str = "I am ^bold^,<BR>
+$ok_str = "I am ^bold^,<br/>
 You are --really krazy--.
-<HR>
+<hr/>
 ";
 
 $conv->args(bold_delimiter=>'',
