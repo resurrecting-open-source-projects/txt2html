@@ -1,0 +1,13 @@
+Testing Different Bullets
+=========================
+
+#) Is this an ordered list item?
+#) Because somebody did something.
+#) And added another!
+
+And then we'll have an unordered list.
+
++ with a pluss
++ as the new bullet, man.
+  - and another indent, why not?
++ bask up

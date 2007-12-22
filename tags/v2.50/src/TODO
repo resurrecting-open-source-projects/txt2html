@@ -1,0 +1,36 @@
+TODO list for txt2html
+======================
+  5. try to make this more thread-safe
+    Added:19/01/07, 09:29  Priority: high
+
+  6. add in an "obfustcate email addresses" facility
+    Added:08/11/04, 15:19  Priority: medium
+
+  7. convert (c) (r) and (tm) to the correct entities (add to links)
+    Added:08/11/04, 15:20  Priority: medium
+
+  8. add optional "enhanced" definition lists detection, which does Term:
+    Defintion
+    Added:08/11/04, 15:20  Priority: medium
+
+  9. recognise and reproduce different Ordered List styles.
+    Added:08/11/04, 15:20  Priority: medium
+
+ 10. links-per-section
+    Added:08/11/04, 15:21  Priority: medium
+
+ 11. tables with multi-line cells
+    Added:08/11/04, 15:21  Priority: medium
+
+ 12. option to add section-numbers to headers (not just header anchors)
+    Added:08/11/04, 15:22  Priority: medium
+
+      1. allow starting section number to be user-defined
+        Added:08/11/04, 15:22  Priority: medium
+
+ 13. make this more efficient
+    Added:23/01/05, 14:42  Priority: medium
+
+ 14. make a proper CGI script as an example
+    Added:17/05/05, 22:09  Priority: medium
+
