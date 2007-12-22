@@ -1,0 +1,3 @@
+#!/bin/bash
+
+perl -I ../lib -d:Profile ../scripts/txt2html $* >/dev/null
