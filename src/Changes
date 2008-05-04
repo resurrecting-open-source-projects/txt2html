@@ -1,6 +1,11 @@
 Revision history for txt2html
 =============================
 
+2.51 Sun 4th March 2008
+	- fixed bug with underscores in links
+	- fixed docs about escape_chars (should be escapechars)
+	- fixed docs about DOCTYPE
+
 2.50 Sat 22nd December 2007
 	- fixed bug with formatting and punctuation
 	- removed old reference-to-an-array argument method

@@ -1,8 +1,8 @@
 Build.PL
-Makefile.PL
 Changes
 DEVNOTES
 lib/HTML/TextToHTML.pm
+Makefile.PL
 MANIFEST
 MANIFEST.SKIP
 META.yml			Module meta-data (added by MakeMaker)
@@ -27,6 +27,7 @@ tfiles/good_hyphens.html
 tfiles/good_links.html
 tfiles/good_links2.html
 tfiles/good_links3.html
+tfiles/good_links4.html
 tfiles/good_list-2.html
 tfiles/good_list-3.html
 tfiles/good_list-4.html
@@ -55,6 +56,7 @@ tfiles/hyphens.txt
 tfiles/links.txt
 tfiles/links2.txt
 tfiles/links3.txt
+tfiles/links4.txt
 tfiles/list-2.txt
 tfiles/list-3.txt
 tfiles/list-4.txt
