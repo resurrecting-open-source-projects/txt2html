@@ -4,7 +4,7 @@
 <head>
 <title>HTML::TextToHTML - convert plain text file to HTML.</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:Gentoo@colbrand.katspace.org" />
+<link rev="made" href="mailto:Gentoo@raven.katspace.org" />
 </head>
 
 <body style="background-color: white">
@@ -23,9 +23,8 @@
 		<li><a href="#history">History</a></li>
 	</ul>
 
-	<li><a href="#requires">REQUIRES</a></li>
-	<li><a href="#installation">INSTALLATION</a></li>
 	<li><a href="#options">OPTIONS</a></li>
+	<li><a href="#debugging">DEBUGGING</a></li>
 	<li><a href="#methods">METHODS</a></li>
 	<ul>
 
@@ -116,6 +115,8 @@
 	</ul>
 
 	<li><a href="#notes">NOTES</a></li>
+	<li><a href="#requires">REQUIRES</a></li>
+	<li><a href="#installation">INSTALLATION</a></li>
 	<li><a href="#bugs">BUGS</a></li>
 	<li><a href="#see_also">SEE ALSO</a></li>
 	<li><a href="#author">AUTHOR</a></li>
@@ -132,7 +133,7 @@
 </p>
 <hr />
 <h1><a name="version">VERSION</a></h1>
-<p>This describes version <strong>2.46</strong> of HTML::TextToHTML.</p>
+<p>This describes version <strong>2.50</strong> of HTML::TextToHTML.</p>
 <p>
 </p>
 <hr />
@@ -188,111 +189,15 @@ all been merged.</p>
 <p>
 </p>
 <hr />
-<h1><a name="requires">REQUIRES</a></h1>
-<p>HTML::TextToHTML requires Perl 5.6.1 or later.</p>
-<p>For installation, it needs:</p>
-<pre>
-    Module::Build</pre>
-<p>The txt2html script needs:</p>
-<pre>
-    Getopt::Long
-    Getopt::ArgvFile
-    Pod::Usage
-    File::Basename</pre>
-<p>For testing, it also needs:</p>
-<pre>
-    Test::More</pre>
-<p>For debugging, it also needs:</p>
-<pre>
-    Data::Dumper</pre>
-<p>
-</p>
-<hr />
-<h1><a name="installation">INSTALLATION</a></h1>
-<p>Make sure you have the dependencies installed first!
-(see REQUIRES above)</p>
-<p>Some of those modules come standard with more recent versions of perl,
-but I thought I'd mention them anyway, just in case you may not have
-them.</p>
-<p>If you don't know how to install these, try using the CPAN module, an
-easy way of auto-installing modules from the Comprehensive Perl Archive
-Network, where the above modules reside.
-Do ``perldoc perlmodinstall'' or ``perldoc CPAN'' for more information.</p>
-<p>To install this module type the following:</p>
-<pre>
-   perl Build.PL
-   ./Build
-   ./Build test
-   ./Build install</pre>
-<p>Or, if you're on a platform (like DOS or Windows) that doesn't like the
-``./'' notation, you can do this:</p>
-<pre>
-   perl Build.PL
-   perl Build
-   perl Build test
-   perl Build install</pre>
-<p>In order to install somewhere other than the default, such as
-in a directory under your home directory, like ``/home/fred/perl''
-go</p>
-<pre>
-   perl Build.PL --install_base /home/fred/perl</pre>
-<p>as the first step instead.</p>
-<p>This will install the files underneath /home/fred/perl.</p>
-<p>You will then need to make sure that you alter the PERL5LIB variable to
-find the modules, and the PATH variable to find the script.</p>
-<p>Therefore you will need to change:
-your path, to include /home/fred/perl/script (where the script will be)</p>
-<pre>
-        PATH=/home/fred/perl/script:${PATH}</pre>
-<p>the PERL5LIB variable to add /home/fred/perl/lib</p>
-<pre>
-        PERL5LIB=/home/fred/perl/lib:${PERL5LIB}</pre>
-<p>Note that the system links dictionary will be installed as
-``/home/fred/perl/share/txt2html/txt2html.dict''</p>
-<p>If you want to install in a temporary install directory (such as
-if you are building a package) then instead of going</p>
-<pre>
-   perl Build install</pre>
-<p>go</p>
-<pre>
-   perl Build install destdir=/my/temp/dir</pre>
-<p>and it will be installed there, with a directory structure under
-/my/temp/dir the same as it would be if it were installed plain.
-Note that this is NOT the same as setting --install_base, because
-certain things are done at build-time which use the install_base info.</p>
-<p>See ``perldoc perlrun'' for more information on PERL5LIB, and
-see ``perldoc Module::Build'' for more information on
-installation options.</p>
-<p>
-</p>
-<hr />
 <h1><a name="options">OPTIONS</a></h1>
 <p>All arguments can be set when the object is created, and further options
 can be set when calling the actual txt2html method. Arguments
-to methods can take either a hash of arguments, or a reference to an
-array.  Note that the reference-to-array method is depricated and is only
-retained for backwards compatibility.</p>
+to methods can take a hash of arguments.</p>
 <p>Note that all option-names must match exactly -- no abbreviations are
-allowed.</p>
-<p>The arguments get treated differently depending on whether they are
-given in a hash or a reference to an array.  When the arguments are
-in a hash, the argument-keys are expected to have values matching
-those required for that argument -- whether that be a boolean, a string,
-a reference to an array or a reference to a hash.  These will replace
-any value for that argument that might have been there before.</p>
-<p>When the arguments are in a reference to an array, it is treated
-somewhat as if it were a command-line: option names are expected to
-start with '--' or '-', boolean options are set to true as soon as the
-option is given (no value is expected to follow),  boolean options with
-the word ``no'' prepended set the option to false, string options are
-expected to have a string value following, and those options which are
-internally arrays or hashes are treated as cumulative; that is, the
-value following the --option is added to the current set for that
-option,  to add more, one just repeats the --option with the next value,
-and in order to reset that option to empty, the special value of ``CLEAR''
-must be added to the list.</p>
-<p>NOTE: the reference-to-an-array usage is DEPRECATED and will be removed
-in the future.</p>
+allowed.  The argument-keys are expected to have values matching those
+required for that argument -- whether that be a boolean, a string, a
+reference to an array or a reference to a hash.  These will replace any
+value for that argument that might have been there before.</p>
 <dl>
 <dt><strong><a name="item_append_file">append_file</a></strong>
 
@@ -303,7 +208,7 @@ in the future.</p>
 <dd>
 <p>If you want something appended by default, put the filename here.
 The appended text will not be processed at all, so make sure it's
-plain text or decent HTML.  i.e. do not have things like:
+plain text or correct HTML.  i.e. do not have things like:
     Mary Andersen &lt;<a href="mailto:kitty@example.com">kitty@example.com</a>&gt;
 but instead, have:
     Mary Andersen <a href="mailto:&lt;kitty@example.com&gt;">&lt;kitty@example.com&gt;</a></p>
@@ -320,7 +225,7 @@ but instead, have:
 <dd>
 <p>If you want something appended to the head by default, put the filename here.
 The appended text will not be processed at all, so make sure it's
-plain text or decent HTML.  i.e. do not have things like:
+plain text or correct HTML.  i.e. do not have things like:
     Mary Andersen &lt;<a href="mailto:kitty@example.com">kitty@example.com</a>&gt;
 but instead, have:
     Mary Andersen <a href="mailto:&lt;kitty@example.com&gt;">&lt;kitty@example.com&gt;</a></p>
@@ -441,17 +346,6 @@ option.</p>
 <dd>
 <p>(default: none)</p>
 </dd>
-<dt><strong><a name="item_debug">debug</a></strong>
-
-<dd>
-<pre>
-
-    debug=&gt;1</pre>
-</dd>
-<dd>
-<p>Enable copious script debugging output (don't bother, this is for the
-developer) (default: false)</p>
-</dd>
 <dt><strong><a name="item_default_link_dict">default_link_dict</a></strong>
 
 <dd>
@@ -473,22 +367,6 @@ the txt2html script.  If there is no $ENV{HOME} then it is just '.txt2html.dict'
 <p>Convert Microsoft-generated character codes that are non-ISO codes into
 something more reasonable.
 (default:true)</p>
-</dd>
-<dt><strong><a name="item_dict_debug">dict_debug</a></strong>
-
-<dd>
-<pre>
-    dict_debug=&gt;I&lt;n&gt;</pre>
-</dd>
-<dd>
-<p>Debug mode for link dictionaries Bitwise-Or what you want to see:
-          1: The parsing of the dictionary
-          2: The code that will make the links
-          4: When each rule matches something
-          8: When each tag is created</p>
-</dd>
-<dd>
-<p>(default: 0)</p>
 </dd>
 <dt><strong><a name="item_doctype">doctype</a></strong>
 
@@ -535,7 +413,7 @@ false, since this also changes 8-bit characters.
 --custom_heading_regexp option.
 Also, the custom headings will not be assigned levels in the order they
 are encountered in the document, but in the order they are specified on
-the command line.
+the custom_heading_regexp option.
 (default: false)</p>
 </dd>
 <dt><strong><a name="item_extract">extract</a></strong>
@@ -588,15 +466,11 @@ put in a &lt;BR&gt; and three non-breaking spaces instead.
 <dd>
 <pre>
     infile=&gt;\@my_files
-    infile=&gt;['chapter1.txt', 'chapter2.txt']
-    &quot;--infile&quot;, &quot;chapter1.txt&quot;, &quot;--infile&quot;, &quot;chapter2.txt&quot;</pre>
+    infile=&gt;['chapter1.txt', 'chapter2.txt']</pre>
 </dd>
 <dd>
-<p>The name of the input file(s).  When the arguments are given as a hash,
-this expects a reference to an array of filenames.  When the arguments
-are given as a reference to an array, then the ``--infile'' option must
-be repeated for each new file added to the list.  If you want to reset
-the list to be empty, give the special value of ``CLEAR''.</p>
+<p>The name of the input file(s).  
+This expects a reference to an array of filenames.</p>
 </dd>
 <dd>
 <p>The special filename '-' designates STDIN.</p>
@@ -660,17 +534,12 @@ tag).  If this is empty, no underlining of text will be done.
 <dd>
 <pre>
     links_dictionaries=&gt;\@my_link_dicts
-    links_dictionaries=&gt;['url_links.dict', 'format_links.dict']
-    &quot;--links_dictionaries&quot;, &quot;url_links.dict&quot;, &quot;--links_dictionaries&quot;, &quot;format_links.dict&quot;</pre>
+    links_dictionaries=&gt;['url_links.dict', 'format_links.dict']</pre>
 </dd>
 <dd>
 <p><code>File(s)</code> to use as a link-dictionary.  There can be more than one of
 these.  These are in addition to the Global Link Dictionary and the User
-Link Dictionary.  When the arguments are given as a hash, this expects a
-reference to an array of filenames.  When the arguments are given as a
-reference to an array, then the ``--links_dictionaries'' option must be
-repeated for each new file added to the list.  If you want to reset the
-list to be empty, give the special value of ``CLEAR''.</p>
+Link Dictionary.  This expects a reference to an array of filenames.</p>
 </dd>
 <dt><strong><a name="item_link_only">link_only</a></strong>
 
@@ -869,7 +738,7 @@ expanded to 8 spaces, which is enough to trigger preformatting.
 <dd>
 <p>If you want something prepended to the processed body text, put the
 filename here.  The prepended text will not be processed at all, so make
-sure it's plain text or decent HTML.</p>
+sure it's plain text or correct HTML.</p>
 </dd>
 <dd>
 <p>(default: nothing)</p>
@@ -945,7 +814,7 @@ is true.  The possible types are ALIGN, PGSQL, BORDER and DELIM.
     titlefirst=&gt;1</pre>
 </dd>
 <dd>
-<p>Use the first non-blank line as the title.</p>
+<p>Use the first non-blank line as the title. (See also ``title'')</p>
 </dd>
 <dt><strong><a name="item_underline_length_tolerance">underline_length_tolerance</a></strong>
 
@@ -1020,6 +889,49 @@ Likewise, if you make link-dictionary entries that break XHTML,
 then this won't fix them, except to the degree of putting all tags
 into lower-case.</p>
 </dd>
+<dd>
+<p>(default: true)</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="debugging">DEBUGGING</a></h1>
+<p>There are global variables for setting types and levels
+of debugging.  These should only be used by developers.</p>
+<dl>
+<dt><strong><a name="item__html__texttohtml__debug">$HTML::TextToHTML::Debug</a></strong>
+
+<dd>
+<p>$HTML::TextToHTML::Debug = 1;
+</p>
+</dd>
+<dd>
+<pre>
+
+Enable copious debugging output.
+(default: false)</pre>
+</dd>
+</li>
+<dt><strong><a name="item__html__texttohtml__dictdebug">$HTML::TextToHTML::DictDebug</a></strong>
+
+<dd>
+<pre>
+    $HTML::TextToHTML::DictDebug = I&lt;n&gt;;</pre>
+</dd>
+<dd>
+<p>Debug mode for link dictionaries. Bitwise-Or what you want to see:</p>
+</dd>
+<dd>
+<pre>
+          1: The parsing of the dictionary
+          2: The code that will make the links
+          4: When each rule matches something
+          8: When each tag is created</pre>
+</dd>
+<dd>
+<p>(default: 0)</p>
+</dd>
 </dl>
 <p>
 </p>
@@ -1034,10 +946,8 @@ into lower-case.</p>
     $conv = new HTML::TextToHTML(titlefirst=&gt;1,
         ...
     );</pre>
-<p>Create a new object with new.  If one argument is given, it is assumed
-to be a reference to an array of arguments.  If more than one argument
-is given, it is assumed to be a hash of arguments.  These arguments will
-be used in invocations of other methods.</p>
+<p>Create a new object with new. If arguments are given, these arguments
+will be used in invocations of other methods.</p>
 <p>See <a href="#options">OPTIONS</a> for the possible values of the arguments.</p>
 <p>
 </p>
@@ -1048,11 +958,9 @@ be used in invocations of other methods.</p>
         ....
     );</pre>
 <p>Updates the current arguments/options of the HTML::TextToHTML object.
-Takes either a hash, or a reference to an array of arguments, which will
-be used in invocations of other methods.
+Takes hash of arguments, which will be used in invocations of other
+methods.
 See <a href="#options">OPTIONS</a> for the possible values of the arguments.</p>
-<p>NOTE: the reference-to-an-array usage is DEPRECATED and will be removed
-in the future.</p>
 <p>
 </p>
 <h2><a name="process_chunk">process_chunk</a></h2>
@@ -1066,7 +974,7 @@ either when you create the object, or with the <a href="#args">args</a> method.<
     $newstring = $conv-&gt;process_chunk($mystring,
                             close_tags=&gt;0);</pre>
 <p>If there are open tags (such as lists) in the input string,
-process_chunk will now automatically close them, unless you specify not
+process_chunk will automatically close them, unless you specify not
 to, with the close_tags option.</p>
 <pre>
     $newstring = $conv-&gt;process_chunk($mystring,
@@ -1090,7 +998,7 @@ either when you create the object, or with the <a href="#args">args</a> method.<
     $newstring = $conv-&gt;process_para($mystring,
                             close_tags=&gt;0);</pre>
 <p>If there are open tags (such as lists) in the input string, process_para
-will now automatically close them, unless you specify not to, with the
+will automatically close them, unless you specify not to, with the
 close_tags option.</p>
 <pre>
     $newstring = $conv-&gt;process_para($mystring,
@@ -1102,11 +1010,10 @@ a paragraph, set is_fragment to true.</p>
 <h2><a name="txt2html">txt2html</a></h2>
 <pre>
     $conv-&gt;txt2html(%args);</pre>
-<p>Convert a text file to HTML.  Takes a hash of arguments, or a reference
-to an array of arguments to customize the conversion; (this includes
-saying what file to convert!) See <a href="#options">OPTIONS</a> for the possible values of
-the arguments.  Arguments which have already been set with <strong>new</strong> or
-<strong>args</strong> will remain as they are, unless they are overridden.</p>
+<p>Convert a text file to HTML.  Takes a hash of arguments.  See
+<a href="#options">OPTIONS</a> for the possible values of the arguments.  Arguments which
+have already been set with <strong>new</strong> or <strong>args</strong> will remain as they are,
+unless they are overridden.</p>
 <p>
 </p>
 <hr />
@@ -1144,13 +1051,13 @@ on the demoronize script by John Walker, <a href="http://www.fourmilab.ch/">http
 <h2><a name="get_tag">get_tag</a></h2>
 <p>$tag = $self-&gt;get_tag($in_tag);</p>
 <p><table cellspacing="0" cellpadding="0"><tr><td>$tag = $self-&gt;get_tag($in_tag,
-<tr><td><td>tag_type=&gt;'start',
+<tr><td><td>tag_type=&gt;TAG_START,
 <tr><td><td>inside_tag=&gt;'');</table></p>
 <p>output the tag wanted (add the &lt;&gt; and the / if necessary)
 - output in lower or upper case
 - do tag-related processing
 options:
-  tag_type=&gt;'start' | tag_type=&gt;'end' | tag_type=&gt;'empty'
+  tag_type=&gt;TAG_START | tag_type=&gt;TAG_END | tag_type=&gt;TAG_EMPTY
   (default start)
   inside_tag=&gt;string (default empty)</p>
 <p>
@@ -1714,11 +1621,11 @@ assumed to be a table.  For example</p>
     -s  File has nonzero size (returns size).</pre>
 <p>becomes</p>
 <pre>
-    &lt;TABLE&gt;
-    &lt;TR&gt;&lt;TD&gt;-e&lt;/TD&gt;&lt;TD&gt;File exists.&lt;/TD&gt;&lt;/TR&gt;
-    &lt;TR&gt;&lt;TD&gt;-z&lt;/TD&gt;&lt;TD&gt;File has zero size.&lt;/TD&gt;&lt;/TR&gt;
-    &lt;TR&gt;&lt;TD&gt;-s&lt;/TD&gt;&lt;TD&gt;File has nonzero size (returns size).&lt;/TD&gt;&lt;/TR&gt;
-    &lt;/TABLE&gt;</pre>
+    &lt;table&gt;
+    &lt;tr&gt;&lt;td&gt;-e&lt;/td&gt;&lt;td&gt;File exists.&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;-z&lt;/td&gt;&lt;td&gt;File has zero size.&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;-s&lt;/td&gt;&lt;td&gt;File has nonzero size (returns size).&lt;/td&gt;&lt;/tr&gt;
+    &lt;/table&gt;</pre>
 <p>This guesses for each column whether it is intended to be left,
 centre or right aligned.</p>
 <p><strong>BORDER Table Type</strong></p>
@@ -1733,13 +1640,13 @@ with a border, like so:</p>
     +---------+---------+</pre>
 <p>The above becomes</p>
 <pre>
-    &lt;TABLE border=&quot;1&quot;&gt;
-    &lt;THEAD&gt;&lt;TR&gt;&lt;TH&gt;Column1&lt;/TH&gt;&lt;TH&gt;Column2&lt;/TH&gt;&lt;/TR&gt;&lt;/THEAD&gt;
-    &lt;TBODY&gt;
-    &lt;TR&gt;&lt;TD&gt;val1&lt;/TD&gt;&lt;TD&gt;val2&lt;/TD&gt;&lt;/TR&gt;
-    &lt;TR&gt;&lt;TD&gt;val3&lt;/TD&gt;&lt;TD&gt;val3&lt;/TD&gt;&lt;/TR&gt;
-    &lt;/TBODY&gt;
-    &lt;/TABLE&gt;</pre>
+    &lt;table border=&quot;1&quot;&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Column1&lt;/th&gt;&lt;th&gt;Column2&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;val1&lt;/td&gt;&lt;td&gt;val2&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;val3&lt;/td&gt;&lt;td&gt;val3&lt;/td&gt;&lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;/table&gt;</pre>
 <p>It can also have an optional caption at the start.</p>
 <pre>
          My Caption
@@ -1819,15 +1726,90 @@ values.</p>
 <h1><a name="notes">NOTES</a></h1>
 <ul>
 <li>
-<p>One cannot use ``CLEAR'' as a value for the cumulative arguments.</p>
-</li>
-<li>
 <p>If the underline used to mark a header is off by more than 1, then 
 that part of the text will not be picked up as a header unless you
 change the value of --underline_length_tolerance and/or
 --underline_offset_tolerance.  People tend to forget this.</p>
 </li>
 </ul>
+<p>
+</p>
+<hr />
+<h1><a name="requires">REQUIRES</a></h1>
+<p>HTML::TextToHTML requires Perl 5.8.1 or later.</p>
+<p>For installation, it needs:</p>
+<pre>
+    Module::Build</pre>
+<p>The txt2html script needs:</p>
+<pre>
+    Getopt::Long
+    Getopt::ArgvFile
+    Pod::Usage
+    File::Basename</pre>
+<p>For testing, it also needs:</p>
+<pre>
+    Test::More</pre>
+<p>For debugging, it also needs:</p>
+<pre>
+    YAML::Syck</pre>
+<p>
+</p>
+<hr />
+<h1><a name="installation">INSTALLATION</a></h1>
+<p>Make sure you have the dependencies installed first!
+(see REQUIRES above)</p>
+<p>Some of those modules come standard with more recent versions of perl,
+but I thought I'd mention them anyway, just in case you may not have
+them.</p>
+<p>If you don't know how to install these, try using the CPAN module, an
+easy way of auto-installing modules from the Comprehensive Perl Archive
+Network, where the above modules reside.
+Do ``perldoc perlmodinstall'' or ``perldoc CPAN'' for more information.</p>
+<p>To install this module type the following:</p>
+<pre>
+   perl Build.PL
+   ./Build
+   ./Build test
+   ./Build install</pre>
+<p>Or, if you're on a platform (like DOS or Windows) that doesn't like the
+``./'' notation, you can do this:</p>
+<pre>
+   perl Build.PL
+   perl Build
+   perl Build test
+   perl Build install</pre>
+<p>In order to install somewhere other than the default, such as
+in a directory under your home directory, like ``/home/fred/perl''
+go</p>
+<pre>
+   perl Build.PL --install_base /home/fred/perl</pre>
+<p>as the first step instead.</p>
+<p>This will install the files underneath /home/fred/perl.</p>
+<p>You will then need to make sure that you alter the PERL5LIB variable to
+find the modules, and the PATH variable to find the script.</p>
+<p>Therefore you will need to change:
+your path, to include /home/fred/perl/script (where the script will be)</p>
+<pre>
+        PATH=/home/fred/perl/script:${PATH}</pre>
+<p>the PERL5LIB variable to add /home/fred/perl/lib</p>
+<pre>
+        PERL5LIB=/home/fred/perl/lib:${PERL5LIB}</pre>
+<p>Note that the system links dictionary will be installed as
+``/home/fred/perl/share/txt2html/txt2html.dict''</p>
+<p>If you want to install in a temporary install directory (such as
+if you are building a package) then instead of going</p>
+<pre>
+   perl Build install</pre>
+<p>go</p>
+<pre>
+   perl Build install destdir=/my/temp/dir</pre>
+<p>and it will be installed there, with a directory structure under
+/my/temp/dir the same as it would be if it were installed plain.
+Note that this is NOT the same as setting --install_base, because
+certain things are done at build-time which use the install_base info.</p>
+<p>See ``perldoc perlrun'' for more information on PERL5LIB, and
+see ``perldoc Module::Build'' for more information on
+installation options.</p>
 <p>
 </p>
 <hr />
@@ -1838,8 +1820,7 @@ change the value of --underline_length_tolerance and/or
 <hr />
 <h1><a name="see_also">SEE ALSO</a></h1>
 <p>perl
-<a href="#txt2html">the txt2html manpage</a>.
-Data::Dumper</p>
+<a href="#txt2html">the txt2html manpage</a>.</p>
 <p>
 </p>
 <hr />
