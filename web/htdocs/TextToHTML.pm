@@ -1,5 +1,5 @@
 package HTML::TextToHTML;
-use 5.006_001;
+use 5.8.1;
 use strict;
 #------------------------------------------------------------------------
 
@@ -9,11 +9,11 @@ HTML::TextToHTML - convert plain text file to HTML.
 
 =head1 VERSION
 
-This describes version B<2.46> of HTML::TextToHTML.
+This describes version B<2.50> of HTML::TextToHTML.
 
 =cut
 
-our $VERSION = '2.46';
+our $VERSION = '2.50';
 
 =head1 SYNOPSIS
 
@@ -65,133 +65,17 @@ HTML::TextToHTML module called the included script texthyper so as not
 to clash with the original txt2html script, but now the projects have
 all been merged.
 
-=head1 REQUIRES
-
-HTML::TextToHTML requires Perl 5.6.1 or later.
-
-For installation, it needs:
-
-    Module::Build
-
-The txt2html script needs:
-
-    Getopt::Long
-    Getopt::ArgvFile
-    Pod::Usage
-    File::Basename
-
-For testing, it also needs:
-
-    Test::More
-
-For debugging, it also needs:
-
-    Data::Dumper
-
-=head1 INSTALLATION
-
-Make sure you have the dependencies installed first!
-(see REQUIRES above)
-
-Some of those modules come standard with more recent versions of perl,
-but I thought I'd mention them anyway, just in case you may not have
-them.
-
-If you don't know how to install these, try using the CPAN module, an
-easy way of auto-installing modules from the Comprehensive Perl Archive
-Network, where the above modules reside.
-Do "perldoc perlmodinstall" or "perldoc CPAN" for more information.
-
-To install this module type the following:
-
-   perl Build.PL
-   ./Build
-   ./Build test
-   ./Build install
-
-Or, if you're on a platform (like DOS or Windows) that doesn't like the
-"./" notation, you can do this:
-
-   perl Build.PL
-   perl Build
-   perl Build test
-   perl Build install
-
-In order to install somewhere other than the default, such as
-in a directory under your home directory, like "/home/fred/perl"
-go
-
-   perl Build.PL --install_base /home/fred/perl
-
-as the first step instead.
-
-This will install the files underneath /home/fred/perl.
-
-You will then need to make sure that you alter the PERL5LIB variable to
-find the modules, and the PATH variable to find the script.
-
-Therefore you will need to change:
-your path, to include /home/fred/perl/script (where the script will be)
-
-	PATH=/home/fred/perl/script:${PATH}
-
-the PERL5LIB variable to add /home/fred/perl/lib
-
-	PERL5LIB=/home/fred/perl/lib:${PERL5LIB}
-
-Note that the system links dictionary will be installed as
-"/home/fred/perl/share/txt2html/txt2html.dict"
-
-If you want to install in a temporary install directory (such as
-if you are building a package) then instead of going
-
-   perl Build install
-
-go
-
-   perl Build install destdir=/my/temp/dir
-
-and it will be installed there, with a directory structure under
-/my/temp/dir the same as it would be if it were installed plain.
-Note that this is NOT the same as setting --install_base, because
-certain things are done at build-time which use the install_base info.
-
-See "perldoc perlrun" for more information on PERL5LIB, and
-see "perldoc Module::Build" for more information on
-installation options.
-
 =head1 OPTIONS
 
 All arguments can be set when the object is created, and further options
 can be set when calling the actual txt2html method. Arguments
-to methods can take either a hash of arguments, or a reference to an
-array.  Note that the reference-to-array method is depricated and is only
-retained for backwards compatibility.
+to methods can take a hash of arguments.
 
 Note that all option-names must match exactly -- no abbreviations are
-allowed.
-
-The arguments get treated differently depending on whether they are
-given in a hash or a reference to an array.  When the arguments are
-in a hash, the argument-keys are expected to have values matching
-those required for that argument -- whether that be a boolean, a string,
-a reference to an array or a reference to a hash.  These will replace
-any value for that argument that might have been there before.
-
-When the arguments are in a reference to an array, it is treated
-somewhat as if it were a command-line: option names are expected to
-start with '--' or '-', boolean options are set to true as soon as the
-option is given (no value is expected to follow),  boolean options with
-the word "no" prepended set the option to false, string options are
-expected to have a string value following, and those options which are
-internally arrays or hashes are treated as cumulative; that is, the
-value following the --option is added to the current set for that
-option,  to add more, one just repeats the --option with the next value,
-and in order to reset that option to empty, the special value of "CLEAR"
-must be added to the list.
-
-NOTE: the reference-to-an-array usage is DEPRECATED and will be removed
-in the future.
+allowed.  The argument-keys are expected to have values matching those
+required for that argument -- whether that be a boolean, a string, a
+reference to an array or a reference to a hash.  These will replace any
+value for that argument that might have been there before.
 
 =over
 
@@ -201,7 +85,7 @@ in the future.
 
 If you want something appended by default, put the filename here.
 The appended text will not be processed at all, so make sure it's
-plain text or decent HTML.  i.e. do not have things like:
+plain text or correct HTML.  i.e. do not have things like:
     Mary Andersen E<lt>kitty@example.comE<gt>
 but instead, have:
     Mary Andersen &lt;kitty@example.com&gt;
@@ -214,7 +98,7 @@ but instead, have:
 
 If you want something appended to the head by default, put the filename here.
 The appended text will not be processed at all, so make sure it's
-plain text or decent HTML.  i.e. do not have things like:
+plain text or correct HTML.  i.e. do not have things like:
     Mary Andersen E<lt>kitty@example.comE<gt>
 but instead, have:
     Mary Andersen &lt;kitty@example.com&gt;
@@ -305,13 +189,6 @@ This expects a reference to an array of strings.
 
 (default: none)
 
-=item debug
-    
-    debug=>1
-
-Enable copious script debugging output (don't bother, this is for the
-developer) (default: false)
-
 =item default_link_dict
 
     default_link_dict=>I<filename>
@@ -327,18 +204,6 @@ the txt2html script.  If there is no $ENV{HOME} then it is just '.txt2html.dict'
 Convert Microsoft-generated character codes that are non-ISO codes into
 something more reasonable.
 (default:true)
-
-=item dict_debug
-
-    dict_debug=>I<n>
-
-Debug mode for link dictionaries Bitwise-Or what you want to see:
-          1: The parsing of the dictionary
-          2: The code that will make the links
-          4: When each rule matches something
-          8: When each tag is created
-
-(default: 0)
 
 =item doctype
 
@@ -373,7 +238,7 @@ Don't try to find any headings except the ones specified in the
 --custom_heading_regexp option.
 Also, the custom headings will not be assigned levels in the order they
 are encountered in the document, but in the order they are specified on
-the command line.
+the custom_heading_regexp option.
 (default: false)
 
 =item extract
@@ -413,13 +278,9 @@ put in a <BR> and three non-breaking spaces instead.
 
     infile=>\@my_files
     infile=>['chapter1.txt', 'chapter2.txt']
-    "--infile", "chapter1.txt", "--infile", "chapter2.txt"
 
-The name of the input file(s).  When the arguments are given as a hash,
-this expects a reference to an array of filenames.  When the arguments
-are given as a reference to an array, then the "--infile" option must
-be repeated for each new file added to the list.  If you want to reset
-the list to be empty, give the special value of "CLEAR".
+The name of the input file(s).  
+This expects a reference to an array of filenames.
 
 The special filename '-' designates STDIN.
 
@@ -467,15 +328,10 @@ tag).  If this is empty, no underlining of text will be done.
 
     links_dictionaries=>\@my_link_dicts
     links_dictionaries=>['url_links.dict', 'format_links.dict']
-    "--links_dictionaries", "url_links.dict", "--links_dictionaries", "format_links.dict"
 
 File(s) to use as a link-dictionary.  There can be more than one of
 these.  These are in addition to the Global Link Dictionary and the User
-Link Dictionary.  When the arguments are given as a hash, this expects a
-reference to an array of filenames.  When the arguments are given as a
-reference to an array, then the "--links_dictionaries" option must be
-repeated for each new file added to the list.  If you want to reset the
-list to be empty, give the special value of "CLEAR".
+Link Dictionary.  This expects a reference to an array of filenames.
 
 =item link_only
 
@@ -621,7 +477,7 @@ expanded to 8 spaces, which is enough to trigger preformatting.
 
 If you want something prepended to the processed body text, put the
 filename here.  The prepended text will not be processed at all, so make
-sure it's plain text or decent HTML.
+sure it's plain text or correct HTML.
 
 (default: nothing)
 
@@ -674,7 +530,7 @@ You can specify a title.  Otherwise it will use a blank one.
 
     titlefirst=>1
 
-Use the first non-blank line as the title.
+Use the first non-blank line as the title. (See also "title")
 
 =item underline_length_tolerance
 
@@ -731,21 +587,54 @@ Likewise, if you make link-dictionary entries that break XHTML,
 then this won't fix them, except to the degree of putting all tags
 into lower-case.
 
+(default: true)
+
 =back
+
+=head1 DEBUGGING
+
+There are global variables for setting types and levels
+of debugging.  These should only be used by developers.
+
+=over
+
+=item $HTML::TextToHTML::Debug
+
+$HTML::TextToHTML::Debug = 1;
+    
+Enable copious debugging output.
+(default: false)
+
+=item $HTML::TextToHTML::DictDebug
+
+    $HTML::TextToHTML::DictDebug = I<n>;
+
+Debug mode for link dictionaries. Bitwise-Or what you want to see:
+
+          1: The parsing of the dictionary
+          2: The code that will make the links
+          4: When each rule matches something
+          8: When each tag is created
+
+(default: 0)
+
+=back
+
+=cut
+
+our $Debug = 0;
+our $DictDebug = 0;
 
 =head1 METHODS
 
 =cut
 
 #------------------------------------------------------------------------
-
-require Exporter;
-use Data::Dumper;
+use YAML::Syck;
 
 our $PROG = 'HTML::TextToHTML';
 
 #------------------------------------------------------------------------
-use constant TEXT_TO_HTML => "TEXT_TO_HTML";
 
 ########################################
 # Definitions  (Don't change these)
@@ -794,6 +683,13 @@ our $TAB_ALIGN  = 1;
 our $TAB_PGSQL  = 2;
 our $TAB_BORDER = 3;
 our $TAB_DELIM  = 4;
+
+# Constants for tags
+use constant {
+    TAG_START	=> 1,
+    TAG_END	=> 2,
+    TAG_EMPTY	=> 3,
+};
 
 # Character entity names
 # characters to replace with entities
@@ -850,10 +746,8 @@ our @xhtml_alignments =
 	...
     );
 
-Create a new object with new.  If one argument is given, it is assumed
-to be a reference to an array of arguments.  If more than one argument
-is given, it is assumed to be a hash of arguments.  These arguments will
-be used in invocations of other methods.
+Create a new object with new. If arguments are given, these arguments
+will be used in invocations of other methods.
 
 See L</OPTIONS> for the possible values of the arguments.
 
@@ -883,203 +777,51 @@ sub new
     );
 
 Updates the current arguments/options of the HTML::TextToHTML object.
-Takes either a hash, or a reference to an array of arguments, which will
-be used in invocations of other methods.
+Takes hash of arguments, which will be used in invocations of other
+methods.
 See L</OPTIONS> for the possible values of the arguments.
-
-NOTE: the reference-to-an-array usage is DEPRECATED and will be removed
-in the future.
 
 =cut
 
 sub args
 {
     my $self      = shift;
-    my %args      = ();
-    my @arg_array = ();
-    if (   @_
-        && @_ == 1
-        && ref $_[0] eq 'ARRAY')
-    {
-        # this is a reference to an array -- use the old style args
-        my $aref = shift;
-        @arg_array = @{$aref};
-    }
-    elsif (@_)
-    {
-        %args = @_;
-    }
+    my %args = @_;
 
     if (%args)
     {
-        if ($self->{debug})
+        if ($Debug)
         {
             print STDERR "========args(hash)========\n";
-            print STDERR Dumper(%args);
+            print STDERR Dump(%args);
         }
-        foreach my $arg (keys %args)
+	my $arg;
+	my $val;
+	while (($arg, $val) = each %args)
         {
-            if (defined $args{$arg})
+            if (defined $val)
             {
                 if ($arg =~ /^-/)
                 {
                     $arg =~ s/^-//;    # get rid of first dash
                     $arg =~ s/^-//;    # get rid of possible second dash
                 }
-                if ($self->{debug})
+                if ($Debug)
                 {
                     print STDERR "--", $arg;
                 }
-                $self->{$arg} = $args{$arg};
-                if ($self->{debug})
+                $self->{$arg} = $val;
+                if ($Debug)
                 {
-                    print STDERR " ", $args{$arg}, "\n";
+                    print STDERR " ", $val, "\n";
                 }
-            }
-        }
-    }
-    elsif (@arg_array)
-    {
-        if ($self->{debug})
-        {
-            print STDERR "========args(array)========\n";
-            print STDERR Dumper(@arg_array);
-        }
-        # the arg array may have filenames at the end of it,
-        # so don't consume them
-        my $look_at_args = 1;
-        while (@arg_array && $look_at_args)
-        {
-            my $arg = shift @arg_array;
-            # check for arguments which are bools,
-            # and thus have no companion value
-            if ($arg =~ /^-/)
-            {
-                $arg =~ s/^-//;    # get rid of first dash
-                $arg =~ s/^-//;    # get rid of possible second dash
-                if ($self->{debug})
-                {
-                    print STDERR "--", $arg;
-                }
-                if (   $arg eq 'debug'
-                    || $arg eq 'demoronize'
-                    || $arg eq 'eight_bit_clean'
-                    || $arg eq 'escape_HTML_chars'
-                    || $arg eq 'explicit_headings'
-                    || $arg eq 'extract'
-                    || $arg eq 'link_only'
-                    || $arg eq 'lower_case_tags'
-                    || $arg eq 'mailmode'
-                    || $arg eq 'make_anchors'
-                    || $arg eq 'make_links'
-                    || $arg eq 'make_tables'
-                    || $arg eq 'preserve_indent'
-                    || $arg eq 'titlefirst'
-                    || $arg eq 'unhyphenation'
-                    || $arg eq 'use_mosaic_header'
-                    || $arg eq 'use_preformat_marker'
-                    || $arg eq 'verbose'
-                    || $arg eq 'xhtml')
-                {
-                    $self->{$arg} = 1;
-                    if ($self->{debug})
-                    {
-                        print STDERR "=true\n";
-                    }
-                }
-                elsif ($arg eq 'nodebug'
-                    || $arg eq 'nodemoronize'
-                    || $arg eq 'noeight_bit_clean'
-                    || $arg eq 'noescape_HTML_chars'
-                    || $arg eq 'noexplicit_headings'
-                    || $arg eq 'noextract'
-                    || $arg eq 'nolink_only'
-                    || $arg eq 'nolower_case_tags'
-                    || $arg eq 'nomailmode'
-                    || $arg eq 'nomake_anchors'
-                    || $arg eq 'nomake_links'
-                    || $arg eq 'nomake_tables'
-                    || $arg eq 'nopreserve_indent'
-                    || $arg eq 'notitlefirst'
-                    || $arg eq 'nounhyphenation'
-                    || $arg eq 'nouse_mosaic_header'
-                    || $arg eq 'nouse_preformat_marker'
-                    || $arg eq 'noverbose'
-                    || $arg eq 'noxhtml')
-                {
-                    $arg =~ s/^no//;
-                    $self->{$arg} = 0;
-                    if ($self->{debug})
-                    {
-                        print STDERR " $arg=false\n";
-                    }
-                }
-                else
-                {
-                    my $val = shift @arg_array;
-                    if ($self->{debug})
-                    {
-                        print STDERR "=", $val, "\n";
-                    }
-                    # check the types
-                    if (defined $arg && defined $val)
-                    {
-                        if (   $arg eq 'infile'
-                            || $arg eq 'custom_heading_regexp'
-                            || $arg eq 'links_dictionaries')
-                        {    # arrays
-                            if ($val eq 'CLEAR')
-                            {
-                                $self->{$arg} = [];
-                            }
-                            else
-                            {
-                                push @{$self->{$arg}}, $val;
-                            }
-                        }
-                        elsif ($arg eq 'file')
-                        {    # alternate for 'infile'
-                            if ($val eq 'CLEAR')
-                            {
-                                $self->{infile} = [];
-                            }
-                            else
-                            {
-                                push @{$self->{infile}}, $val;
-                            }
-                        }
-                        elsif ($arg eq 'table_type')
-                        {
-                            # hash
-                            if ($val eq 'CLEAR')
-                            {
-                                $self->{$arg} = {};
-                            }
-                            else
-                            {
-                                my ($f1, $v1) = split(/=/, $val, 2);
-                                $self->{$arg}->{$f1} = $v1;
-                            }
-                        }
-                        else
-                        {
-                            $self->{$arg} = $val;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                # if an option don't start with - then we've
-                # come to the end of the options
-                $look_at_args = 0;
             }
         }
     }
     $self->deal_with_options();
-    if ($self->{debug})
+    if ($Debug)
     {
-        print STDERR Dumper($self);
+        print STDERR Dump($self);
     }
 
     return 1;
@@ -1099,7 +841,7 @@ either when you create the object, or with the L</args> method.
 			    close_tags=>0);
 
 If there are open tags (such as lists) in the input string,
-process_chunk will now automatically close them, unless you specify not
+process_chunk will automatically close them, unless you specify not
 to, with the close_tags option.
 
     $newstring = $conv->process_chunk($mystring,
@@ -1179,7 +921,7 @@ either when you create the object, or with the L</args> method.
 			    close_tags=>0);
 
 If there are open tags (such as lists) in the input string, process_para
-will now automatically close them, unless you specify not to, with the
+will automatically close them, unless you specify not to, with the
 close_tags option.
 
     $newstring = $conv->process_para($mystring,
@@ -1369,7 +1111,7 @@ sub process_para ($$;%)
               )
             {
                 my $pre_end = '';
-                my $tag     = $self->close_tag('PRE');
+                my $tag     = $self->close_tag('pre');
                 $pre_end = "${tag}\n";
                 $self->{__mode} ^= ($PRE & $self->{__mode});
                 push @done_lines, $pre_end;
@@ -1598,9 +1340,9 @@ sub process_para ($$;%)
         if ($self->{xhtml})
         {
             my $open_tag = @{$self->{__tags}}[$#{$self->{__tags}}];
-            if (defined $open_tag && $open_tag eq 'P')
+            if (defined $open_tag && $open_tag eq 'p')
             {
-                $para .= $self->close_tag('P');
+                $para .= $self->close_tag('p');
             }
         }
 
@@ -1678,11 +1420,10 @@ sub process_para ($$;%)
 
     $conv->txt2html(%args);
 
-Convert a text file to HTML.  Takes a hash of arguments, or a reference
-to an array of arguments to customize the conversion; (this includes
-saying what file to convert!) See L</OPTIONS> for the possible values of
-the arguments.  Arguments which have already been set with B<new> or
-B<args> will remain as they are, unless they are overridden.
+Convert a text file to HTML.  Takes a hash of arguments.  See
+L</OPTIONS> for the possible values of the arguments.  Arguments which
+have already been set with B<new> or B<args> will remain as they are,
+unless they are overridden.
 
 =cut
 
@@ -1822,7 +1563,7 @@ sub txt2html ($;$)
     # end open preformats
     if ($self->{__mode} & $PRE)
     {
-        my $tag = $self->close_tag('PRE');
+        my $tag = $self->close_tag('pre');
         print $outhandle $tag;
     }
 
@@ -1831,15 +1572,15 @@ sub txt2html ($;$)
         && !$self->{extract}
         && @{$self->{__tags}})
     {
-        if ($self->{dict_debug} & 8)
+        if ($DictDebug & 8)
         {
             print STDERR "closing all tags at end\n";
         }
         # close any open tags (until we get to the body)
         my $open_tag = @{$self->{__tags}}[$#{$self->{__tags}}];
         while (@{$self->{__tags}}
-            && $open_tag ne 'BODY'
-            && $open_tag ne 'HTML')
+            && $open_tag ne 'body'
+            && $open_tag ne 'html')
         {
             print $outhandle $self->close_tag('');
             $open_tag = @{$self->{__tags}}[$#{$self->{__tags}}];
@@ -1869,8 +1610,8 @@ sub txt2html ($;$)
     # print the closing tags (if we have printed stuff at all)
     if ($print_count && !$self->{extract})
     {
-        print $outhandle $self->close_tag('BODY'), "\n";
-        print $outhandle $self->close_tag('HTML'), "\n";
+        print $outhandle $self->close_tag('body'), "\n";
+        print $outhandle $self->close_tag('html'), "\n";
     }
     if ($outhandle_needs_closing)
     {
@@ -1899,8 +1640,6 @@ sub init_our_data ($)
 {
     my $self = shift;
 
-    $self->{debug} = 0;
-
     #
     # All the options, in alphabetical order
     #
@@ -1914,7 +1653,6 @@ sub init_our_data ($)
     $self->{custom_heading_regexp} = [];
     $self->{default_link_dict}     =
       ($ENV{HOME} ? "$ENV{HOME}/.txt2html.dict" : '.txt2html.dict');
-    $self->{dict_debug}                 = 0;
     $self->{doctype}                    = '-//W3C//DTD HTML 4.01//EN"
 "http://www.w3.org/TR/html4/strict.dtd';
     $self->{demoronize}                 = 1;
@@ -1963,7 +1701,7 @@ sub init_our_data ($)
     $self->{unhyphenation}              = 1;
     $self->{use_mosaic_header}          = 0;
     $self->{use_preformat_marker}       = 0;
-    $self->{xhtml}                      = 0;
+    $self->{xhtml}                      = 1;
 
     # accumulation variables
     $self->{__file}               = "";    # Current file being processed
@@ -2297,14 +2035,14 @@ sub demoronize_code($)
 $tag = $self->get_tag($in_tag);
 
 $tag = $self->get_tag($in_tag,
-	tag_type=>'start',
+	tag_type=>TAG_START,
 	inside_tag=>'');
 
 output the tag wanted (add the <> and the / if necessary)
 - output in lower or upper case
 - do tag-related processing
 options:
-  tag_type=>'start' | tag_type=>'end' | tag_type=>'empty'
+  tag_type=>TAG_START | tag_type=>TAG_END | tag_type=>TAG_EMPTY
   (default start)
   inside_tag=>string (default empty)
 
@@ -2314,7 +2052,7 @@ sub get_tag ($$;%)
     my $self   = shift;
     my $in_tag = shift;
     my %args   = (
-        tag_type   => 'start',
+        tag_type   => TAG_START,
         inside_tag => '',
         @_
     );
@@ -2331,56 +2069,56 @@ sub get_tag ($$;%)
     my $tag_prefix = '';
     if ($self->{xhtml})
     {
-        if (    $open_tag eq 'P'
-            and $in_tag eq 'P'
-            and $args{tag_type} ne 'end')
+        if (    $open_tag eq 'p'
+            and $in_tag eq 'p'
+            and $args{tag_type} != TAG_END)
         {
-            $tag_prefix = $self->close_tag('P');
+            $tag_prefix = $self->close_tag('p');
         }
-        elsif ( $open_tag eq 'P'
-            and $in_tag =~ /^(HR|UL|OL|DL|PRE|TABLE|H)/)
+        elsif ( $open_tag eq 'p'
+            and $in_tag =~ /^(hr|ul|ol|dl|pre|table|h)/)
         {
-            $tag_prefix = $self->close_tag('P');
+            $tag_prefix = $self->close_tag('p');
         }
-        elsif ( $open_tag eq 'LI'
-            and $in_tag eq 'LI'
-            and $args{tag_type} ne 'end')
+        elsif ( $open_tag eq 'li'
+            and $in_tag eq 'li'
+            and $args{tag_type} != TAG_END)
         {
             # close a LI before the next LI
-            $tag_prefix = $self->close_tag('LI');
+            $tag_prefix = $self->close_tag('li');
         }
-        elsif ( $open_tag eq 'LI'
-            and $in_tag =~ /^(UL|OL)$/
-            and $args{tag_type} eq 'end')
+        elsif ( $open_tag eq 'li'
+            and $in_tag =~ /^(ul|ol)$/
+            and $args{tag_type} == TAG_END)
         {
             # close the LI before the list closes
-            $tag_prefix = $self->close_tag('LI');
+            $tag_prefix = $self->close_tag('li');
         }
-        elsif ( $open_tag eq 'DT'
-            and $in_tag eq 'DD'
-            and $args{tag_type} ne 'end')
+        elsif ( $open_tag eq 'dt'
+            and $in_tag eq 'dd'
+            and $args{tag_type} != TAG_END)
         {
             # close a DT before the next DD
-            $tag_prefix = $self->close_tag('DT');
+            $tag_prefix = $self->close_tag('dt');
         }
-        elsif ( $open_tag eq 'DD'
-            and $in_tag eq 'DT'
-            and $args{tag_type} ne 'end')
+        elsif ( $open_tag eq 'dd'
+            and $in_tag eq 'dt'
+            and $args{tag_type} != TAG_END)
         {
             # close a DD before the next DT
-            $tag_prefix = $self->close_tag('DD');
+            $tag_prefix = $self->close_tag('dd');
         }
-        elsif ( $open_tag eq 'DD'
-            and $in_tag         eq 'DL'
-            and $args{tag_type} eq 'end')
+        elsif ( $open_tag eq 'dd'
+            and $in_tag         eq 'dl'
+            and $args{tag_type} == TAG_END)
         {
             # close the DD before the list closes
-            $tag_prefix = $self->close_tag('DD');
+            $tag_prefix = $self->close_tag('dd');
         }
     }
 
     my $out_tag = $in_tag;
-    if ($args{tag_type} eq 'end')
+    if ($args{tag_type} == TAG_END)
     {
         $out_tag = $self->close_tag($in_tag);
     }
@@ -2394,7 +2132,7 @@ sub get_tag ($$;%)
         {
             $out_tag =~ tr/a-z/A-Z/;
         }
-        if ($args{tag_type} eq 'empty')
+        if ($args{tag_type} == TAG_EMPTY)
         {
             if ($self->{xhtml})
             {
@@ -2412,7 +2150,7 @@ sub get_tag ($$;%)
         }
     }
     $out_tag = $tag_prefix . $out_tag if $tag_prefix;
-    if ($self->{dict_debug} & 8)
+    if ($DictDebug & 8)
     {
         print STDERR
           "open_tag = '${open_tag}', in_tag = '${in_tag}', tag_type = ",
@@ -2452,7 +2190,7 @@ sub close_tag ($$)
         $out_tag =~ tr/a-z/A-Z/;
     }
     $out_tag = "<\/${out_tag}>";
-    if ($self->{dict_debug} & 8)
+    if ($DictDebug & 8)
     {
         print STDERR
 "close_tag: open_tag = '${open_tag}', in_tag = '${in_tag}', out_tag = '$out_tag'\n";
@@ -2486,7 +2224,7 @@ sub hrule ($%)
     my $hrmin = $self->{hrule_min};
     if ($para_lines_ref->[$ind] =~ /^\s*([-_~=\*]\s*){$hrmin,}$/)
     {
-        my $tag = $self->get_tag("HR", tag_type => 'empty');
+        my $tag = $self->get_tag("hr", tag_type => TAG_EMPTY);
         $para_lines_ref->[$ind] = "$tag\n";
         $para_action_ref->[$ind] |= $HRULE;
     }
@@ -2494,7 +2232,7 @@ sub hrule ($%)
     {
         # Linefeeds become horizontal rules
         $para_action_ref->[$ind] |= $HRULE;
-        my $tag = $self->get_tag("HR", tag_type => 'empty');
+        my $tag = $self->get_tag("hr", tag_type => TAG_EMPTY);
         $para_lines_ref->[$ind] =~ s/\014/\n${tag}\n/g;
     }
 }
@@ -2533,7 +2271,7 @@ sub shortline ($%)
     # that yet.  For now, I'll just not break on short lines in lists.
     # (sorry)
 
-    my $tag = $self->get_tag('BR', tag_type => 'empty');
+    my $tag = $self->get_tag('br', tag_type => TAG_EMPTY);
     if (
            ${$line_ref} !~ /^\s*$/
         && ${$prev_ref} !~ /^\s*$/
@@ -2610,8 +2348,8 @@ sub mailheader ($%)
         }
         $self->anchor_mail(\$rows[0]);
         chomp ${rows}[0];
-        $tag = $self->get_tag('P', inside_tag => " class='mail_header'");
-        my $tag2 = $self->get_tag('BR', tag_type => 'empty');
+        $tag = $self->get_tag('p', inside_tag => " class='mail_header'");
+        my $tag2 = $self->get_tag('br', tag_type => TAG_EMPTY);
         $rows[0] =
           join('', "<!-- New Message -->\n", $tag, $rows[0], $tag2, "\n");
         # now put breaks on the rest of the paragraph
@@ -2624,7 +2362,7 @@ sub mailheader ($%)
             }
             if ($rn != (@rows - 1))
             {
-                $tag = $self->get_tag('BR', tag_type => 'empty');
+                $tag = $self->get_tag('br', tag_type => TAG_EMPTY);
                 chomp $rows[$rn];
                 $rows[$rn] =~ s/$/${tag}\n/;
             }
@@ -2671,12 +2409,12 @@ sub mailquote ($%)
         && defined($next_ref) && (${$next_ref} !~ /^\s*$/)
       )
     {
-        $tag = $self->get_tag('BR', tag_type => 'empty');
+        $tag = $self->get_tag('br', tag_type => TAG_EMPTY);
         ${$line_ref} =~ s/$/${tag}/;
         ${$line_action_ref} |= ($BREAK | $MAILQUOTE);
         if (!(${$prev_action_ref} & ($BREAK | $MAILQUOTE)))
         {
-            $tag = $self->get_tag('P', inside_tag => " class='quote_mail'");
+            $tag = $self->get_tag('p', inside_tag => " class='quote_mail'");
             ${$prev_ref} .= $tag;
             ${$line_action_ref} |= $PAR;
         }
@@ -2751,7 +2489,7 @@ sub paragraph ($%)
             && !(${$line_action_ref} & $END)
             && ($line_indent > $prev_indent + $self->{par_indent}))
         {
-            $tag = $self->get_tag('BR', tag_type => 'empty');
+            $tag = $self->get_tag('br', tag_type => TAG_EMPTY);
             ${$prev_ref} .= $tag;
             ${$prev_ref} .= "&nbsp;" x $line_indent;
             ${$line_ref} =~ s/^ {$line_indent}//;
@@ -2760,7 +2498,7 @@ sub paragraph ($%)
         }
         elsif ($self->{preserve_indent})
         {
-            $tag = $self->get_tag('P');
+            $tag = $self->get_tag('p');
             ${$prev_ref} .= $tag;
             ${$prev_ref} .= "&nbsp;" x $line_indent;
             ${$line_ref} =~ s/^ {$line_indent}//;
@@ -2768,7 +2506,7 @@ sub paragraph ($%)
         }
         else
         {
-            $tag = $self->get_tag('P');
+            $tag = $self->get_tag('p');
             ${$prev_ref} .= $tag;
             ${$line_action_ref} |= $PAR;
         }
@@ -2783,7 +2521,7 @@ sub paragraph ($%)
         && ($line_indent > $self->{par_indent})
         && ($line_indent == $prev_indent))
     {
-        $tag = $self->get_tag('BR', tag_type => 'empty');
+        $tag = $self->get_tag('br', tag_type => TAG_EMPTY);
         ${$prev_ref} .= $tag;
         ${$prev_ref} .= "&nbsp;" x $line_indent;
         ${$line_ref} =~ s/^ {$line_indent}//;
@@ -2907,19 +2645,19 @@ sub startlist ($%)
         {
             return 0;
         }
-        $tag = $self->get_tag('OL');
+        $tag = $self->get_tag('ol');
         ${$prev_ref} .= join('', $self->{__list_nice_indent}, $tag, "\n");
         $self->{__list}->[$self->{__listnum}] = $OL;
     }
     elsif ($term)
     {
-        $tag = $self->get_tag('DL');
+        $tag = $self->get_tag('dl');
         ${$prev_ref} .= join('', $self->{__list_nice_indent}, $tag, "\n");
         $self->{__list}->[$self->{__listnum}] = $DL;
     }
     else
     {
-        $tag = $self->get_tag('UL');
+        $tag = $self->get_tag('ul');
         ${$prev_ref} .= join('', $self->{__list_nice_indent}, $tag, "\n");
         $self->{__list}->[$self->{__listnum}] = $UL;
     }
@@ -2963,19 +2701,19 @@ sub endlist ($%)
           " " x ($self->{__listnum} - 1) x $self->{indent_width};
         if ($self->{__list}->[$self->{__listnum} - 1] == $UL)
         {
-            $tag = $self->get_tag('UL', tag_type => 'end');
+            $tag = $self->get_tag('ul', tag_type => TAG_END);
             ${$prev_ref} .= join('', $self->{__list_nice_indent}, $tag, "\n");
             pop @{$self->{__list_indent}};
         }
         elsif ($self->{__list}->[$self->{__listnum} - 1] == $OL)
         {
-            $tag = $self->get_tag('OL', tag_type => 'end');
+            $tag = $self->get_tag('ol', tag_type => TAG_END);
             ${$prev_ref} .= join('', $self->{__list_nice_indent}, $tag, "\n");
             pop @{$self->{__list_indent}};
         }
         elsif ($self->{__list}->[$self->{__listnum} - 1] == $DL)
         {
-            $tag = $self->get_tag('DL', tag_type => 'end');
+            $tag = $self->get_tag('dl', tag_type => TAG_END);
             ${$prev_ref} .= join('', $self->{__list_nice_indent}, $tag, "\n");
             pop @{$self->{__list_indent}};
         }
@@ -3021,25 +2759,25 @@ sub continuelist ($%)
     if (   $self->{__list}->[$self->{__listnum} - 1] == $UL
         && $para_lines_ref->[$ind] =~ /^\s*[${bullets}]\s*/)
     {
-        $tag = $self->get_tag('LI');
+        $tag = $self->get_tag('li');
         $para_lines_ref->[$ind] =~ s/^\s*[${bullets}]\s*/${list_indent}${tag}/;
         $para_action_ref->[$ind] |= $LIST_ITEM;
     }
     if ($self->{__list}->[$self->{__listnum} - 1] == $OL)
     {
-        $tag = $self->get_tag('LI');
+        $tag = $self->get_tag('li');
         $para_lines_ref->[$ind] =~ s/^\s*${num_match}.\s*/${list_indent}${tag}/;
         $para_action_ref->[$ind] |= $LIST_ITEM;
     }
     if (   $self->{__list}->[$self->{__listnum} - 1] == $DL
         && $term)
     {
-        $tag = $self->get_tag('DT');
-        my $tag2 = $self->get_tag('DT', tag_type => 'end');
+        $tag = $self->get_tag('dt');
+        my $tag2 = $self->get_tag('dt', tag_type => TAG_END);
         $term =~ s/_/ /g;    # underscores are now spaces in the term
         $para_lines_ref->[$ind] =~
           s/^\s*${term_match}.$/${list_indent}${tag}${term}${tag2}/;
-        $tag = $self->get_tag('DD');
+        $tag = $self->get_tag('dd');
         $para_lines_ref->[$ind] .= ${tag};
         $para_action_ref->[$ind] |= $LIST_ITEM;
     }
@@ -3096,7 +2834,7 @@ sub liststuff ($%)
             $self->{__list_indent}->[$self->{__listnum} - 1])
         {
             # start a paragraph
-            my $tag = $self->get_tag('P');
+            my $tag = $self->get_tag('p');
             ${$prev_ref} .= $tag;
             $para_action_ref->[$ind] |= $PAR;
             return;
@@ -3660,7 +3398,7 @@ sub make_aligned_table ($%)
 
         foreach my $row (@rows)
         {
-            $row = join '', $self->get_tag('TR'), (
+            $row = join '', $self->get_tag('tr'), (
                 map {
                     $cell = substr $row, $starts[$_], $ends[$_] - $starts[$_];
                     $cell =~ s/^ +//;
@@ -3673,7 +3411,7 @@ sub make_aligned_table ($%)
 
                     (
                         $self->get_tag(
-                            'TD',
+                            'td',
                             inside_tag => (
                                 $self->{xhtml} ? $xhtml_alignments[$align[$_]]
                                 : (
@@ -3684,25 +3422,25 @@ sub make_aligned_table ($%)
                             )
                         ),
                         $cell,
-                        $self->close_tag('TD')
+                        $self->close_tag('td')
                     );
                   } 0 .. $#starts
               ),
-              $self->close_tag('TR');
+              $self->close_tag('tr');
         }
 
         # put the <TABLE> around the rows
         my $tag;
         if ($self->{xhtml})
         {
-            $tag = $self->get_tag('TABLE', inside_tag => ' summary=""');
+            $tag = $self->get_tag('table', inside_tag => ' summary=""');
         }
         else
         {
-            $tag = $self->get_tag('TABLE');
+            $tag = $self->get_tag('table');
         }
         $rows[0] = join("\n", $tag, $rows[0]);
-        $tag = $self->close_tag('TABLE', tag_type => 'end');
+        $tag = $self->close_tag('table', tag_type => TAG_END);
         $rows[$#rows] .= "\n${tag}";
         @{$rows_ref} = @rows;
         return 1;
@@ -3756,49 +3494,49 @@ sub make_pgsql_table ($%)
     my $tag2;
     if ($self->{xhtml})
     {
-        $tag = $self->get_tag('TABLE', inside_tag => ' border="1" summary=""');
+        $tag = $self->get_tag('table', inside_tag => ' border="1" summary=""');
     }
     else
     {
-        $tag = $self->get_tag('TABLE', inside_tag => ' border="1"');
+        $tag = $self->get_tag('table', inside_tag => ' border="1"');
     }
     push @tab_lines, "$tag\n";
     if ($caption)
     {
         $caption =~ s/^\s+//;
         $caption =~ s/\s+$//;
-        $tag     = $self->get_tag('CAPTION');
-        $tag2    = $self->close_tag('CAPTION');
+        $tag     = $self->get_tag('caption');
+        $tag2    = $self->close_tag('caption');
         $caption = join('', $tag, $caption, $tag2, "\n");
         push @tab_lines, $caption;
     }
     # table header
     my $thead = '';
-    $tag = $self->get_tag('THEAD');
+    $tag = $self->get_tag('thead');
     $thead .= $tag;
-    $tag = $self->get_tag('TR');
+    $tag = $self->get_tag('tr');
     $thead .= $tag;
     foreach my $col (@headings)
     {
         $col =~ s/^\s+//;
         $col =~ s/\s+$//;
-        $tag  = $self->get_tag('TH');
-        $tag2 = $self->close_tag('TH');
+        $tag  = $self->get_tag('th');
+        $tag2 = $self->close_tag('th');
         $thead .= join('', $tag, $col, $tag2);
     }
-    $tag = $self->close_tag('TR');
+    $tag = $self->close_tag('tr');
     $thead .= $tag;
-    $tag = $self->close_tag('THEAD');
+    $tag = $self->close_tag('thead');
     $thead .= $tag;
     push @tab_lines, "${thead}\n";
-    $tag = $self->get_tag('TBODY');
+    $tag = $self->get_tag('tbody');
     push @tab_lines, "$tag\n";
 
     # each row
     foreach my $row (@rows)
     {
         my $this_row = '';
-        $tag = $self->get_tag('TR');
+        $tag = $self->get_tag('tr');
         $this_row .= $tag;
         my @cols = split(/\|/, $row);
         foreach my $cell (@cols)
@@ -3813,27 +3551,27 @@ sub make_pgsql_table ($%)
             {
                 $cell = '&nbsp;';
             }
-            $tag  = $self->get_tag('TD');
-            $tag2 = $self->close_tag('TD');
+            $tag  = $self->get_tag('td');
+            $tag2 = $self->close_tag('td');
             $this_row .= join('', $tag, $cell, $tag2);
         }
-        $tag = $self->close_tag('TR');
+        $tag = $self->close_tag('tr');
         $this_row .= $tag;
         push @tab_lines, "${this_row}\n";
     }
 
     # end the table
-    $tag = $self->close_tag('TBODY');
+    $tag = $self->close_tag('tbody');
     push @tab_lines, "$tag\n";
-    $tag = $self->get_tag('TABLE', tag_type => 'end');
+    $tag = $self->get_tag('table', tag_type => TAG_END);
     push @tab_lines, "$tag\n";
 
     # and add the N rows line
-    $tag = $self->get_tag('P');
+    $tag = $self->get_tag('p');
     push @tab_lines, "${tag}${n_rows}\n";
     if ($self->{xhtml})
     {
-        $tag = $self->get_tag('P', tag_type => 'end');
+        $tag = $self->get_tag('p', tag_type => TAG_END);
         $tab_lines[$#tab_lines] =~ s/\n/${tag}\n/;
     }
 
@@ -3889,45 +3627,45 @@ sub make_border_table ($%)
     my $tag;
     if ($self->{xhtml})
     {
-        $tag = $self->get_tag('TABLE', inside_tag => ' border="1" summary=""');
+        $tag = $self->get_tag('table', inside_tag => ' border="1" summary=""');
     }
     else
     {
-        $tag = $self->get_tag('TABLE', inside_tag => ' border="1"');
+        $tag = $self->get_tag('table', inside_tag => ' border="1"');
     }
     push @tab_lines, "$tag\n";
     if ($caption)
     {
         $caption =~ s/^\s+//;
         $caption =~ s/\s+$//;
-        $tag     = $self->get_tag('CAPTION');
+        $tag     = $self->get_tag('caption');
         $caption = $tag . $caption;
-        $tag     = $self->close_tag('CAPTION');
+        $tag     = $self->close_tag('caption');
         $caption .= $tag;
         push @tab_lines, "$caption\n";
     }
     # table header
     my $thead = '';
-    $tag = $self->get_tag('THEAD');
+    $tag = $self->get_tag('thead');
     $thead .= $tag;
-    $tag = $self->get_tag('TR');
+    $tag = $self->get_tag('tr');
     $thead .= $tag;
     foreach my $col (@headings)
     {
         $col =~ s/^\s+//;
         $col =~ s/\s+$//;
-        $tag = $self->get_tag('TH');
+        $tag = $self->get_tag('th');
         $thead .= $tag;
         $thead .= $col;
-        $tag = $self->close_tag('TH');
+        $tag = $self->close_tag('th');
         $thead .= $tag;
     }
-    $tag = $self->close_tag('TR');
+    $tag = $self->close_tag('tr');
     $thead .= $tag;
-    $tag = $self->close_tag('THEAD');
+    $tag = $self->close_tag('thead');
     $thead .= $tag;
     push @tab_lines, "${thead}\n";
-    $tag = $self->get_tag('TBODY');
+    $tag = $self->get_tag('tbody');
     push @tab_lines, "$tag\n";
 
     # each row
@@ -3937,7 +3675,7 @@ sub make_border_table ($%)
         $row =~ s/^\s*\|//;
         $row =~ s/\|$//;
         my $this_row = '';
-        $tag = $self->get_tag('TR');
+        $tag = $self->get_tag('tr');
         $this_row .= $tag;
         my @cols = split(/\|/, $row);
         foreach my $cell (@cols)
@@ -3952,21 +3690,21 @@ sub make_border_table ($%)
             {
                 $cell = '&nbsp;';
             }
-            $tag = $self->get_tag('TD');
+            $tag = $self->get_tag('td');
             $this_row .= $tag;
             $this_row .= $cell;
-            $tag = $self->close_tag('TD');
+            $tag = $self->close_tag('td');
             $this_row .= $tag;
         }
-        $tag = $self->close_tag('TR');
+        $tag = $self->close_tag('tr');
         $this_row .= $tag;
         push @tab_lines, "${this_row}\n";
     }
 
     # end the table
-    $tag = $self->close_tag('TBODY');
+    $tag = $self->close_tag('tbody');
     push @tab_lines, "$tag\n";
-    $tag = $self->get_tag('TABLE', tag_type => 'end');
+    $tag = $self->get_tag('table', tag_type => TAG_END);
     push @tab_lines, "$tag\n";
 
     # replace the rows
@@ -4018,20 +3756,20 @@ sub make_delim_table ($%)
     my $tag;
     if ($self->{xhtml})
     {
-        $tag = $self->get_tag('TABLE', inside_tag => ' border="1" summary=""');
+        $tag = $self->get_tag('table', inside_tag => ' border="1" summary=""');
     }
     else
     {
-        $tag = $self->get_tag('TABLE', inside_tag => ' border="1"');
+        $tag = $self->get_tag('table', inside_tag => ' border="1"');
     }
     push @tab_lines, "$tag\n";
     if ($caption)
     {
         $caption =~ s/^\s+//;
         $caption =~ s/\s+$//;
-        $tag     = $self->get_tag('CAPTION');
+        $tag     = $self->get_tag('caption');
         $caption = $tag . $caption;
-        $tag     = $self->close_tag('CAPTION');
+        $tag     = $self->close_tag('caption');
         $caption .= $tag;
         push @tab_lines, "$caption\n";
     }
@@ -4043,7 +3781,7 @@ sub make_delim_table ($%)
         $row =~ s/^\s*[${delim}]//;
         $row =~ s/[${delim}]$//;
         my $this_row = '';
-        $tag = $self->get_tag('TR');
+        $tag = $self->get_tag('tr');
         $this_row .= $tag;
         my @cols = split(/[${delim}]/, $row);
         foreach my $cell (@cols)
@@ -4058,19 +3796,19 @@ sub make_delim_table ($%)
             {
                 $cell = '&nbsp;';
             }
-            $tag = $self->get_tag('TD');
+            $tag = $self->get_tag('td');
             $this_row .= $tag;
             $this_row .= $cell;
-            $tag = $self->close_tag('TD');
+            $tag = $self->close_tag('td');
             $this_row .= $tag;
         }
-        $tag = $self->close_tag('TR');
+        $tag = $self->close_tag('tr');
         $this_row .= $tag;
         push @tab_lines, "${this_row}\n";
     }
 
     # end the table
-    $tag = $self->get_tag('TABLE', tag_type => 'end');
+    $tag = $self->get_tag('table', tag_type => TAG_END);
     push @tab_lines, "$tag\n";
 
     # replace the rows
@@ -4129,7 +3867,7 @@ sub split_end_explicit_preformat ($%)
             {
                 $pre_str = escape($pre_str);
             }
-            $tag = $self->close_tag('PRE');
+            $tag = $self->close_tag('pre');
             $pre_str .= "${tag}\n";
             $self->{__mode} ^= (($PRE | $PRE_EXPLICIT) & $self->{__mode});
         }
@@ -4179,12 +3917,12 @@ sub endpreformat ($%)
         {
             if ($ind == 0)
             {
-                $tag = $self->close_tag('PRE');
+                $tag = $self->close_tag('pre');
                 $para_lines_ref->[$ind] = "${tag}\n";
             }
             else
             {
-                $tag = $self->close_tag('PRE');
+                $tag = $self->close_tag('pre');
                 $para_lines_ref->[$ind - 1] .= "${tag}\n";
                 $para_lines_ref->[$ind] = "";
             }
@@ -4206,12 +3944,12 @@ sub endpreformat ($%)
     {
         if ($ind == 0)
         {
-            $tag = $self->close_tag('PRE');
+            $tag = $self->close_tag('pre');
             ${$prev_ref} = "${tag}\n";
         }
         else
         {
-            $tag = $self->close_tag('PRE');
+            $tag = $self->close_tag('pre');
             $para_lines_ref->[$ind - 1] .= "${tag}\n";
         }
         $self->{__mode} ^= ($PRE & $self->{__mode});
@@ -4256,12 +3994,12 @@ sub preformat ($%)
         my $pstart = $self->{preformat_start_marker};
         if (${$line_ref} =~ /$pstart/io)
         {
-            if (${$prev_ref} =~ s/<P>$//)
+            if (${$prev_ref} =~ s/<p>$//)
             {
                 pop @{$self->{__tags}};
             }
             $tag =
-              $self->get_tag('PRE', inside_tag => " class='quote_explicit'");
+              $self->get_tag('pre', inside_tag => " class='quote_explicit'");
             ${$line_ref} = "${tag}\n";
             ${$mode_ref}        |= $PRE | $PRE_EXPLICIT;
             ${$line_action_ref} |= $PRE;
@@ -4285,11 +4023,11 @@ sub preformat ($%)
         )
       )
     {
-        if (${$prev_ref} =~ s/<P>$//)
+        if (${$prev_ref} =~ s/<p>$//)
         {
             pop @{$self->{__tags}};
         }
-        $tag = $self->get_tag('PRE');
+        $tag = $self->get_tag('pre');
         ${$line_ref} =~ s/^/${tag}\n/;
         ${$mode_ref}        |= $PRE;
         ${$line_action_ref} |= $PRE;
@@ -4370,7 +4108,7 @@ sub anchor_heading ($$$)
     my $level    = shift;
     my $line_ref = shift;
 
-    if ($self->{dict_debug} & 8)
+    if ($DictDebug & 8)
     {
         print STDERR "anchor_heading: ", ${$line_ref}, "\n";
     }
@@ -4386,7 +4124,7 @@ sub anchor_heading ($$$)
             ${$line_ref} =~ s/(<H.>)(.*)(<\/H.>)/$1<A NAME="$anchor">$2<\/A>$3/;
         }
     }
-    if ($self->{dict_debug} & 8)
+    if ($DictDebug & 8)
     {
         print STDERR "anchor_heading(after): ", ${$line_ref}, "\n";
     }
@@ -4775,12 +4513,12 @@ s/\^((?![^^]*(?:<li>|<LI>|<p>|<P>))(\w|["'<>])[^^]*)\^/<${tag}>$1<\/${tag}>/gs;
 	    ${$line_ref} =~ s/\B[${delim}]([[:alpha:]])[${delim}]\B/<${tag}>$1<\/${tag}>/gs;
 	}
         ${$line_ref} =~
-	    s#(?<![${delim}])[${delim}]([^${delim}]+?[[:alnum:]"'\.\?\&;:<>])[${delim}]#<${tag}>$1</${tag}>#gs;
+	    s#(?<![${delim}])[${delim}]([^${delim}]+?[[:alnum:][:punct:]\&<>])[${delim}]#<${tag}>$1</${tag}>#gs;
     }
     else
     {
         ${$line_ref} =~
-s/(?<!${delim})${delim}((\w|["'])(\w|[-\s\.;:,!?"'])*[^\s])${delim}/<${tag}>$1<\/${tag}>/gs;
+s/(?<!${delim})${delim}((\w|["'])(\w|[-\s[:punct:]])*[^\s])${delim}/<${tag}>$1<\/${tag}>/gs;
         ${$line_ref} =~ s/${delim}]([[:alpha:]])${delim}/<${tag}>$1<\/${tag}>/gs;
     }
 }    # do_delim
@@ -4870,11 +4608,11 @@ sub add_regexp_to_links_table ($%)
         my $ind = @{$self->{__links_table_order}} - 1;
         print STDERR " (", $ind,
           ")\tLABEL: $label \tPATTERN: $pattern\n\tVALUE: $URL\n\tSWITCHES: $switches\n\n"
-          if ($self->{dict_debug} & 1);
+          if ($DictDebug & 1);
     }
     else
     {
-        if ($self->{dict_debug} & 1)
+        if ($DictDebug & 1)
         {
             print STDERR " Skipping entry.  Key already in table.\n";
             print STDERR "\tLABEL: $label \tPATTERN: $pattern\n\tVALUE: $URL\n\n";
@@ -4957,7 +4695,7 @@ sub parse_dict ($$$)
     my ($dictfile, $dict) = @_;
 
     print STDERR "Parsing dictionary file $dictfile\n"
-      if ($self->{dict_debug} & 1);
+      if ($DictDebug & 1);
 
     if ($dict =~ /->\s*->/)
     {
@@ -5083,7 +4821,7 @@ my \$al = shift;
 return \$al;
 };
 EOT
-        print STDERR $code if ($self->{dict_debug} & 2);
+        print STDERR $code if ($DictDebug & 2);
         push @subs, $code;
 
         # compile searching pattern
@@ -5253,7 +4991,7 @@ sub check_dictionary_links ($%)
                 if (!$self->in_link_context($linkme, $line_with_links))
                 {
                     print STDERR "Link rule $i matches $linkme\n"
-                      if ($self->{dict_debug} & 4);
+                      if ($DictDebug & 4);
 
                     # call the special subroutine already created to do
                     # this replacement
@@ -5278,7 +5016,7 @@ sub check_dictionary_links ($%)
                 if (!$self->in_link_context($linkme, $line_with_links))
                 {
                     print STDERR "Link rule $i matches $linkme\n"
-                      if ($self->{dict_debug} & 4);
+                      if ($DictDebug & 4);
 
                     # call the special subroutine already created to do
                     # this replacement
@@ -5301,7 +5039,7 @@ sub check_dictionary_links ($%)
                 if (!$self->in_link_context($linkme, $line_with_links))
                 {
                     print STDERR "Link rule $i matches $linkme\n"
-                      if ($self->{dict_debug} & 4);
+                      if ($DictDebug & 4);
 
                     # call the special subroutine already created to do
                     # this replacement
@@ -5388,17 +5126,17 @@ sub do_file_start ($$$)
                 print $outhandle
                   '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
                   "\n";
-		print $outhandle $self->get_tag('HTML',
+		print $outhandle $self->get_tag('html',
 		    inside_tag => ' xmlns="http://www.w3.org/1999/xhtml"'), "\n";
             }
             else
             {
                 print $outhandle '<!DOCTYPE HTML PUBLIC "', $self->{doctype},
                   "\">\n";
-		print $outhandle $self->get_tag('HTML'), "\n";
+		print $outhandle $self->get_tag('html'), "\n";
             }
         }
-        print $outhandle $self->get_tag('HEAD'), "\n";
+        print $outhandle $self->get_tag('head'), "\n";
 
         # if --titlefirst is set and --title isn't, use the first line
         # as the title.
@@ -5413,8 +5151,8 @@ sub do_file_start ($$$)
         {
             $self->{'title'} = "";
         }
-        print $outhandle $self->get_tag('TITLE'), $self->{title},
-          $self->close_tag('TITLE'), "\n";
+        print $outhandle $self->get_tag('title'), $self->{title},
+          $self->close_tag('title'), "\n";
 
         if ($self->{append_head})
         {
@@ -5430,8 +5168,8 @@ sub do_file_start ($$$)
         if ($self->{lower_case_tags})
         {
             print $outhandle $self->get_tag(
-                'META',
-                tag_type   => 'empty',
+                'meta',
+                tag_type   => TAG_EMPTY,
                 inside_tag => " name=\"generator\" content=\"$PROG v$VERSION\""
               ),
               "\n";
@@ -5439,8 +5177,8 @@ sub do_file_start ($$$)
         else
         {
             print $outhandle $self->get_tag(
-                'META',
-                tag_type   => 'empty',
+                'meta',
+                tag_type   => TAG_EMPTY,
                 inside_tag => " NAME=\"generator\" CONTENT=\"$PROG v$VERSION\""
               ),
               "\n";
@@ -5451,8 +5189,8 @@ sub do_file_start ($$$)
             if ($self->{lower_case_tags})
             {
                 print $outhandle $self->get_tag(
-                    'LINK',
-                    tag_type   => 'empty',
+                    'link',
+                    tag_type   => TAG_EMPTY,
                     inside_tag =>
 " rel=\"stylesheet\" type=\"text/css\" href=\"$style_url\""
                   ),
@@ -5461,23 +5199,23 @@ sub do_file_start ($$$)
             else
             {
                 print $outhandle $self->get_tag(
-                    'LINK',
-                    tag_type   => 'empty',
+                    'link',
+                    tag_type   => TAG_EMPTY,
                     inside_tag =>
 " REL=\"stylesheet\" TYPE=\"text/css\" HREF=\"$style_url\""
                   ),
                   "\n";
             }
         }
-        print $outhandle $self->close_tag('HEAD'), "\n";
+        print $outhandle $self->close_tag('head'), "\n";
         if ($self->{body_deco})
         {
-            print $outhandle $self->get_tag('BODY',
+            print $outhandle $self->get_tag('body',
                 inside_tag => $self->{body_deco}), "\n";
         }
         else
         {
-            print $outhandle $self->get_tag('BODY'), "\n";
+            print $outhandle $self->get_tag('body'), "\n";
         }
     }
 
@@ -5689,11 +5427,11 @@ assumed to be a table.  For example
 
 becomes
 
-    <TABLE>
-    <TR><TD>-e</TD><TD>File exists.</TD></TR>
-    <TR><TD>-z</TD><TD>File has zero size.</TD></TR>
-    <TR><TD>-s</TD><TD>File has nonzero size (returns size).</TD></TR>
-    </TABLE>
+    <table>
+    <tr><td>-e</td><td>File exists.</td></tr>
+    <tr><td>-z</td><td>File has zero size.</td></tr>
+    <tr><td>-s</td><td>File has nonzero size (returns size).</td></tr>
+    </table>
 
 This guesses for each column whether it is intended to be left,
 centre or right aligned.
@@ -5712,13 +5450,13 @@ with a border, like so:
 
 The above becomes
 
-    <TABLE border="1">
-    <THEAD><TR><TH>Column1</TH><TH>Column2</TH></TR></THEAD>
-    <TBODY>
-    <TR><TD>val1</TD><TD>val2</TD></TR>
-    <TR><TD>val3</TD><TD>val3</TD></TR>
-    </TBODY>
-    </TABLE>
+    <table border="1">
+    <thead><tr><th>Column1</th><th>Column2</th></tr></thead>
+    <tbody>
+    <tr><td>val1</td><td>val2</td></tr>
+    <tr><td>val3</td><td>val3</td></tr>
+    </tbody>
+    </table>
 
 It can also have an optional caption at the start.
 
@@ -5803,16 +5541,107 @@ This can also have an optional caption at the start.
 
 =item *
 
-One cannot use "CLEAR" as a value for the cumulative arguments.
-
-=item *
-
 If the underline used to mark a header is off by more than 1, then 
 that part of the text will not be picked up as a header unless you
 change the value of --underline_length_tolerance and/or
 --underline_offset_tolerance.  People tend to forget this.
 
 =back
+
+=head1 REQUIRES
+
+HTML::TextToHTML requires Perl 5.8.1 or later.
+
+For installation, it needs:
+
+    Module::Build
+
+The txt2html script needs:
+
+    Getopt::Long
+    Getopt::ArgvFile
+    Pod::Usage
+    File::Basename
+
+For testing, it also needs:
+
+    Test::More
+
+For debugging, it also needs:
+
+    YAML::Syck
+
+=head1 INSTALLATION
+
+Make sure you have the dependencies installed first!
+(see REQUIRES above)
+
+Some of those modules come standard with more recent versions of perl,
+but I thought I'd mention them anyway, just in case you may not have
+them.
+
+If you don't know how to install these, try using the CPAN module, an
+easy way of auto-installing modules from the Comprehensive Perl Archive
+Network, where the above modules reside.
+Do "perldoc perlmodinstall" or "perldoc CPAN" for more information.
+
+To install this module type the following:
+
+   perl Build.PL
+   ./Build
+   ./Build test
+   ./Build install
+
+Or, if you're on a platform (like DOS or Windows) that doesn't like the
+"./" notation, you can do this:
+
+   perl Build.PL
+   perl Build
+   perl Build test
+   perl Build install
+
+In order to install somewhere other than the default, such as
+in a directory under your home directory, like "/home/fred/perl"
+go
+
+   perl Build.PL --install_base /home/fred/perl
+
+as the first step instead.
+
+This will install the files underneath /home/fred/perl.
+
+You will then need to make sure that you alter the PERL5LIB variable to
+find the modules, and the PATH variable to find the script.
+
+Therefore you will need to change:
+your path, to include /home/fred/perl/script (where the script will be)
+
+	PATH=/home/fred/perl/script:${PATH}
+
+the PERL5LIB variable to add /home/fred/perl/lib
+
+	PERL5LIB=/home/fred/perl/lib:${PERL5LIB}
+
+Note that the system links dictionary will be installed as
+"/home/fred/perl/share/txt2html/txt2html.dict"
+
+If you want to install in a temporary install directory (such as
+if you are building a package) then instead of going
+
+   perl Build install
+
+go
+
+   perl Build install destdir=/my/temp/dir
+
+and it will be installed there, with a directory structure under
+/my/temp/dir the same as it would be if it were installed plain.
+Note that this is NOT the same as setting --install_base, because
+certain things are done at build-time which use the install_base info.
+
+See "perldoc perlrun" for more information on PERL5LIB, and
+see "perldoc Module::Build" for more information on
+installation options.
 
 =head1 BUGS
 
@@ -5822,7 +5651,6 @@ Tell me about them.
 
 perl
 L<txt2html>.
-Data::Dumper
 
 =head1 AUTHOR
 

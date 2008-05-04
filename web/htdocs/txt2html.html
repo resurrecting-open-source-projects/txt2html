@@ -4,7 +4,7 @@
 <head>
 <title>txt2html - convert plain text file to HTML.</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:Gentoo@colbrand.katspace.org" />
+<link rev="made" href="mailto:Gentoo@raven.katspace.org" />
 </head>
 
 <body style="background-color: white">
@@ -48,7 +48,7 @@
 </p>
 <hr />
 <h1><a name="version">VERSION</a></h1>
-<p>This describes version <strong>2.46</strong> of txt2html.</p>
+<p>This describes version <strong>2.50</strong> of txt2html.</p>
 <p>
 </p>
 <hr />
@@ -116,7 +116,8 @@ the name.  For example:</p>
 <dt><strong><a name="item__2d_2dmanpage">--manpage</a></strong>
 
 <dd>
-<p>Display full documentation and exit.</p>
+<p>Display full documentation and exit.
+This requires perldoc to be installed.</p>
 </dd>
 </li>
 </dl>
@@ -650,6 +651,9 @@ Likewise, if you make link-dictionary entries that break XHTML,
 then this won't fix them, except to the degree of putting all tags
 into lower-case.</p>
 </dd>
+<dd>
+<p>(default: true)</p>
+</dd>
 </li>
 </dl>
 <p>
@@ -772,11 +776,11 @@ assumed to be a table.  For example</p>
     -s  File has nonzero size (returns size).</pre>
 <p>becomes</p>
 <pre>
-    &lt;TABLE&gt;
-    &lt;TR&gt;&lt;TD&gt;-e&lt;/TD&gt;&lt;TD&gt;File exists.&lt;/TD&gt;&lt;/TR&gt;
-    &lt;TR&gt;&lt;TD&gt;-z&lt;/TD&gt;&lt;TD&gt;File has zero size.&lt;/TD&gt;&lt;/TR&gt;
-    &lt;TR&gt;&lt;TD&gt;-s&lt;/TD&gt;&lt;TD&gt;File has nonzero size (returns size).&lt;/TD&gt;&lt;/TR&gt;
-    &lt;/TABLE&gt;</pre>
+    &lt;table&gt;
+    &lt;tr&gt;&lt;td&gt;-e&lt;/td&gt;&lt;td&gt;File exists.&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;-z&lt;/td&gt;&lt;td&gt;File has zero size.&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;-s&lt;/td&gt;&lt;td&gt;File has nonzero size (returns size).&lt;/td&gt;&lt;/tr&gt;
+    &lt;/table&gt;</pre>
 <p>This guesses for each column whether it is intended to be left,
 centre or right aligned.</p>
 <p><strong>BORDER Table Type</strong></p>
@@ -791,13 +795,13 @@ with a border, like so:</p>
     +---------+---------+</pre>
 <p>The above becomes</p>
 <pre>
-    &lt;TABLE border=&quot;1&quot;&gt;
-    &lt;THEAD&gt;&lt;TR&gt;&lt;TH&gt;Column1&lt;/TH&gt;&lt;TH&gt;Column2&lt;/TH&gt;&lt;/TR&gt;&lt;/THEAD&gt;
-    &lt;TBODY&gt;
-    &lt;TR&gt;&lt;TD&gt;val1&lt;/TD&gt;&lt;TD&gt;val2&lt;/TD&gt;&lt;/TR&gt;
-    &lt;TR&gt;&lt;TD&gt;val3&lt;/TD&gt;&lt;TD&gt;val3&lt;/TD&gt;&lt;/TR&gt;
-    &lt;/TBODY&gt;
-    &lt;/TABLE&gt;</pre>
+    &lt;table border=&quot;1&quot;&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Column1&lt;/th&gt;&lt;th&gt;Column2&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;val1&lt;/td&gt;&lt;td&gt;val2&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;val3&lt;/td&gt;&lt;td&gt;val3&lt;/td&gt;&lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;/table&gt;</pre>
 <p>It can also have an optional caption at the start.</p>
 <pre>
          My Caption
@@ -856,6 +860,7 @@ text file <code>thing.txt</code>.</p>
     Getopt::Long
     Getopt::ArgvFile
     File::Basename
+    YAML::Syck
     perldoc</pre>
 <p>
 </p>

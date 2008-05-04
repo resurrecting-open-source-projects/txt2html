@@ -1,6 +1,12 @@
 Revision history for txt2html
 =============================
 
+2.50 Sat 22nd December 2007
+	- fixed bug with formatting and punctuation
+	- removed old reference-to-an-array argument method
+	- made --xhtml true by default (used to be false)
+	- moved the debugging options to global variables
+
 2.46 Fri 9th November 2007
 	- updated docs on custom_heading_regexp
 	- fixed bug with xhtml output
