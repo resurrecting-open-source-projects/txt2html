@@ -9,11 +9,11 @@ txt2html - convert plain text file to HTML.
 
 =head1 VERSION
 
-This describes version B<2.50> of txt2html.
+This describes version B<2.51> of txt2html.
 
 =cut
 
-our $VERSION = '2.50';
+our $VERSION = '2.51';
 
 =head1 SYNOPSIS
 
@@ -211,7 +211,12 @@ Debug mode for link dictionaries Bitwise-Or what you want to see:
 =item --doctype I<doctype> | --dt I<doctype>
 
 This gets put in the DOCTYPE field at the top of the document, unless it's
-empty.  (default : "-//W3C//DTD HTML 3.2 Final//EN")
+empty.
+
+Default :
+'-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd'
+
 If --xhtml is true, the contents of this is ignored, unless it's
 empty, in which case no DOCTYPE declaration is output.
 
@@ -221,7 +226,7 @@ If false, convert Latin-1 characters to HTML entities.
 If true, this conversion is disabled.
 (default: false)
 
-=item --escape_HTML_chars | --escape_chars | -ec
+=item --escape_HTML_chars | --escapechars | -ec
 
 turn & E<lt> E<gt> into &amp; &gt; &lt;
 (default: true)
