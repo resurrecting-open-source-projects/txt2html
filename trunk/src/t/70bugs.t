@@ -2,7 +2,7 @@
 
 #########################
 
-use Test::More tests => 14;
+use Test::More tests => 16;
 use HTML::TextToHTML;
 
 #########################
@@ -232,5 +232,27 @@ $result = compare('tfiles/good_punct.html', 'punct.html');
 ok($result, 'test file matches original example exactly');
 if ($result) {
     unlink('punct.html');
+}
+
+#
+# bugs : links with underscores
+#
+$result = $conv->txt2html(
+system_link_dict=>"txt2html.dict",
+default_link_dict=>"",
+make_anchors=>0,
+infile=>["tfiles/links4.txt"],
+outfile=>"links4.html",
+custom_heading_regexp=>[],
+extract=>1,
+eight_bit_clean=>1,
+);
+ok($result, 'converted links4.txt');
+
+# compare the files
+$result = compare('tfiles/good_links4.html', 'links4.html');
+ok($result, 'test file matches original example exactly');
+if ($result) {
+    unlink('links4.html');
 }
 

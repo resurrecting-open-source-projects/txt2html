@@ -18,6 +18,6 @@ my $build = Module::Build->new(
 		'Module::Build' => 0.26
     	},
     script_files	=> ['scripts/txt2html'],
-    create_makefile_pl => 'passthrough',
+    create_makefile_pl => 'traditional',
 );
 $build->create_build_script;
