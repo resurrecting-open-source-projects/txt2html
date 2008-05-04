@@ -1,0 +1,733 @@
+Revision history for txt2html
+=============================
+
+2.51 Sun 4th March 2008
+	- fixed bug with underscores in links
+	- fixed docs about escape_chars (should be escapechars)
+	- fixed docs about DOCTYPE
+
+2.50 Sat 22nd December 2007
+	- fixed bug with formatting and punctuation
+	- removed old reference-to-an-array argument method
+	- made --xhtml true by default (used to be false)
+	- moved the debugging options to global variables
+
+2.46 Fri 9th November 2007
+	- updated docs on custom_heading_regexp
+	- fixed bug with xhtml output
+	- documented all undocumented functions
+
+2.45 Fri 26th January 2007
+	- fixed bug with umlauts
+	- fixed bug with UTF-8 characters
+	- added --underline_delimiter option.
+
+2.44 Tue 17th January 2006
+	- fixed bug with delimiter tables
+	- minor documentation fixes
+
+2.43 Fri 7th October 2005
+	- fixed bug with interaction between #bolding# and #anchor links
+
+2.42 Wed 10th August 2005
+	- new option to txt2html script: --instring, which enables one
+to process a string instead of a file.
+	- new options to HTML::TextToHTML:
+	  * instring, as above
+	  * inhandle, which enables one to pass in input file handles to process
+	  * outhandle, which enables one to pass in an output file handle
+
+2.41 Sun 8th May 2005
+	- solved the system links dictionary problem!  No longer uses
+an external file at all, uses the DATA handle.  This means that there is
+no longer a --system_link_dict option.
+	- changed versioning scheme; now bugfix versions will be
+things like 2.4101
+	- removed the run_txt2html command; it isn't needed when the txt2html script is part of the package and does things much nicer.
+	- generate the README from the PoD
+
+2.40 Sat 12th February 2005
+	- much improved speed
+
+2.37 Thu 10th February 2005
+	- another fix to installation
+	- fixed CPAN module problem
+
+2.36 Sun 23rd January 2005
+	- slight fix to installation
+
+2.35 Wed 18th January 2005
+	- fixed bug where a Dos file was processed on a Unix system.
+	- removed Makefile.PL; not needed with modern perls
+
+2.34 Thu 6th January 2005
+	- fixed another bug with demoronize code (gah!)
+
+2.33 Wed 5th January 2005
+	- darn, left out some files!
+
+2.32 Wed 5th January 2005
+	- fixed bug with demoronize code
+	- fixed documentation for lower_case_tags
+	- changed around installation so that no custom Module::Builder
+is needed; also moved files into more customary places, and now use
+Filter::Simple to change the system dictionary path in the module
+and script files for installation.
+
+2.31 Tue 21st September 2004
+	- fixed bug with install
+	- did some changes to help version-changing
+
+2.30 Fri 27th August 2004
+	- changed build system over to Module::Build to eliminate problems
+with different versions of ExtUtils::MakeMaker and the installation of
+the system links dictionary, as well as hoping to make the installation
+more portable.
+	- changed build so that the system links dictionary (in defaults
+and documentation) is automatically set to where the system links
+dictionary is going to be installed (yay!)
+	- improved the INSTALL document (thanks to Mark Schmidt)
+	- improved the bold and italic processing (now it's not messed up
+by short lines putting a <BR> in)
+	- bug fix for paragraphs with "0" (thanks to Andrew Williams)
+
+2.25 Sun 23rd May 2004
+	- the default location for the system links dictionary (txt2html.dict) is
+now "/usr/local/share/txt2html/txt2html.dict". (It uses SITEPREFIX not PREFIX now)
+	- added --bold_delimiter and --italic_delimiter options; now the bold and
+italic matching is done separately, not as part of the links-dictionary stuff.
+This means it's much easier to change or turn off if you don't want it.
+	- links-dictionary matching is now done on segments without structural tags in them
+so matching for things like '^<P>' should be replaced with just '^'. I don't think
+this will break anything, and will prevent certain kinds of illegal substitutions.
+	- tidied up some of the links in the links dictionary
+
+2.24 Sun 16th May 2004
+	- bug fixes for preformatting: fixed up loss of trailing PRE, and
+now preformats and lists no longer have a trailing blank line
+	- documented the 'quote_mail' and 'quote_explicit' classes, and added
+the 'mail_header' class for mail-header paragraphs.
+	- made the #bold# and *italic* matches more aggressive.
+	- added Alan Jackson's "demoronize" patch from John Walker's demoronize script
+at <http://www.fourmilab.ch/>
+
+2.23 Wed 25th February 2004
+	- oops! Forgot to include one of the test files!
+
+2.22 Sun 22nd February 2004
+	- bug fix with delimiter table
+
+2.21 Sat 10th January 2004
+	- bugfixes with a stricter perl 5.8.2
+	- bugfix for processing empty file
+
+2.20 Sun 7th December 2003
+	- added --table_type option to say which types of table will
+be recognised and parsed if the --make_tables option is true.  In other
+words, there are now new types of table which can be parsed.
+	    * ALIGN is the original space-aligned table type
+	    * PGSQL is the type of table you get from a Postgresql query
+	    * BORDER is a table with +-----+ lines around it as a border
+	    * DELIM is delimited columns
+
+2.10 Sat 6th December 2003
+	- changed process_para method to assume it has only one paragraph;
+and added process_chunk method to deal with processing strings which may
+contain more than one paragraph in them.
+	- a fair few internal changes to make more things think in terms of
+paragraphs rather than lines; this changes the parsing of a few things,
+but doesn't break the conventions.
+	- fixed a bug where unordered lists were allowed to have bullets
+which were more than one character wide.  Well, I considered it a bug,
+it was annoying me.
+	- added --bullets and --bullets_ordered options to enable the
+user to define the bullet characters used for unordered and ordered
+lists.
+	- hooray!  Figured out a way of having multi-paragraph list items!
+	- woo hoo!  Added definition lists!  And managed to do it so that
+they are treated like the other lists, that is, you can nest lists in
+definition lists and visa versa.
+
+2.06 Sun 15th November 2003
+	- fixed bug with processing STDIN (ie piping input to txt2html)
+	- moved test input files into separate tfiles directory
+	- added in most of Seth's old test files to the testing; and fixed
+resulting bugs that were flushed out of cover
+
+2.05 Wed 5th November 2003
+	- error in fix to PREFIX! Argh!
+
+2.04 Tue 4th November 2003
+	- changed Makefile.PL to fix PREFIX
+	- use "#!/usr/bin/env perl" trick (courtesy of Sami Haahtinen)
+instead of using ExtUtils::configPL module
+	- made Getopt::ArgvFile an official prerequisite
+	- enabled CAPS tagging to be optional (just give an empty caps_tag)
+
+2.03 Tue 15th July 2003
+	- fixed bug with para tests (it didn't fail on my system
+because it was using the already installed system links dictionary)
+
+2.02 Sun 13th July 2003
+	- fixed bug in documentation about custom headings
+	- moved tests into t/ directory
+	- added is_fragment option to process_para to enable it to
+process a fragment without assuming that it was a paragraph.
+
+2.01 Sun 1st June 2003
+	- fixed up a few documentation/reference things that I'd forgotten,
+changing names in sample.txt for example.
+
+2.00 Sat 31st May 2003
+	- merge of HTML::TextToHTML and the official txt2html - hence
+the version jump.
+	  * the distribution name is now txt2html
+	  * renamed texthyper to txt2html, TextToHTML.dict to txt2html.dict
+	  * merged change history
+	  * split README into README, INSTALL and LICENSE files
+	  * updated DEVNOTES
+	- merged in the changes from 1.28 to 1.35 as much as I could
+	  * corrected bugs that still applied
+	  * added --style_url option
+	  * added --body_deco option
+	  * added two CSS classes: quote_mail and quote_explicit
+	- Did Not add the following, as it was rather more complicated:
+	  * multi-paragraph list items 
+	  * the heading_callback_customize stuff
+
+==================================================
+
+1.12 Sat 15th February 2002
+	- removed heavily spammed email address from documentation
+and examples.
+
+1.11 Fri 20th December 2002
+	- fixed bug in texthyper script which was giving warnings.
+
+1.10  Wed 18th December 2002
+	- removed all dependency on AppConfig
+	  * all of the existing options now must use their full names.
+	  * However, one now has the choice between passing options
+as a hash, or the old way, as a reference to an array.
+	- removed the do_help method; if you want the documentation
+of the module, use perldoc HTML::TextToHTML
+	- moved the texthyper script into this distribution
+	  * It now uses Getopt::Long and Getopt::ArgvFile.
+	  * The format of .texthyperrc has changed to conform with
+Getopt::ArgvFile rather than AppConfig.
+	  * Changed the version number so that it was bigger than
+either the script or the module so that both could have the same
+version number (that's why the big jump).
+	- the included system link dictionary (TextToHTML.dict)
+is now installed in /usr/share/txt2html as part of the install process.
+
+0.09  Wed 20th November 2002
+	- improved the XHTML mode, so that open paragraphs get closed
+sooner. This fixed a bug related to paragraphs inside lists.
+
+0.08  Wed 20th November 2002
+	- CPAN testers complained about a lack of explicitly stating
+all the dependencies of AppConfig, which either means that AppConfig
+has changed desperately, or their testing methods have changed, since
+I didn't think it was possible to get the AppConfig module without getting
+all its dependent modules, but, oh well.
+
+0.07  Sun 17th November 2002
+	- fixed a bug in process_para to ensure that if one is using it
+standalone, any open lists will be closed
+	- added --lower_case_tags option to force the tags to be output
+in lower-case
+	- first pass at XHTML conformance; added --xhtml option.
+It isn't that pretty-looking, but the sample does pass the scrutiny of "tidy".
+When turned on it:
+	  * forces lower-case on
+	  * makes empty tags have the empty marker (eg <hr/>)
+	  * closes all open P and LI tags where they should be closed
+	  * table cell alignments are done as style attributes
+
+0.06  Mon 2nd September 2002
+	- fine-tuned some of the links in the default links dictionary
+	- some internal rewriting
+
+0.05  Wed 5th June 2002
+	- fixed minor bugs
+
+0.04  Sun 2nd June 2002
+	- fixed bug with detection of paragraphs by indentation
+	- added --indent_par_break and --preserve_indent options
+	- fixed error in documentation
+	- fixed bug with nonexistant link dictionaries
+
+0.03  Sun 26th May 2002
+	- documented the format of the Link Dictionary
+	- added the do_help method, and changed the behaviour of --help
+and --manpage
+	- added the --make_anchors option, which enables one to disable
+the making of anchors, so that if one prefers another method of
+anchor-making (such as that in HTML::GenToc) then one can use that
+instead.
+	- altered the #bold# pattern in the link dictionary to only need one
+hash.  This should still hopefully allow things like #1 without turning it
+bold, and being able to use ### as a separator.
+	- gratuitous self-promotion: added HTML::GenToc to the
+sample links dictionary
+	- removed the need for getline(), but rather pass the lines in to
+the methods, in order to parse by-paragraph and then by-line (mucho rewrite)
+which enabled me to:
+	  * implement the table-parsing from Gareth Rees's HTML::FromText
+module -- added the --make_tables option
+	  * now the links dictionary does multiline matches (useful for
+things like italics which break over lines)
+	  * enable converting passed-in strings rather than just files
+
+0.02  Wed 15th May 2002
+	- fixed bug with link dictionary parsing
+	- improved the tests
+	- updated link dictionary to fix a few bugs (eg underlines)
+and add a few things (like using double # for ##bold## text).
+
+0.01  Sun 12th May 2002
+	- conversion of Seth Golub's txt2html (version 1.28) to a module
+	- made all global settings options (eg the location of the system
+link dictionary)
+	- added "outfile" option
+	- added use_mosaic_header option
+	- changed the dynamic code generation completely.
+	- removed the evil $* variable
+
+-----------------------------------------------------------------
+
+=====================================================
+(cvs log on Sourceforge)
+
+revision 1.35
+date: 2002/12/03 03:47:46;  author: suntong;  state: Exp;  lines: +14 -13
+- Defines two CSS Style: quote_mail & quote_explicit
+- Mail quote mode and quote mode won't interfere with each other
+----------------------------
+revision 1.34
+date: 2002/12/03 01:51:41;  author: suntong;  state: Exp;  lines: +8 -7
+- preformat should be dealed before other cases
+----------------------------
+revision 1.33
+date: 2002/12/02 23:44:13;  author: suntong;  state: Exp;  lines: +7 -7
+Bug fixing (details in http://groups.yahoo.com/group/txt2html/message/89):
+- Changed incorrect entity names of "fraqfrac*" to "frac*".
+- redundant \| in [\||:] removed.
+- change misleading --style help to '--style <URL>'
+----------------------------
+revision 1.32
+date: 2002/12/01 19:59:09;  author: suntong;  state: Exp;  lines: +39 -5
+- Add Callback functions for HTML header handling
+  so that users can customise their own heading,
+  add horizon lines, change colors or write their own toc, etc
+
+- User can define/keep their callbacks locally without tampering main
+  distribution
+
+- 'mailstuff' priority should be higher than 'preformat'
+----------------------------
+revision 1.31
+date: 2002/12/01 18:59:30;  author: suntong;  state: Exp;  lines: +5 -5
+- solve the problem that txt2html can't html-ify its own anchor.
+----------------------------
+revision 1.30
+date: 2002/12/01 18:51:20;  author: suntong;  state: Exp;  lines: +53 -10
+- All my previous patches are lost because yahoogroups doesn't keep my patch
+  attachements. So, here they are in a big chunk. Major updates are:
+- Able to use a style sheet for the generated html file
+- Able to use body decoration for the generated html file
+        customize your own background color/image/sound, etc...
+- Misc enhancements.
+----------------------------
+revision 1.29
+date: 2002/12/01 18:28:35;  author: suntong;  state: Exp;  lines: +3 -2
+- Apply patch from http://groups.yahoo.com/group/txt2html/message/32
+
+,-----
+| I don't know when I'll get around to releasing a new version of
+| txt2html, but I have a few fixes I've been sitting on. I thought
+| I'd send them out on this list so people could take advantage of
+| them without having to wait until I finally package up a new release.
+|
+| * Changed incorrect entity names of "fraq*" to "frac*".
+|
+| * Allow paragraphs within lists by permitting blank lines within
+| list elements, as long as the following text has the same
+| indentation level.
+`-----
+
+=======================================================
+
+1.28
+----
+
+- bugfix: reserved characters in titles created with --titlefirst are
+  now escaped properly.
+
+- bugfix: when preformatting entire document, each line was
+  getting its own <PRE></PRE> container (introduced
+  with explicit preformatting feature in 1.26).
+
+- dict: added some characters to those allowed in http urls (=&;,).
+
+- dict: added "-" to allowed characters within *emphasized-pattern*.
+
+1.27
+----
+
+- Changed names of default link dictionaries to txt2html.dict
+
+
+1.26 (not released)
+-------------------
+
+- Added -8 (for 8-bit-clean) to disable conversion of non-ASCII
+  characters to their corresponding Latin-1 character entities.
+
+- Added -pm to allow explicit marking of preformatted text in source
+
+- Changes => to , in mapping, to stay compatible with Perl 4
+
+- Added debug flag 4, for observing link rules in action
+
+- Fixed length checking bug in header underline analysis
+
+- Change a regexp so Perl 5.6 doesn't complain.
+
+- No longer add space after <LI> tags
+
+- Allow unindented lists to start after CAPS lines
+
+- Use · as a bullet character
+
+- Fixed bug that dropped a character when certain actions were
+  taken on the last line of input that didn't end with a newline.
+
+- Added more aggressive regexps for _underlined_ and *emphasized* text.
+
+- Improved character markup rules
+
+- Added link rule for news URLs.  (This must have been
+  accidentally deleted at some point.)
+
+- Added link rule for common explicit url markup: <URL:foo>
+
+1.25
+----
+
+- Changed the official home page to <http://www.aigeek.com/txt2html/>
+  (the old page will have a working redirect indefinitely.)
+
+- Added a LICENSE to the distribution.  (modified BSD-style)
+
+- When no title is specified, an empty title element is inserted.
+  (The old behavior was to omit the title element, which is
+  forbidden by the spec.)
+
+- Made heading anchors appear inside the heading, rather than
+  surrounding it (which is forbidden by the HTML spec)
+
+- Changed the DTD name
+
+- Added the --linkonly option so people can use the links
+  dictionary feature without doing any other markup.  This is
+  useful for adding links to HTML fragments or documents.
+
+- Added the --prepend_body option for prepending HTML to the body.
+
+- Made in_link_context smarter so it won't link on attributes or
+  tag names.  (This is good for adding hyperlinks, but may screw
+  up some clever uses of the linking code.)
+
+- Added link rules for _underlined text_ and *emphasized text*
+
+- Added --noescapechars to suppress converting "&" "<" and
+  ">" into "&amp;" "&lt;" and "&gt;"
+
+- Changed pattern rules to handle non-ascii letters properly in
+  matching patterns.
+
+- Added conversion of non-ascii letters into character entities.
+
+- Lots of upgrades to the links dictionary patterns
+
+1.24
+----
+
+- Changed behavior of custom headers to something much more
+  useful: Header levels are assigned by regex in order seen.
+  When a line matches a custom header regex, it is tagged as a
+  header.  If it's the first time that particular regex has
+  matched, the next available header level is associated with it
+  and applied to the line.  Any later matches of that regex will
+  use the same header level.
+
+- Added the -EH / --explicit-headings option
+
+- Added some unnecessary initialization to avoid warnings when
+  perl is run with the -w switch.
+
+1.23
+----
+
+- Added handling for when the consistent formatting of numbered
+  lists is the position of the non-numeric character, not the
+  amount of whitespace preceding the number.  (The numbers
+  grow to the left instead of the right.)
+
+1.22
+----
+
+- Fixed bug in unhyphenation
+
+- Changed HTML version in default doctype line to 3.2
+
+1.21
+----
+
+- Added <META NAME="generator" CONTENT="txt2html v1.21">
+
+1.20
+----
+
+- Added DOCTYPE tag and --doctype options.
+
+- Syntax change to get rid of Perl 5 warning
+
+- Added ability to use the first line of the text as the title
+
+- Fixed some (unused) grossness in links dict file
+
+1.19
+----
+
+- Added --append_head
+
+- Mail and News name anchor surrounds just the first word
+  ("Newsgroups:" or "From"), and not the whole line.  That way,
+  newsgroup names and email addresses get HREF'd as normal.
+
+1.18
+----
+
+- Cleaned up nested list handling & fixed a bug under Perl 5.
+
+- Changed a couple minor things to get rid of some of the Perl 5 warnings.
+
+1.17
+----
+
+- Lists can start even when not indented and not preceded by a
+  blank line if the previous line was short or a header.
+
+- New flag "o" added for dictionary entries.  Specifies that the
+  link should only be done the first time a match is found.
+
+1.16
+----
+
+- Added anchoring of custom headers
+
+- Took the changelog out of the script
+
+- Tweaked $line_indent in sub liststuff
+
+- Insert <P> before each mail/news message
+
+1.15
+----
+
+- Fixed options handling for -e/+e , -r
+
+- Added "Newsgroups:" to trigger mail headers
+
+- Fixed anchor naming
+
+- took out -T option, since it isn't implemented yet.  Whoops..
+
+- Fixed bug in endpreformat
+
+1.14
+----
+
+- Fixed +l/--nolink option handling
+
+- Fixed major bug in dynamic_make_dictionary_links that allowed
+  nested links under some circumstances.
+
+1.13
+----
+
+- Fixed usage message so it matches options.  (whoops)
+
+- Added custom heading style feature
+
+1.12
+----
+
+- Fixed bug in heading regexp
+
+- Changed underline tolerance parameters from min & max length
+  difference to length difference & offset difference
+
+- Centralized line reading, added handling of DOS carriage returns
+
+- Switched to heading style stack.  Styles still very limited.
+
+- Changed heading anchor names from a simple count to a hierarchical
+  section number.
+
+1.11
+----
+
+- Blank lines are never considered underlined
+
+- Shortline breaking slightly more intelligent (or at least different)
+
+- Paragraph breaks much more intelligent
+
+- Lowercased tags.  Style is so fickle.
+
+- Added links dictionaries, link making, etc.
+
+- Allow repeated bullet chars for unordered lists.  (Tiny mod to regexp)
+
+- switched order of caps & liststuff in main()
+
+- improved untabify() so it converts the whole line, not just beginning
+
+- split up all lines >79 characters to avoid common downloading error
+  (people would sometimes copy the script off the display,
+  inadvertently adding a few newlines in bad places in the code)
+
+- Handles option "--" now.
+
+- Accepts named files as input as alternative to stdin
+
+- Deals with stdin properly (no more extra EOFs needed)
+
+- Improved mail handling
+
+1.10
+====
+
+- Added --extract, etc.
+
+1.9
+---
+
+- Changed from #!/usr/local/bin/perl to the more clever version in
+  the man page.  (How did I manage not to read this for so long?)
+
+- Swapped hrule & header back to handle double lines.  Why should
+  this order screw up headers?
+
+
+1.8
+---
+
+- put mail_anchor back in.  (Why did I take this out?)
+
+- Finally added handling of lettered lists (ordered lists marked with
+  letters)
+
+- Added title option (--title, -t)
+
+- Shortline now looks at how long the line was before txt2html
+  started adding tags.   ($line_length)
+
+- Changed list references to scalars where appropriate. (@foo[0] -> $foo[0])
+
+- Added untabify() to homogenize leading indentation for list
+  prefixes and functions that use line length
+
+- Added "underline tolerance" for when underlines are not exactly the
+  same length as what they underline.
+
+- Added error message for unrecognized options
+
+- removed \w matching on --capstag
+
+- Tagline now removes leading & trailing whitespace before tagging
+
+- swapped order of caps & heading in main loop
+
+- Cleaned up code for speed and to get rid of warnings
+
+- Added more restrictions to something being a mail header
+
+- Added indentation for lists, just to make the output more readable.
+
+- Fixed major bug in lists: $OL and $UL were never set, so when a
+  list was ended "</UL>" was *always* used!
+
+- swapped order of hrule & header to properly handle long underlines
+
+
+1.7
+---
+
+- Added to comments in options section
+
+- renamed blank to is_blank
+
+- Page break is converted to horizontal rule <HR>
+
+- moved usage subroutine up top so people who look through code see
+  it sooner
+
+
+1.6
+---
+
+- Creates anchors at each heading
+
+1.5
+---
+
+- Fixed minor bug in Headers
+
+- Preformatting can be set to only start/stop when TWO lines of
+  [non]formatted-looking-text are encountered.  Old behavior is still
+  possible through command line options (-pb 1 -pe 1).
+
+- Can preformat entire document (-pb 0) or disable preformatting
+  completely (-pe 0).
+
+- Fixed minor bug in CAPS handling (paragraph breaks broke)
+
+- Puts paragraph tags *before* paragraphs, not just between them.
+
+
+1.4
+---
+
+- Allow ':' for numbered lists (e.g. "1: Figs")
+
+- Whitespace at end of line will not start or end preformatting
+
+- Mailmode is now off by default
+
+- Doesn't break short lines if they are the first line in a list
+  item.  It *should* break them anyway if the next line is a
+  continuation of the list item, but I haven't dealt with this yet.
+
+- Added action on lines that are all capital letters.  You can change
+  how these lines get tagged, as well as the minimum number of
+  consecutive capital letters required to fire off this action.
+
+
+1.3
+---
+
+- Tiny bugfix in unhyphenation
+
+
+1.2
+---
+
+- Added unhyphenation
+
+<http://www.aigeek.com/> seth@aigeek.com
+

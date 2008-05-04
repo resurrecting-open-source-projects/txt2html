@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>==== NAME ====</title>
+<meta name="generator" content="HTML::TextToHTML v2.50"/>
+</head>
+<body>
+<p><strong>==== NAME ====</strong>
+</p>
+<p><a href="http://www.katspace.com/tools/text_to_html/">HTML::TextToHTML</a> - convert plain text file to HTML.
+</p>
+<p><strong>==== VERSION ====</strong>
+</p>
+<p>This describes version ``2.50'' of HTML::TextToHTML.
+</p>
+<p><strong>==== DESCRIPTION ====</strong>
+</p>
+<p>HTML::TextToHTML converts plain text files to HTML. The <a href="http://txt2html.sourceforge.net/">txt2html</a> script uses
+this module to do the same from the command-line.
+</p>
+<p>It supports headings, tables, lists, simple character markup, and
+hyperlinking, and is highly customizable. It recognizes some of the apparent
+structure of the source document (mostly whitespace and typographic layout),
+and attempts to mark that structure explicitly using HTML. The purpose for
+this tool is to provide an easier way of converting existing text documents
+to HTML format, giving something nicer than just whapping the text into a
+big PRE block.
+</p>
+<p>==   History   ==
+</p>
+<p>The original txt2html script was written by <a href="http://www.aigeek.com/">Seth Golub</a> (see
+<a href="http://www.aigeek.com/txt2html/">http://www.aigeek.com/txt2html/</a>), and converted to a perl module by Kathryn
+Andersen (see <a href="http://www.katspace.com/tools/text_to_html/">http://www.katspace.com/tools/text_to_html/</a>) and made into a
+sourceforge project by Sun Tong (see<br/>
+<a href="http://sourceforge.net/projects/txt2html/">http://sourceforge.net/projects/txt2html/</a>). Earlier versions of the
+HTML::TextToHTML module called the included script texthyper so as not to
+clash with the original txt2html script, but now the projects have all been
+merged.
+</p>
+<p><strong>==== REQUIRES ====</strong>
+</p>
+<p>HTML::TextToHTML requires Perl 5.8.1 or later.
+</p>
+<p>For installation, it needs:
+</p>
+<p>    Module::Build
+</p>
+<p>The txt2html script needs:
+</p>
+<p>    Getopt::Long<br/>
+    Getopt::ArgvFile<br/>
+    Pod::Usage<br/>
+    File::Basename
+</p>
+<p>For testing, it also needs:
+</p>
+<p>    Test::More
+</p>
+<p>For debugging, it also needs:
+</p>
+<p>    YAML::Syck
+</p>
+<p><strong>==== INSTALLATION ====</strong>
+</p>
+<p>Make sure you have the dependencies installed first! (see REQUIRES above)
+</p>
+<p>Some of those modules come standard with more recent versions of perl, but I
+thought I'd mention them anyway, just in case you may not have them.
+</p>
+<p>If you don't know how to install these, try using the CPAN module, an easy
+way of auto-installing modules from the Comprehensive Perl Archive Network,
+where the above modules reside. Do "perldoc perlmodinstall" or "perldoc
+CPAN" for more information.
+</p>
+<p>To install this module type the following:
+</p>
+<p>   perl Build.PL<br/>
+   ./Build<br/>
+   ./Build test<br/>
+   ./Build install
+</p>
+<p>Or, if you're on a platform (like DOS or Windows) that doesn't like the "./"
+notation, you can do this:
+</p>
+<p>   perl Build.PL<br/>
+   perl Build<br/>
+   perl Build test<br/>
+   perl Build install
+</p>
+<p>In order to install somewhere other than the default, such as in a directory
+under your home directory, like "/home/fred/perl" go
+</p>
+<p>   perl Build.PL --install_base /home/fred/perl
+</p>
+<p>as the first step instead.
+</p>
+<p>This will install the files underneath /home/fred/perl.
+</p>
+<p>You will then need to make sure that you alter the PERL5LIB variable to find
+the modules, and the PATH variable to find the script.
+</p>
+<p>Therefore you will need to change: your path, to include
+/home/fred/perl/script (where the script will be)
+</p>
+<p>        PATH=/home/fred/perl/script:${PATH}
+</p>
+<p>the PERL5LIB variable to add /home/fred/perl/lib
+</p>
+<p>        PERL5LIB=/home/fred/perl/lib:${PERL5LIB}
+</p>
+<p>Note that the system links dictionary will be installed as
+"/home/fred/perl/share/txt2html/txt2html.dict"
+</p>
+<p>If you want to install in a temporary install directory (such as if you are
+building a package) then instead of going
+</p>
+<p>   perl Build install
+</p>
+<p>go
+</p>
+<p>   perl Build install destdir=/my/temp/dir
+</p>
+<p>and it will be installed there, with a directory structure under
+/my/temp/dir the same as it would be if it were installed plain. Note that
+this is NOT the same as setting --install_base, because certain things are
+done at build-time which use the install_base info.
+</p>
+<p>See "perldoc perlrun" for more information on PERL5LIB, and see "perldoc
+Module::Build" for more information on installation options.
+</p>
+<p><strong>==== AUTHOR ====</strong>
+</p>
+<p>    Kathryn Andersen (RUBYKAT)<br/>
+    perlkat AT katspace dot com<br/>
+    http//<a href="http://www.katspace.com/">www.katspace.com</a>/
+</p>
+<p>based on txt2html by Seth Golub
+</p>
+<p><strong>==== COPYRIGHT AND LICENCE ====</strong>
+</p>
+<p>Original txt2html script copyright (c) 1994-2000 Seth Golub &lt;seth AT
+aigeek.com&gt;
+</p>
+<p>Copyright (c) 2002-2005 by Kathryn Andersen
+</p>
+<p>This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+</p>
+
+<hr />
+<p style="text-align: center;">
+[ <a href="index.html">Home</a></li>
+&nbsp; | &nbsp; <a href="http://sourceforge.net/projects/txt2html/">txt2html sourceforge</a></li>
+&nbsp; | &nbsp; <a href="http://sourceforge.net/project/showfiles.php?group_id=31276">Download</a></li>
+]
+</p>
+</body>
+</html>

@@ -1,0 +1,17 @@
+                 List of relations
+ Schema |         Name          |   Type   | Owner 
+--------+-----------------------+----------+-------
+ public | actor_episodes        | view     | kat
+ public | actors                | table    | kat
+ public | copyable              | view     | kat
+ public | episode_recording     | view     | kat
+ public | episodes              | table    | kat
+ public | episodes_title_id_seq | sequence | kat
+ public | pal_recordings        | view     | kat
+ public | recordings            | table    | kat
+ public | sorted_eps            | view     | kat
+ public | tapes                 | table    | kat
+ public | unrecorded            | view     | kat
+ public | wanting               | view     | kat
+(12 rows)
+

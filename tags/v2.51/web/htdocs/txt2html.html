@@ -1,0 +1,838 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>txt2html - convert plain text file to HTML.</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#version">VERSION</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#options">OPTIONS</a></li>
+	<li><a href="#file_formats">FILE FORMATS</a></li>
+	<ul>
+
+		<li><a href="#options_files">Options Files</a></li>
+		<li><a href="#link_dictionary">Link Dictionary</a></li>
+		<li><a href="#input_file_format">Input File Format</a></li>
+	</ul>
+
+	<li><a href="#examples">EXAMPLES</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+	<li><a href="#prerequisites">PREREQUISITES</a></li>
+	<li><a href="#script_categories">SCRIPT CATEGORIES</a></li>
+	<li><a href="#environment">ENVIRONMENT</a></li>
+	<li><a href="#files">FILES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>txt2html - convert plain text file to HTML.</p>
+<p>
+</p>
+<hr />
+<h1><a name="version">VERSION</a></h1>
+<p>This describes version <strong>2.51</strong> of txt2html.</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>txt2html --help | --manpage</p>
+<p>txt2html [ --append_file <em>filename</em> ] [ --append_head <em>filename</em> ]
+    [ --body_deco <em>string</em> ] [ --bold_delimiter <em>string</em> ]
+    [ --bullets <em>string</em> ] [ --bullets_ordered <em>string</em> ] [ --caps_tag <em>tag</em> ]
+    { --custom_heading_regexp <em>regexp</em> } [ --debug ] [ --demoronize ]
+    [ --default_link_dict <em>filename</em> ] [ --dict_debug <em>n</em> ]
+    [ --doctype <em>doctype</em> ] [ --eight_bit_clean ] [ --escape_HTML_chars ]
+    [ --explicit_headings ] [ --extract ] [ --hrule_min <em>n</em> ]
+    [ --indent_width <em>n</em> ] [ --indent_par_break ]
+    { --infile <em>filename</em> | --instring <em>string</em> }
+    [ --italic_delimiter <em>string</em> ] { --links_dictionaries <em>filename</em> }
+    [ --link_only ] [ --lower_case_tags ] [ --mailmode ]
+    [ --make_anchors ] [ --make_tables ] [ --min_caps_length <em>n</em> ]
+    [ --outfile <em>filename</em> ] [ --par_indent <em>n</em> ]
+    [ --preformat_trigger_lines <em>n</em> ] [ --endpreformat_trigger_lines <em>n</em> ]
+    [ --preformat_start_marker <em>regexp</em> ] [ --preformat_end_marker <em>regexp</em> ]
+    [ --preformat_whitespace_min <em>n</em> ] [ --prepend_file <em>filename</em> ]
+    [ --preserve_indent ] [ --short_line_length <em>n</em> ]
+    [ --style_url <em>stylesheet_url</em> ] [ --tab_width <em>n</em> ]
+    [ --table_type <em>type</em>=0/1 ] [ --title <em>title</em> ] [ --titlefirst ]
+    [ --underline_delimiter <em>string</em> ] [ --underline_length_tolerance <em>n</em> ]
+    [ --underline_offset_tolerance <em>n</em> ] [ --unhyphenation ]
+    [ --use_mosaic_header ] [ --use_preformat_marker ] [ --xhtml ] [file ...]</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>txt2html converts plain text files to HTML.</p>
+<p>It supports headings, tables, lists, simple character markup, and
+hyperlinking, and is highly customizable. It recognizes some of the
+apparent structure of the source document (mostly whitespace and
+typographic layout), and attempts to mark that structure explicitly
+using HTML. The purpose for this tool is to provide an easier way of
+converting existing text documents to HTML format.</p>
+<p>One can use txt2html as a filter, outputting the result to STDOUT,
+or to a given file.</p>
+<p>One can define options in a config file as well as on the command-line.</p>
+<p>
+</p>
+<hr />
+<h1><a name="options">OPTIONS</a></h1>
+<p>Option names can be abbreviated to the shortest unique name for that option.
+Options can start with ``--'' or ``-''. Boolean options can be negated
+by preceding them with ``no''; options with hash or array values
+can be added to by giving the option again for each value.</p>
+<p>See <a href="/Getopt/Long.html">the Getopt::Long manpage</a> for more information.</p>
+<p>If the Getopt::ArgvFile module is installed, then groups of options can
+be read from a file or files designated by the @ character preceding
+the name.  For example:</p>
+<pre>
+    txt2html @poem_options --outfile poem_glory.html  poem_glory.txt</pre>
+<p>See <a href="#options_files">Options Files</a> for more information.</p>
+<p>Help options:</p>
+<dl>
+<dt><strong><a name="item__2d_2dhelp">--help</a></strong></dt>
+
+<dd>
+<p>Display short help and exit.</p>
+</dd>
+<dt><strong><a name="item__2d_2dmanpage">--manpage</a></strong></dt>
+
+<dd>
+<p>Display full documentation and exit.
+This requires perldoc to be installed.</p>
+</dd>
+</dl>
+<p>General options:</p>
+<dl>
+<dt><strong><a name="item__2d_2dappend_file_filename__7c__2d_2dappend_filena">--append_file <em>filename</em> | --append <em>filename</em> | --append_body <em>filename</em></a></strong></dt>
+
+<dd>
+<p>If you want something appended by default, put the filename here.
+The appended text will not be processed at all, so make sure it's
+plain text or decent HTML.  i.e. do not have things like:
+    Mary Andersen &lt;<a href="mailto:kitty@example.com">kitty@example.com</a>&gt;
+but instead, have:
+    Mary Andersen <a href="mailto:&lt;kitty@example.com&gt;">&lt;kitty@example.com&gt;</a></p>
+<p>(default: nothing)</p>
+</dd>
+<dt><strong><a name="item__2d_2dappend_head_filename__7c__2dah_filename">--append_head <em>filename</em> | -ah <em>filename</em></a></strong></dt>
+
+<dd>
+<p>If you want something appended to the head by default, put the filename here.
+The appended text will not be processed at all, so make sure it's
+plain text or decent HTML.  i.e. do not have things like:
+    Mary Andersen &lt;<a href="mailto:kitty@example.com">kitty@example.com</a>&gt;
+but instead, have:
+    Mary Andersen <a href="mailto:&lt;kitty@example.com&gt;">&lt;kitty@example.com&gt;</a></p>
+<p>(default: nothing)</p>
+</dd>
+<dt><strong><a name="item__2d_2dbody_deco_string">--body_deco <em>string</em></a></strong></dt>
+
+<dd>
+<p>Body decoration string: a string to be added to the BODY tag so that
+one can set attributes to the BODY (such as class, style, bgcolor etc)
+For example, ``class='withimage'''.</p>
+</dd>
+<dt><strong><a name="item__2d_2dbold_delimiter_string">--bold_delimiter <em>string</em></a></strong></dt>
+
+<dd>
+<p>This defines what character (or string) is taken to be the delimiter of
+text which is to be interpreted as bold (that is, to be given a STRONG
+tag).  If this is empty, then no bolding of text will be done.
+(default: #)</p>
+</dd>
+<dt><strong><a name="item__2d_2dbullets_string">--bullets <em>string</em></a></strong></dt>
+
+<dd>
+<p>This defines what single characters are taken to be ``bullet'' characters
+for unordered lists.  Note that because this is used as a character
+class, if you use '-' it must come first.
+(default:-=o*\267)</p>
+</dd>
+<dt><strong><a name="item__2d_2dbullets_ordered_string">--bullets_ordered <em>string</em></a></strong></dt>
+
+<dd>
+<p>This defines what single characters are taken to be ``bullet'' placeholder
+characters for ordered lists.  Ordered lists are normally marked by
+a number or letter followed by '.' or ')' or ']' or ':'.  If an ordered
+bullet is used, then it simply indicates that this is an ordered list,
+without giving explicit numbers.</p>
+<p>Note that because this is used as a character class, if you use '-' it
+must come first.
+(default:nothing)</p>
+</dd>
+<dt><strong><a name="item__2d_2dcaps_tag_tag__7c__2d_2dcapstag_tag__7c__2dct">--caps_tag <em>tag</em> | --capstag <em>tag</em> | -ct <em>tag</em></a></strong></dt>
+
+<dd>
+<p>Tag to put around all-caps lines
+(default: STRONG)
+If an empty tag is given, then no tag will be put around all-caps lines.</p>
+</dd>
+<dt><strong><a name="item__2d_2dcustom_heading_regexp_regexp__7c__2d_2dheadi">--custom_heading_regexp <em>regexp</em> | --heading <em>regexp</em> | -H <em>regexp</em></a></strong></dt>
+
+<dd>
+<p>Add a regexp for headings.  Header levels are assigned by regexp
+in order seen When a line matches a custom header regexp, it is tagged as
+a header.  If it's the first time that particular regexp has matched,
+the next available header level is associated with it and applied to
+the line.  Any later matches of that regexp will use the same header level.
+Therefore, if you want to match numbered header lines, you could use
+something like this:</p>
+<pre>
+    -H '^ *\d+\. \w+' -H '^ *\d+\.\d+\. \w+' -H '^ *\d+\.\d+\.\d+\. \w+'</pre>
+<p>Then lines like</p>
+<pre>
+                &quot; 1. Examples &quot;
+                &quot; 1.1. Things&quot;
+            and &quot; 4.2.5. Cold Fusion&quot;</pre>
+<p>Would be marked as H1, H2, and H3 (assuming they were found in that
+order, and that no other header styles were encountered).
+If you prefer that the first one specified always be H1, the second
+always be H2, the third H3, etc, then use the -EH/--explicit-headings
+option.</p>
+<p>This is a multi-valued option.</p>
+<p>(default: none)</p>
+</dd>
+<dt><strong><a name="item__2d_2ddebug">--debug</a></strong></dt>
+
+<dd>
+<p>Enable copious script debugging output (don't bother, this is for the
+developer)</p>
+</dd>
+<dt><strong><a name="item__2d_2ddefault_link_dict_filename">--default_link_dict <em>filename</em></a></strong></dt>
+
+<dd>
+<p>The name of the default ``user'' link dictionary.
+(default: ``$ENV{'HOME'}/.txt2html.dict'')</p>
+</dd>
+<dt><strong><a name="item__2d_2ddemoronize">--demoronize</a></strong></dt>
+
+<dd>
+<p>Convert Microsoft-generated character codes that are non-ISO codes into
+something more reasonable.
+(default:true)</p>
+</dd>
+<dt><strong><a name="item__2d_2ddict_debug_n__7c__2ddb_n">--dict_debug <em>n</em> | -db <em>n</em></a></strong></dt>
+
+<dd>
+<p>Debug mode for link dictionaries Bitwise-Or what you want to see:
+          1: The parsing of the dictionary
+          2: The code that will make the links
+          4: When each rule matches something
+          8: When each tag is created</p>
+<p>(default: 0)</p>
+</dd>
+<dt><strong><a name="item__2d_2ddoctype_doctype__7c__2d_2ddt_doctype">--doctype <em>doctype</em> | --dt <em>doctype</em></a></strong></dt>
+
+<dd>
+<p>This gets put in the DOCTYPE field at the top of the document, unless it's
+empty.</p>
+<p>Default :
+'-//W3C//DTD HTML 4.01//EN``
+''http://www.w3.org/TR/html4/strict.dtd'</p>
+<p>If --xhtml is true, the contents of this is ignored, unless it's
+empty, in which case no DOCTYPE declaration is output.</p>
+</dd>
+<dt><strong><a name="item__2d_2deight_bit_clean__7c__2d8">--eight_bit_clean | -8</a></strong></dt>
+
+<dd>
+<p>If false, convert Latin-1 characters to HTML entities.
+If true, this conversion is disabled.
+(default: false)</p>
+</dd>
+<dt><strong><a name="item__2d_2descape_html_chars__7c__2d_2descapechars__7c_">--escape_HTML_chars | --escapechars | -ec</a></strong></dt>
+
+<dd>
+<p>turn &amp; &lt; &gt; into &amp;amp; &amp;gt; &amp;lt;
+(default: true)</p>
+</dd>
+<dt><strong><a name="item__2d_2dexplicit_headings__7c__2deh">--explicit_headings | -EH</a></strong></dt>
+
+<dd>
+<p>Don't try to find any headings except the ones specified in the
+--custom_heading_regexp option.
+Also, the custom headings will not be assigned levels in the order they
+are encountered in the document, but in the order they are specified on
+the command line.
+(default: false)</p>
+</dd>
+<dt><strong><a name="item__2d_2dextract">--extract</a></strong></dt>
+
+<dd>
+<p>Extract Mode; don't put HTML headers or footers on the result, just
+the plain HTML (thus making the result suitable for inserting into
+another document (or as part of the output of a CGI script).
+(default: false)</p>
+</dd>
+<dt><strong><a name="item__2d_2dhrule_min_n__7c__2d_2dhrule_n__7c__2dr_n">--hrule_min <em>n</em> | --hrule <em>n</em> | -r <em>n</em></a></strong></dt>
+
+<dd>
+<p>Min number of ---s for an HRule.
+(default: 4)</p>
+</dd>
+<dt><strong><a name="item__2d_2dindent_width_n__7c__2d_2dindent_n__7c__2diw_">--indent_width <em>n</em> | --indent <em>n</em> | -iw <em>n</em></a></strong></dt>
+
+<dd>
+<p>Indents this many spaces for each level of a list.
+(default: 2)</p>
+</dd>
+<dt><strong><a name="item__2d_2dindent_par_break__7c__2dipb">--indent_par_break | -ipb</a></strong></dt>
+
+<dd>
+<p>Treat paragraphs marked solely by indents as breaks with indents.
+That is, instead of taking a three-space indent as a new paragraph,
+put in a &lt;BR&gt; and three non-breaking spaces instead.
+(see also --preserve_indent)
+(default: false)</p>
+</dd>
+<dt><strong><a name="item__2d_2dinfile_filename">--infile <em>filename</em></a></strong></dt>
+
+<dd>
+<p>The name of the input file.
+This is a cumulative list argument.  If you want to process more than
+one file, just add another --infile <em>file</em> to the list of arguments.
+Or else just add the filename without the option, after all the options.
+Note that the special file name of '-' means standard input.</p>
+<p>(default:-)</p>
+</dd>
+<dt><strong><a name="item__2d_2dinstring_string">--instring <em>string</em></a></strong></dt>
+
+<dd>
+<p>An input string.  One can either have input files or input strings,
+not both.  If you want to process more than one string, just add
+another --instring <em>string</em> to the list of arguments.</p>
+</dd>
+<dt><strong><a name="item__2d_2ditalic_delimiter_string">--italic_delimiter <em>string</em></a></strong></dt>
+
+<dd>
+<p>This defines what character (or string) is taken to be the delimiter of
+text which is to be interpreted as italic (that is, to be given a EM
+tag).  If this is empty, no italicising of text will be done.
+(default: *)</p>
+</dd>
+<dt><strong><a name="item__2d_2dlinks_dictionaries_filename__7c__2d_2dlink_f">--links_dictionaries <em>filename</em> | --link <em>filename</em> | -l <em>filename</em></a></strong></dt>
+
+<dd>
+<p>File to use as a link-dictionary.  There can be more than one of these.
+These are in addition to the System Link Dictionary and the User Link
+Dictionary.</p>
+</dd>
+<dt><strong><a name="item__2d_2dlink_only__7c__2d_2dlinkonly__7c__2dlo">--link_only | --linkonly | -LO</a></strong></dt>
+
+<dd>
+<p>Do no escaping or marking up at all, except for processing the links
+dictionary file and applying it.  This is useful if you want to use
+the linking feature on an HTML document.  If the HTML is a
+complete document (includes HTML,HEAD,BODY tags, etc) then you'll
+probably want to use the --extract option also.
+(default: false)</p>
+</dd>
+<dt><strong><a name="item__2d_2dlower_case_tags">--lower_case_tags</a></strong></dt>
+
+<dd>
+<p>Force all the tags to be in lower-case.</p>
+</dd>
+<dt><strong><a name="item__2d_2dmailmode__7c__2dm">--mailmode | -m</a></strong></dt>
+
+<dd>
+<p>Deal with mail headers &amp; quoted text.  The mail header paragraph is
+given the class 'mail_header', and mail-quoted text is given the class
+'quote_mail'.
+(default: false)</p>
+</dd>
+<dt><strong><a name="item__2d_2dmake_anchors__7c__2d_2danchors">--make_anchors | --anchors</a></strong></dt>
+
+<dd>
+<p>Should we try to make anchors in headings?
+(default: true)</p>
+</dd>
+<dt><strong><a name="item__2d_2dmake_links">--make_links</a></strong></dt>
+
+<dd>
+<p>Should we try to build links?  If this is false, then the links
+dictionaries are not consulted and only structural text-to-HTML
+conversion is done.
+(default: true)</p>
+</dd>
+<dt><strong><a name="item__2d_2dmake_tables__7c__2d_2dtables">--make_tables | --tables</a></strong></dt>
+
+<dd>
+<p>Should we try to build tables?  If true, spots tables and marks them up
+appropriately.  See <a href="#input_file_format">Input File Format</a> for information on how tables
+should be formatted.</p>
+<p>This overrides the detection of lists; if something looks like a table,
+it is taken as a table, and list-checking is not done for that
+paragraph.</p>
+<p>(default: false)</p>
+</dd>
+<dt><strong><a name="item__2d_2dmin_caps_length_n__7c__2d_2dcaps_n__7c__2dc_">--min_caps_length <em>n</em> | --caps <em>n</em> | -c <em>n</em></a></strong></dt>
+
+<dd>
+<p>min sequential CAPS for an all-caps line
+(default: 3)</p>
+</dd>
+<dt><strong><a name="item__2d_2doutfile_filename">--outfile <em>filename</em></a></strong></dt>
+
+<dd>
+<p>The name of the output file.  If it is ``-'' then the output goes
+to Standard Output.
+(default: - )</p>
+</dd>
+<dt><strong><a name="item__2d_2dpar_indent_n">--par_indent <em>n</em></a></strong></dt>
+
+<dd>
+<p>Minumum number of spaces indented in first lines of paragraphs.
+  Only used when there's no blank line
+preceding the new paragraph.
+(default: 2)</p>
+</dd>
+<dt><strong><a name="item__2d_2dpreformat_trigger_lines_n__7c__2d_2dprebegin">--preformat_trigger_lines <em>n</em> | --prebegin <em>n</em> | -pb <em>n</em></a></strong></dt>
+
+<dd>
+<p>How many lines of preformatted-looking text are needed to switch to &lt;PRE&gt;
+          &lt;= 0 : Preformat entire document
+             1 : one line triggers
+          &gt;= 2 : two lines trigger</p>
+<p>(default: 2)</p>
+</dd>
+<dt><strong><a name="item__2d_2dendpreformat_trigger_lines_n__7c__2d_2dpreen">--endpreformat_trigger_lines <em>n</em> | --preend <em>n</em> | -pe <em>n</em></a></strong></dt>
+
+<dd>
+<p>How many lines of unpreformatted-looking text are needed to switch from &lt;PRE&gt;
+           &lt;= 0 : Never preformat within document
+              1 : one line triggers
+           &gt;= 2 : two lines trigger
+(default: 2)</p>
+<p>NOTE for --prebegin and --preend:
+A zero takes precedence.  If one is zero, the other is ignored.
+If both are zero, entire document is preformatted.</p>
+</dd>
+<dt><strong><a name="item__2d_2dpreformat_start_marker_regexp">--preformat_start_marker <em>regexp</em></a></strong></dt>
+
+<dd>
+<p>What flags the start of a preformatted section if --use_preformat_marker
+is true.</p>
+<p>(default: ``^(:?(:?&amp;lt;)|&lt;)PRE(:?(:?&amp;gt;)|&gt;)\$'')</p>
+</dd>
+<dt><strong><a name="item__2d_2dpreformat_end_marker_regexp">--preformat_end_marker <em>regexp</em></a></strong></dt>
+
+<dd>
+<p>What flags the end of a preformatted section if --use_preformat_marker
+is true.</p>
+<p>(default: ``^(:?(:?&amp;lt;)|&lt;)/PRE(:?(:?&amp;gt;)|&gt;)\$'')</p>
+</dd>
+<dt><strong><a name="item__2d_2dpreformat_whitespace_min_n__7c__2d_2dprewhit">--preformat_whitespace_min <em>n</em> | --prewhite <em>n</em> | -p <em>n</em></a></strong></dt>
+
+<dd>
+<p>Minimum number of consecutive whitespace characters to trigger
+normal preformatting. 
+NOTE: Tabs are expanded to spaces before this check is made.
+That means if <strong>tab_width</strong> is 8 and this is 5, then one tab may be
+expanded to 8 spaces, which is enough to trigger preformatting.
+(default: 5)</p>
+</dd>
+<dt><strong><a name="item__2d_2dprepend_file_filename__7c__2d_2dprepend_body">--prepend_file <em>filename</em> | --prepend_body <em>filename</em> | --pp <em>filename</em></a></strong></dt>
+
+<dd>
+<p>If you want something prepended to the processed body text, put the
+filename here.  The prepended text will not be processed at all, so make
+sure it's plain text or decent HTML.</p>
+<p>(default: nothing)</p>
+</dd>
+<dt><strong><a name="item__2d_2dpreserve_indent__7c__2dpi">--preserve_indent | -pi</a></strong></dt>
+
+<dd>
+<p>Preserve the first-line indentation of paragraphs marked with indents
+by replacing the spaces of the first line with non-breaking spaces.
+(default: false)</p>
+</dd>
+<dt><strong><a name="item__2d_2dshort_line_length_n__7c__2d_2dshortline_n__7">--short_line_length <em>n</em> | --shortline <em>n</em> | -s <em>n</em></a></strong></dt>
+
+<dd>
+<p>Lines this short (or shorter) must be intentionally broken and are kept
+that short.
+(default: 40)</p>
+</dd>
+<dt><strong><a name="item__2d_2dstyle_url_stylesheet_url">--style_url <em>stylesheet_url</em></a></strong></dt>
+
+<dd>
+<p>This gives the URL of a stylesheet; a LINK tag will be added to the
+output.</p>
+</dd>
+<dt><strong><a name="item__2d_2dtab_width_n__7c__2d_2dtabwidth_n__7c__2dtw_n">--tab_width <em>n</em> | --tabwidth <em>n</em> | -tw <em>n</em></a></strong></dt>
+
+<dd>
+<p>How many spaces equal a tab?
+(default: 8)</p>
+</dd>
+<dt><strong><a name="item__2d_2dtable_type_type_3d0_2f1">--table_type <em>type</em>=0/1</a></strong></dt>
+
+<dd>
+<pre>
+
+    --table_type ALIGN=1 --table_type BORDER=0</pre>
+<p>This determines which types of tables will be recognised when ``make_tables''
+is true.  The possible types are ALIGN, PGSQL, BORDER and DELIM.
+(default: all types are true)</p>
+</dd>
+<dt><strong><a name="item__2d_2dtitle_title__7c__2dt_title">--title <em>title</em> | -t <em>title</em></a></strong></dt>
+
+<dd>
+<p>You can specify a title.  Otherwise it will use a blank one.
+(default: nothing)</p>
+</dd>
+<dt><strong><a name="item__2d_2dtitlefirst__7c__2dtf">--titlefirst | -tf</a></strong></dt>
+
+<dd>
+<p>Use the first non-blank line as the title.</p>
+</dd>
+<dt><strong><a name="item__2d_2dunderline_delimiter_string">--underline_delimiter <em>string</em></a></strong></dt>
+
+<dd>
+<p>This defines what character (or string) is taken to be the delimiter of
+text which is to be interpreted as underlined (that is, to be given a &lt;U&gt;
+tag).  If this is empty, then no underlining of text will be done.
+This is NOT the same as the following ``underline'' options, which are
+about underlining of ``header'' sections.
+(default: _)</p>
+</dd>
+<dt><strong><a name="item__2d_2dunderline_length_tolerance_n__7c__2d_2duleng">--underline_length_tolerance <em>n</em> | --ulength <em>n</em> | -ul <em>n</em></a></strong></dt>
+
+<dd>
+<p>How much longer or shorter can header underlines be and still be header
+underlines?
+(default: 1)</p>
+</dd>
+<dt><strong><a name="item__2d_2dunderline_offset_tolerance_n__7c__2d_2duoffs">--underline_offset_tolerance <em>n</em> | --uoffset <em>n</em> | -uo <em>n</em></a></strong></dt>
+
+<dd>
+<p>How far offset can header underlines be and still be header underlines?
+(default: 1)</p>
+</dd>
+<dt><strong><a name="item__2d_2dunhyphenation__7c__2d_2dunhypnenate__7c__2du">--unhyphenation | --unhypnenate | -u</a></strong></dt>
+
+<dd>
+<p>Enables unhyphenation of text.
+(default: true)</p>
+</dd>
+<dt><strong><a name="item__2d_2duse_mosaic_header__7c__2d_2dmosaic__7c__2dmh">--use_mosaic_header | --mosaic | -mh</a></strong></dt>
+
+<dd>
+<p>Use this option if you want to force the heading styles to match what Mosaic
+outputs.  (Underlined with ``***''s is H1,
+with ``===''s is H2, with ``+++'' is H3, with ``---'' is H4, with ``~~~'' is H5
+and with ``...'' is H6)
+This was the behavior of txt2html up to version 1.10.
+(default: false)</p>
+</dd>
+<dt><strong><a name="item__2d_2duse_preformat_marker__7c__2d_2dpreformat_mar">--use_preformat_marker | --preformat_marker | -pm</a></strong></dt>
+
+<dd>
+<p>Turn on preformatting when encountering ``&lt;PRE&gt;'' on a line by itself, and turn
+it off when there's a line containing only ``&lt;/PRE&gt;''.
+When such preformatted text is detected, the PRE tag will be given the
+class 'quote_explicit'.
+(default: off)</p>
+</dd>
+<dt><strong><a name="item__2d_2dxhtml">--xhtml</a></strong></dt>
+
+<dd>
+<p>Try to make the output conform to the XHTML standard, including
+closing all open tags and marking empty tags correctly.  This
+turns on --lower_case_tags and overrides the --doctype option.
+Note that if you add a header or a footer file, it is up to you
+to make it conform; the header/footer isn't touched by this.
+Likewise, if you make link-dictionary entries that break XHTML,
+then this won't fix them, except to the degree of putting all tags
+into lower-case.</p>
+<p>(default: true)</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="file_formats">FILE FORMATS</a></h1>
+<p>
+</p>
+<h2><a name="options_files">Options Files</a></h2>
+<p>Options can be given in files as well as on the command-line by
+flagging an option file with @<em>filename</em> in the command-line.
+Also, the files ~/.txt2htmlrc and ./.txt2htmlrc are checked for options.</p>
+<p>The format is as follows:
+Lines starting with # are comments.  Lines enclosed in PoD markers are
+also comments.  Blank lines are ignored.  The options themselves
+should be given the way they would be on the command line, that is,
+the option name (<em>including</em> the --) followed by its value (if any).</p>
+<p>For example:</p>
+<pre>
+    # set link dictionaries
+    --default_link_dict /home/kat/.TextToHTML.dict</pre>
+<pre>
+    # set options for poetry
+    --titlefirst
+    --short_line_length 60</pre>
+<p>See <a href="/Getopt/ArgvFile.html">the Getopt::ArgvFile manpage</a> for more information.</p>
+<p>
+</p>
+<h2><a name="link_dictionary">Link Dictionary</a></h2>
+<p>A link dictionary file contains patterns to match, and what to convert
+them to.  It is called a ``link'' dictionary because it was intended to be
+something which defined what a href link was, but it can be used for
+more than that.  However, if you wish to define your own links, it is
+strongly advised to read up on regular expressions (regexes) because
+this relies heavily on them.</p>
+<p>The file consists of comments (which are lines starting with #)
+and blank lines, and link entries.
+Each entry consists of a regular expression, a -&gt; separator (with
+optional flags), and a link ``result''.</p>
+<p>In the simplest case, with no flags, the regular expression
+defines the pattern to look for, and the result says what part
+of the regular expression is the actual link, and the link which
+is generated has the href as the link, and the whole matched pattern
+as the visible part of the link.  The first character of the regular
+expression is taken to be the separator for the regex, so one
+could either use the traditional / separator, or something else
+such as | (which can be helpful with URLs which are full of / characters).</p>
+<p>So, for example, an ftp URL might be defined as:</p>
+<pre>
+    |ftp:[\w/\.:+\-]+|      -&gt; $&amp;</pre>
+<p>This takes the whole pattern as the href, and the resultant link
+has the same thing in the href as in the contents of the anchor.</p>
+<p>But sometimes the href isn't the whole pattern.</p>
+<pre>
+    /&amp;lt;URL:\s*(\S+?)\s*&amp;gt;/ --&gt; $1</pre>
+<p>With the above regex, a () grouping marks the first subexpression,
+which is represented as $1 (rather than $&amp; the whole expression).
+This entry matches a URL which was marked explicity as a URL
+with the pattern &lt;URL:foo&gt;  (note the &amp;lt; is shown as the
+entity, not the actual character.  This is because by the
+time the links dictionary is checked, all such things have
+already been converted to their HTML entity forms)
+This would give us a link in the form
+&lt;A HREF=``foo''&gt;&amp;lt;URL:foo&amp;gt;&lt;/A&gt;</p>
+<p><strong>The h flag</strong></p>
+<p>However, if we want more control over the way the link is constructed,
+we can construct it ourself.  If one gives the h flag, then the
+``result'' part of the entry is taken not to contain the href part of
+the link, but the whole link.</p>
+<p>For example, the entry:</p>
+<pre>
+    /&amp;lt;URL:\s*(\S+?)\s*&amp;gt;/ -h-&gt; &lt;A HREF=&quot;$1&quot;&gt;$1&lt;/A&gt;</pre>
+<p>will take &lt;URL:foo&gt; and give us &lt;A HREF=``foo''&gt;foo&lt;/A&gt;</p>
+<p>However, this is a very powerful mechanism, because it
+can be used to construct custom tags which aren't links at all.
+For example, to flag *italicised words* the following
+entry will surround the words with EM tags.</p>
+<pre>
+    /\B\*([a-z][a-z -]*[a-z])\*\B/ -hi-&gt; &lt;EM&gt;$1&lt;/EM&gt;</pre>
+<p><strong>The i flag</strong></p>
+<p>This turns on ignore case in the pattern matching.</p>
+<p><strong>The e flag</strong></p>
+<p>This turns on execute in the pattern substitution.  This really
+only makes sense if h is turned on too.  In that case, the ``result''
+part of the entry is taken as perl code to be executed, and the
+result of that code is what replaces the pattern.</p>
+<p><strong>The o flag</strong></p>
+<p>This marks the entry as a once-only link.  This will convert the
+first instance of a matching pattern, and ignore any others
+further on.</p>
+<p>For example, the following pattern will take the first mention
+of HTML::TextToHTML and convert it to a link to the module's home page.</p>
+<pre>
+    &quot;HTML::TextToHTML&quot;  -io-&gt; <a href="http://www.example.com/tools/text_to_html/">http://www.example.com/tools/text_to_html/</a></pre>
+<p>
+</p>
+<h2><a name="input_file_format">Input File Format</a></h2>
+<p>For the most part, this module tries to use intuitive conventions for
+determining the structure of the text input.  Unordered lists are
+marked by bullets; ordered lists are marked by numbers or letters;
+in either case, an increase in indentation marks a sub-list contained
+in the outer list.</p>
+<p>Headers (apart from custom headers) are distinguished by ``underlines''
+underneath them; headers in all-capitals are distinguished from
+those in mixed case.  All headers, both normal and custom headers,
+are expected to start at the first line in a ``paragraph''.</p>
+<p>Tables require a more rigid convention.  A table must be marked as a
+separate paragraph, that is, it must be surrounded by blank lines.
+Tables come in different types.  For a table to be parsed, its
+--table_type option must be on, and the --make_tables option must be true.</p>
+<p><strong>ALIGN Table Type</strong></p>
+<p>Columns must be separated by two or more spaces (this prevents
+accidental incorrect recognition of a paragraph where interword spaces
+happen to line up).  If there are two or more rows in a paragraph and
+all rows share the same set of (two or more) columns, the paragraph is
+assumed to be a table.  For example</p>
+<pre>
+    -e  File exists.
+    -z  File has zero size.
+    -s  File has nonzero size (returns size).</pre>
+<p>becomes</p>
+<pre>
+    &lt;table&gt;
+    &lt;tr&gt;&lt;td&gt;-e&lt;/td&gt;&lt;td&gt;File exists.&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;-z&lt;/td&gt;&lt;td&gt;File has zero size.&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;-s&lt;/td&gt;&lt;td&gt;File has nonzero size (returns size).&lt;/td&gt;&lt;/tr&gt;
+    &lt;/table&gt;</pre>
+<p>This guesses for each column whether it is intended to be left,
+centre or right aligned.</p>
+<p><strong>BORDER Table Type</strong></p>
+<p>This table type has nice borders around it, and will be rendered
+with a border, like so:</p>
+<pre>
+    +---------+---------+
+    | Column1 | Column2 |
+    +---------+---------+
+    | val1    | val2    |
+    | val3    | val3    |
+    +---------+---------+</pre>
+<p>The above becomes</p>
+<pre>
+    &lt;table border=&quot;1&quot;&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Column1&lt;/th&gt;&lt;th&gt;Column2&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;val1&lt;/td&gt;&lt;td&gt;val2&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;val3&lt;/td&gt;&lt;td&gt;val3&lt;/td&gt;&lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;/table&gt;</pre>
+<p>It can also have an optional caption at the start.</p>
+<pre>
+         My Caption
+    +---------+---------+
+    | Column1 | Column2 |
+    +---------+---------+
+    | val1    | val2    |
+    | val3    | val3    |
+    +---------+---------+</pre>
+<p><strong>PGSQL Table Type</strong></p>
+<p>This format of table is what one gets from the output of a Postgresql
+query.</p>
+<pre>
+     Column1 | Column2
+    ---------+---------
+     val1    | val2
+     val3    | val3
+    (2 rows)</pre>
+<p>This can also have an optional caption at the start.
+This table is also rendered with a border and table-headers like
+the BORDER type.</p>
+<p><strong>DELIM Table Type</strong></p>
+<p>This table type is delimited by non-alphanumeric characters, and has to
+have at least two rows and two columns before it's recognised as a table.</p>
+<p>This one is delimited by the '| character:</p>
+<pre>
+    | val1  | val2  |
+    | val3  | val3  |</pre>
+<p>But one can use almost any suitable character such as : # $ % + and so on.
+This is clever enough to figure out what you are using as the delimiter
+if you have your data set up like a table.  Note that the line has to
+both begin and end with the delimiter, as well as using it to separate
+values.</p>
+<p>This can also have an optional caption at the start.</p>
+<p>
+</p>
+<hr />
+<h1><a name="examples">EXAMPLES</a></h1>
+<p><strong>Convert one file to HTML</strong></p>
+<pre>
+    txt2html --infile thing.txt --outfile thing.html</pre>
+<p>This will create a HTML file called <code>thing.html</code> from the plain
+text file <code>thing.txt</code>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>Tell me about them.</p>
+<p>
+</p>
+<hr />
+<h1><a name="prerequisites">PREREQUISITES</a></h1>
+<pre>
+    Pod::Usage
+    HTML::TextToHTML
+    Getopt::Long
+    Getopt::ArgvFile
+    File::Basename
+    YAML::Syck
+    perldoc</pre>
+<p>
+</p>
+<hr />
+<h1><a name="script_categories">SCRIPT CATEGORIES</a></h1>
+<p>Web</p>
+<p>
+</p>
+<hr />
+<h1><a name="environment">ENVIRONMENT</a></h1>
+<dl>
+<dt><strong><a name="item_home">HOME</a></strong></dt>
+
+<dd>
+<p>txt2html looks in the HOME directory for config files.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="files">FILES</a></h1>
+<p>These files are only read if the Getopt::ArgvFile module is
+available on the system.</p>
+<dl>
+<dt><strong><a name="item__7e_2f_2etxt2htmlrc"><code>~/.txt2htmlrc</code></a></strong></dt>
+
+<dd>
+<p>User configuration file.</p>
+</dd>
+<dt><strong><a name="item__2etxt2htmlrc"><code>.txt2htmlrc</code></a></strong></dt>
+
+<dd>
+<p>Configuration file in the current working directory; overrides
+options in <a href="#item__7e_2f_2etxt2htmlrc"><code>~/.txt2htmlrc</code></a> and is overridden by command-line options.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><code>perl(1)</code>
+<code>htmltoc(1)</code>
+HTML::TextToHTML
+Getopt::Long
+Getopt::ArgvFile</p>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<pre>
+    Kathryn Andersen (RUBYKAT)
+    perlkat AT katspace dot com
+    http//www.katspace.com/</pre>
+<p>based on txt2html by Seth Golub</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Original txt2html script copyright (c) 1994-2000 Seth Golub seth AT aigeek.com</p>
+<p>Copyright (c) 2002-2005 Kathryn Andersen</p>
+<p>This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.</p>
+
+</body>
+
+</html>

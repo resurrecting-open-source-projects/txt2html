@@ -1,0 +1,50 @@
+<p>This is a test file with some bizzare lines
+</p>
+<p>These get converted:
+</p>
+<pre>
+I'm going to ftp <a href="ftp://ftp.howdy.com/">ftp.howdy.com</a>     yay!!
+I'm going to ftp <a href="ftp://abbaftp.howdy.com/">abbaftp.howdy.com</a>     yay!!
+I'm going to ftp <a href="ftp://ftpabba.howdy.com/">ftpabba.howdy.com</a>     yay!!
+I'm going to ftp <a href="ftp://abftpba.howdy.com/">abftpba.howdy.com</a>     yay!!
+I'm going to ftp <a href="ftp://a_ftp_a.howdy.com/">a_ftp_a.howdy.com</a>     yay!!
+I'm going to ***ftp <a href="ftp://a_ftp_a.howdy.com/">a_ftp_a.howdy.com</a>***     yay!!
+</pre>
+<p>These are correctly not converted:
+</p>
+<pre>
+I'm going to 9bftpba.howdy.com     yay!!
+I'm going to -bftpba.howdy.com     yay!!
+I'm going to ***-bftpba.howdy.com***     yay!!
+</pre>
+<p>These test beginning and end of line conversions:
+</p>
+<p>ftp <a href="ftp://ftp.howdy.com/">ftp.howdy.com</a>     yay!!<br/>
+I'm going to ftp <a href="ftp://ftp.howdy.com/">ftp.howdy.com</a><br/>
+ftp <a href="ftp://ftp.howdy.com/">ftp.howdy.com</a>
+</p>
+<p>The same jazz but with www in the name:
+ 
+</p><p>These get converted:
+</p>
+<pre>
+I'm going to <a href="http://www.howdy.com/">www.howdy.com</a>     yay!!
+I'm going to <a href="http://abbawww.howdy.com/">abbawww.howdy.com</a>     yay!!
+I'm going to <a href="http://wwwabba.howdy.com/">wwwabba.howdy.com</a>     yay!!
+I'm going to <a href="http://abwwwba.howdy.com/">abwwwba.howdy.com</a>     yay!!
+I'm going to <a href="http://a_www_a.howdy.com/">a_www_a.howdy.com</a>     yay!!
+I'm going to ***<a href="http://a_www_a.howdy.com/">a_www_a.howdy.com</a>***     yay!!
+</pre>
+<p>These are correctly not converted:
+</p>
+<pre>
+I'm going to 9bwwwba.howdy.com     yay!!
+I'm going to -bwwwba.howdy.com     yay!!
+I'm going to ***-bwwwba.howdy.com***     yay!!
+</pre>
+<p>These test beginning and end of line conversions:
+</p>
+<p><a href="http://www.howdy.com/">www.howdy.com</a>     yay!!<br/>
+I'm going to <a href="http://www.howdy.com/">www.howdy.com</a><br/>
+<a href="http://www.howdy.com/">www.howdy.com</a>
+</p>

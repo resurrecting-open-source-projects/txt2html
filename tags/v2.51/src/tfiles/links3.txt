@@ -1,0 +1,8 @@
+This is a link with a sub-anchor in it.
+
+(http://www.steelypips.org/nethack/id_faq.html#general)
+
+This should not be bolded.
+
+But #this# should be.  And <http://www.example.com> should
+be linked.

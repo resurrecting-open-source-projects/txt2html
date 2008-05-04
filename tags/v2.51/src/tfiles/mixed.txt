@@ -1,0 +1,7 @@
+This is an example of mixed input, with a list with what shouldn't be bold.
+
+- The '#' character can be used to introduce comment lines. Comments and
+   lines that are empty or contain only whitespace are ignored.
+- Pipe characters and newlines within fields and '#' at the begin of the
+   first field of an entry must be escaped with a backslash ('\').
+

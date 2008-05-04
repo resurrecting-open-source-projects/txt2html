@@ -1,0 +1,38 @@
+Simple Unordered
+----------------
+
+This is just an unordered list.
+
+  - Background to building a jump start/install server.
+  - Extra setup required for district servers (Modem Ports)
+  - Extra setup required for district servers (External Modems)
+
+Simple Ordered
+--------------
+
+This is just an ordered list.
+
+  1. First
+  2. Second
+  3. Third
+
+
+
+
+Mixed Lists
+-----------
+
+This list is mixed.  Each ordered item contains an unordered list.
+
+   1. Bureau Server
+      - Sun Sparcstation 20
+      - Dual processor upgrade
+   2. Bureau Contingency Server
+      - Sun Sparcstation 20
+      - Dual processor upgrade
+   3. PC access Server (read only)
+       - Sun Sparcstation 5/110Mhz
+       - 96Meg of RAM
+       - 4 X SCSI SBUS cards
+
+
