@@ -9,11 +9,11 @@ HTML::TextToHTML - convert plain text file to HTML.
 
 =head1 VERSION
 
-This describes version B<2.50> of HTML::TextToHTML.
+This describes version B<2.51> of HTML::TextToHTML.
 
 =cut
 
-our $VERSION = '2.50';
+our $VERSION = '2.51';
 
 =head1 SYNOPSIS
 
@@ -210,8 +210,13 @@ something more reasonable.
     doctype=>I<doctype>
 
 This gets put in the DOCTYPE field at the top of the document, unless it's
-empty.  (default : "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd")
-If --xhtml is true, the contents of this is ignored, unless it's
+empty.
+
+Default :
+'-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd'
+
+If B<xhtml> is true, the contents of this is ignored, unless it's
 empty, in which case no DOCTYPE declaration is output.
 
 =item eight_bit_clean
@@ -4500,11 +4505,32 @@ s/\^((?![^^]*(?:<li>|<LI>|<p>|<P>))(\w|["'<>])[^^]*)\^/<${tag}>$1<\/${tag}>/gs;
         if (${$line_ref} =~ m/\B_([[:alpha:]])_\B/s)
 	{
 	    ${$line_ref} =~ s/\B_([[:alpha:]])_\B/<${tag}>$1<\/${tag}>/gs;
+	    ${$line_ref} =~
+		s#(?<![_[:alnum:]])_([^_]+?[[:alnum:]"'\.\?\&;:<>])_#<${tag}>$1</${tag}>#gs;
 	}
-	# need to make sure that _ delimiters are not mistaken for
-	# a_variable_name
-        ${$line_ref} =~
-	    s#(?<![_[:alnum:]])_([^_]+?[[:alnum:]"'\.\?\&;:<>])_#<${tag}>$1</${tag}>#gs;
+	else
+	{
+	    # make sure we don't wallop links that have underscores
+	    # need to make sure that _ delimiters are not mistaken for
+	    # a_variable_name
+	    my $line_with_links = '';
+	    my $linkme = '';
+	    my $unmatched = ${$line_ref};
+	    while ($unmatched =~ 
+			m#(?<![_[:alnum:]])_([^_]+?[[:alnum:]"'\.\?\&;:<>])_#s)
+	    {
+		$line_with_links .= $`;
+		$linkme = $&;
+		$unmatched = $';
+		if (!$self->in_link_context($linkme, $line_with_links))
+		{
+		    $linkme =~
+			s#(?<![_[:alnum:]])_([^_]+?[[:alnum:]"'\.\?\&;:<>])_#<${tag}>$1</${tag}>#gs;
+		}
+		$line_with_links .= $linkme;
+	    }
+	    ${$line_ref} = $line_with_links . $unmatched;
+	}
     }
     elsif (length($delim) eq 1)    # one-character, general
     {
@@ -5121,10 +5147,10 @@ sub do_file_start ($$$)
             if ($self->{xhtml})
             {
                 print $outhandle
-'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"',
+'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"',
                   "\n";
                 print $outhandle
-                  '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
+		  '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
                   "\n";
 		print $outhandle $self->get_tag('html',
 		    inside_tag => ' xmlns="http://www.w3.org/1999/xhtml"'), "\n";
