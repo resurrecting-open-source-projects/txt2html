@@ -1,7 +1,0 @@
-# default arguments for profiling
---mail
---bullets '-=o*+\267'
---bullets_ordered '#'
---custom_heading_regexp '^\s*\d+\s+\w+' 
---custom_heading_regexp '^\s*\d+\.\d+\s+\w+' 
---custom_heading_regexp '^\s*\d+\.\d+\.\d+\s+\w+'

@@ -1,0 +1,32 @@
+# version control files
+\bRCS\b
+\bCVS\b
+,v$
+\.svn\b
+# archives
+.*\.tar\.gz$
+# the TODO file
+^\.todo$
+# other files
+
+# MakeMaker files
+^Makefile$
+^blib/
+^MakeMaker-\d
+pm_to_blib
+# Module::Build files
+^_build/
+^Build$
+
+# development files
+^dist.ini$
+^profiling/
+
+# temp, old, backup files
+~$
+\.old$
+\.bak$
+\.tmp$
+\.#
+\.swp$
+^#.*#$

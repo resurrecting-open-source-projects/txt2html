@@ -1,0 +1,1386 @@
+NAME
+    HTML::TextToHTML - convert plain text file to HTML.
+
+VERSION
+    version 2.5201
+
+SYNOPSIS
+      From the command line:
+
+        txt2html I<arguments>
+
+      From Scripts:
+
+        use HTML::TextToHTML;
+ 
+        # create a new object
+        my $conv = new HTML::TextToHTML();
+
+        # convert a file
+        $conv->txt2html(infile=>[$text_file],
+                         outfile=>$html_file,
+                         title=>"Wonderful Things",
+                         mail=>1,
+          ]);
+
+        # reset arguments
+        $conv->args(infile=>[], mail=>0);
+
+        # convert a string
+        $newstring = $conv->process_chunk($mystring)
+
+DESCRIPTION
+    HTML::TextToHTML converts plain text files to HTML. The txt2html script
+    uses this module to do the same from the command-line.
+
+    It supports headings, tables, lists, simple character markup, and
+    hyperlinking, and is highly customizable. It recognizes some of the
+    apparent structure of the source document (mostly whitespace and
+    typographic layout), and attempts to mark that structure explicitly
+    using HTML. The purpose for this tool is to provide an easier way of
+    converting existing text documents to HTML format, giving something
+    nicer than just whapping the text into a big PRE block.
+
+  History
+    The original txt2html script was written by Seth Golub (see
+    http://www.aigeek.com/txt2html/), and converted to a perl module by
+    Kathryn Andersen (see http://www.katspace.com/tools/text_to_html/) and
+    made into a sourceforge project by Sun Tong (see
+    http://sourceforge.net/projects/txt2html/). Earlier versions of the
+    HTML::TextToHTML module called the included script texthyper so as not
+    to clash with the original txt2html script, but now the projects have
+    all been merged.
+
+OPTIONS
+    All arguments can be set when the object is created, and further options
+    can be set when calling the actual txt2html method. Arguments to methods
+    can take a hash of arguments.
+
+    Note that all option-names must match exactly -- no abbreviations are
+    allowed. The argument-keys are expected to have values matching those
+    required for that argument -- whether that be a boolean, a string, a
+    reference to an array or a reference to a hash. These will replace any
+    value for that argument that might have been there before.
+
+    append_file
+            append_file=>I<filename>
+
+        If you want something appended by default, put the filename here.
+        The appended text will not be processed at all, so make sure it's
+        plain text or correct HTML. i.e. do not have things like: Mary
+        Andersen <kitty@example.com> but instead, have: Mary Andersen
+        &lt;kitty@example.com&gt;
+
+        (default: nothing)
+
+    append_head
+            append_head=>I<filename>
+
+        If you want something appended to the head by default, put the
+        filename here. The appended text will not be processed at all, so
+        make sure it's plain text or correct HTML. i.e. do not have things
+        like: Mary Andersen <kitty@example.com> but instead, have: Mary
+        Andersen &lt;kitty@example.com&gt;
+
+        (default: nothing)
+
+    body_deco
+            body_deco=>I<string>
+
+        Body decoration string: a string to be added to the BODY tag so that
+        one can set attributes to the BODY (such as class, style, bgcolor
+        etc) For example, "class='withimage'".
+
+    bold_delimiter
+            bold_delimiter=>I<string>
+
+        This defines what character (or string) is taken to be the delimiter
+        of text which is to be interpreted as bold (that is, to be given a
+        STRONG tag). If this is empty, then no bolding of text will be done.
+        (default: #)
+
+    bullets
+            bullets=>I<string>
+
+        This defines what single characters are taken to be "bullet"
+        characters for unordered lists. Note that because this is used as a
+        character class, if you use '-' it must come first.
+        (default:-=o*\267)
+
+    bullets_ordered
+            bullets_ordered=>I<string>
+
+        This defines what single characters are taken to be "bullet"
+        placeholder characters for ordered lists. Ordered lists are normally
+        marked by a number or letter followed by '.' or ')' or ']' or ':'.
+        If an ordered bullet is used, then it simply indicates that this is
+        an ordered list, without giving explicit numbers.
+
+        Note that because this is used as a character class, if you use '-'
+        it must come first. (default:nothing)
+
+    caps_tag
+            caps_tag=>I<tag>
+
+        Tag to put around all-caps lines (default: STRONG) If an empty tag
+        is given, then no tag will be put around all-caps lines.
+
+    custom_heading_regexp
+            custom_heading_regexp=>\@custom_headings
+
+        Add patterns for headings. Header levels are assigned by regexp in
+        the order seen in the input text. When a line matches a custom
+        header regexp, it is tagged as a header. If it's the first time that
+        particular regexp has matched, the next available header level is
+        associated with it and applied to the line. Any later matches of
+        that regexp will use the same header level. Therefore, if you want
+        to match numbered header lines, you could use something like this:
+
+            my @custom_headings = ('^ *\d+\. \w+',
+                                   '^ *\d+\.\d+\. \w+',
+                                   '^ *\d+\.\d+\.\d+\. \w+');
+
+            ...
+                custom_heading_regexp=>\@custom_headings,
+            ...
+
+        Then lines like
+
+                        " 1. Examples "
+                        " 1.1. Things"
+                    and " 4.2.5. Cold Fusion"
+
+        Would be marked as H1, H2, and H3 (assuming they were found in that
+        order, and that no other header styles were encountered). If you
+        prefer that the first one specified always be H1, the second always
+        be H2, the third H3, etc, then use the "explicit_headings" option.
+
+        This expects a reference to an array of strings.
+
+        (default: none)
+
+    default_link_dict
+            default_link_dict=>I<filename>
+
+        The name of the default "user" link dictionary. (default:
+        "$ENV{'HOME'}/.txt2html.dict" -- this is the same as for the
+        txt2html script. If there is no $ENV{HOME} then it is just
+        '.txt2html.dict')
+
+    demoronize
+            demoronize=>1
+
+        Convert Microsoft-generated character codes that are non-ISO codes
+        into something more reasonable. (default:true)
+
+    doctype
+            doctype=>I<doctype>
+
+        This gets put in the DOCTYPE field at the top of the document,
+        unless it's empty.
+
+        Default : '-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd'
+
+        If xhtml is true, the contents of this is ignored, unless it's
+        empty, in which case no DOCTYPE declaration is output.
+
+    eight_bit_clean
+            eight_bit_clean=>1
+
+        If false, convert Latin-1 characters to HTML entities. If true, this
+        conversion is disabled; also "demoronize" is set to false, since
+        this also changes 8-bit characters. (default: false)
+
+    escape_HTML_chars
+            escape_HTML_chars=>1
+
+        turn & < > into &amp; &gt; &lt; (default: true)
+
+    explicit_headings
+            explicit_headings=>1
+
+        Don't try to find any headings except the ones specified in the
+        --custom_heading_regexp option. Also, the custom headings will not
+        be assigned levels in the order they are encountered in the
+        document, but in the order they are specified on the
+        custom_heading_regexp option. (default: false)
+
+    extract
+            extract=>1
+
+        Extract Mode; don't put HTML headers or footers on the result, just
+        the plain HTML (thus making the result suitable for inserting into
+        another document (or as part of the output of a CGI script).
+        (default: false)
+
+    hrule_min
+            hrule_min=>I<n>
+
+        Min number of ---s for an HRule. (default: 4)
+
+    indent_width
+            indent_width=>I<n>
+
+        Indents this many spaces for each level of a list. (default: 2)
+
+    indent_par_break
+            indent_par_break=>1
+
+        Treat paragraphs marked solely by indents as breaks with indents.
+        That is, instead of taking a three-space indent as a new paragraph,
+        put in a <BR> and three non-breaking spaces instead. (see also
+        --preserve_indent) (default: false)
+
+    infile
+            infile=>\@my_files
+            infile=>['chapter1.txt', 'chapter2.txt']
+
+        The name of the input file(s). This expects a reference to an array
+        of filenames.
+
+        The special filename '-' designates STDIN.
+
+        See also "inhandle" and "instring".
+
+        (default:-)
+
+    inhandle
+            inhandle=>\@my_handles
+            inhandle=>[\*MYINHANDLE, \*STDIN]
+
+        An array of input filehandles; use this instead of "infile" or
+        "instring" to use a filehandle or filehandles as input.
+
+    instring
+            instring=>\@my_strings
+            instring=>[$string1, $string2]
+
+        An array of input strings; use this instead of "infile" or
+        "inhandle" to use a string or strings as input.
+
+    italic_delimiter
+            italic_delimiter=>I<string>
+
+        This defines what character (or string) is taken to be the delimiter
+        of text which is to be interpreted as italic (that is, to be given a
+        EM tag). If this is empty, no italicising of text will be done.
+        (default: *)
+
+    underline_delimiter
+            underline_delimiter=>I<string>
+
+        This defines what character (or string) is taken to be the delimiter
+        of text which is to be interpreted as underlined (that is, to be
+        given a U tag). If this is empty, no underlining of text will be
+        done. (default: _)
+
+    links_dictionaries
+            links_dictionaries=>\@my_link_dicts
+            links_dictionaries=>['url_links.dict', 'format_links.dict']
+
+        File(s) to use as a link-dictionary. There can be more than one of
+        these. These are in addition to the Global Link Dictionary and the
+        User Link Dictionary. This expects a reference to an array of
+        filenames.
+
+    link_only
+            link_only=>1
+
+        Do no escaping or marking up at all, except for processing the links
+        dictionary file and applying it. This is useful if you want to use
+        the linking feature on an HTML document. If the HTML is a complete
+        document (includes HTML,HEAD,BODY tags, etc) then you'll probably
+        want to use the --extract option also. (default: false)
+
+    lower_case_tags
+             lower_case_tags=>1
+
+        Force all tags to be in lower-case.
+
+    mailmode
+            mailmode=>1
+
+        Deal with mail headers & quoted text. The mail header paragraph is
+        given the class 'mail_header', and mail-quoted text is given the
+        class 'quote_mail'. (default: false)
+
+    make_anchors
+            make_anchors=>0
+
+        Should we try to make anchors in headings? (default: true)
+
+    make_links
+            make_links=>0
+
+        Should we try to build links? If this is false, then the links
+        dictionaries are not consulted and only structural text-to-HTML
+        conversion is done. (default: true)
+
+    make_tables
+            make_tables=>1
+
+        Should we try to build tables? If true, spots tables and marks them
+        up appropriately. See "Input File Format" for information on how
+        tables should be formatted.
+
+        This overrides the detection of lists; if something looks like a
+        table, it is taken as a table, and list-checking is not done for
+        that paragraph.
+
+        (default: false)
+
+    min_caps_length
+            min_caps_length=>I<n>
+
+        min sequential CAPS for an all-caps line (default: 3)
+
+    outfile
+            outfile=>I<filename>
+
+        The name of the output file. If it is "-" then the output goes to
+        Standard Output. (default: - )
+
+    outhandle
+        The output filehandle; if this is given then the output goes to this
+        filehandle instead of to the file given in "outfile".
+
+    par_indent
+            par_indent=>I<n>
+
+        Minumum number of spaces indented in first lines of paragraphs. Only
+        used when there's no blank line preceding the new paragraph.
+        (default: 2)
+
+    preformat_trigger_lines
+            preformat_trigger_lines=>I<n>
+
+        How many lines of preformatted-looking text are needed to switch to
+        <PRE> <= 0 : Preformat entire document 1 : one line triggers >= 2 :
+        two lines trigger
+
+        (default: 2)
+
+    endpreformat_trigger_lines
+            endpreformat_trigger_lines=>I<n>
+
+        How many lines of unpreformatted-looking text are needed to switch
+        from <PRE> <= 0 : Never preformat within document 1 : one line
+        triggers >= 2 : two lines trigger (default: 2)
+
+        NOTE for preformat_trigger_lines and endpreformat_trigger_lines: A
+        zero takes precedence. If one is zero, the other is ignored. If both
+        are zero, entire document is preformatted.
+
+    preformat_start_marker
+            preformat_start_marker=>I<regexp>
+
+        What flags the start of a preformatted section if
+        --use_preformat_marker is true.
+
+        (default: "^(:?(:?&lt;)|<)PRE(:?(:?&gt;)|>)\$")
+
+    preformat_end_marker
+            preformat_end_marker=>I<regexp>
+
+        What flags the end of a preformatted section if
+        --use_preformat_marker is true.
+
+        (default: "^(:?(:?&lt;)|<)/PRE(:?(:?&gt;)|>)\$")
+
+    preformat_whitespace_min
+            preformat_whitespace_min=>I<n>
+
+        Minimum number of consecutive whitespace characters to trigger
+        normal preformatting. NOTE: Tabs are expanded to spaces before this
+        check is made. That means if tab_width is 8 and this is 5, then one
+        tab may be expanded to 8 spaces, which is enough to trigger
+        preformatting. (default: 5)
+
+    prepend_file
+            prepend_file=>I<filename>
+
+        If you want something prepended to the processed body text, put the
+        filename here. The prepended text will not be processed at all, so
+        make sure it's plain text or correct HTML.
+
+        (default: nothing)
+
+    preserve_indent
+            preserve_indent=>1
+
+        Preserve the first-line indentation of paragraphs marked with
+        indents by replacing the spaces of the first line with non-breaking
+        spaces. (default: false)
+
+    short_line_length
+            short_line_length=>I<n>
+
+        Lines this short (or shorter) must be intentionally broken and are
+        kept that short. (default: 40)
+
+    style_url
+            style_url=>I<url>
+
+        This gives the URL of a stylesheet; a LINK tag will be added to the
+        output.
+
+    tab_width
+            tab_width=>I<n>
+
+        How many spaces equal a tab? (default: 8)
+
+    table_type
+            table_type=>{ ALIGN=>0, PGSQL=>0, BORDER=>1, DELIM=>0 }
+
+        This determines which types of tables will be recognised when
+        "make_tables" is true. The possible types are ALIGN, PGSQL, BORDER
+        and DELIM. (default: all types are true)
+
+    title
+            title=>I<title>
+
+        You can specify a title. Otherwise it will use a blank one.
+        (default: nothing)
+
+    titlefirst
+            titlefirst=>1
+
+        Use the first non-blank line as the title. (See also "title")
+
+    underline_length_tolerance
+            underline_length_tolerance=>I<n>
+
+        How much longer or shorter can underlines be and still be
+        underlines? (default: 1)
+
+    underline_offset_tolerance
+            underline_offset_tolerance=>I<n>
+
+        How far offset can underlines be and still be underlines? (default:
+        1)
+
+    unhyphenation
+            unhyphenation=>0
+
+        Enables unhyphenation of text. (default: true)
+
+    use_mosaic_header
+            use_mosaic_header=>1
+
+        Use this option if you want to force the heading styles to match
+        what Mosaic outputs. (Underlined with "***"s is H1, with "==="s is
+        H2, with "+++" is H3, with "---" is H4, with "~~~" is H5 and with
+        "..." is H6) This was the behavior of txt2html up to version 1.10.
+        (default: false)
+
+    use_preformat_marker
+            use_preformat_marker=>1
+
+        Turn on preformatting when encountering "<PRE>" on a line by itself,
+        and turn it off when there's a line containing only "</PRE>". When
+        such preformatted text is detected, the PRE tag will be given the
+        class 'quote_explicit'. (default: off)
+
+    xhtml
+            xhtml=>1
+
+        Try to make the output conform to the XHTML standard, including
+        closing all open tags and marking empty tags correctly. This turns
+        on --lower_case_tags and overrides the --doctype option. Note that
+        if you add a header or a footer file, it is up to you to make it
+        conform; the header/footer isn't touched by this. Likewise, if you
+        make link-dictionary entries that break XHTML, then this won't fix
+        them, except to the degree of putting all tags into lower-case.
+
+        (default: true)
+
+DEBUGGING
+    There are global variables for setting types and levels of debugging.
+    These should only be used by developers.
+
+    $HTML::TextToHTML::Debug
+        $HTML::TextToHTML::Debug = 1;
+
+        Enable copious debugging output. (default: false)
+
+    $HTML::TextToHTML::DictDebug
+            $HTML::TextToHTML::DictDebug = I<n>;
+
+        Debug mode for link dictionaries. Bitwise-Or what you want to see:
+
+                  1: The parsing of the dictionary
+                  2: The code that will make the links
+                  4: When each rule matches something
+                  8: When each tag is created
+
+        (default: 0)
+
+METHODS
+  new
+        $conv = new HTML::TextToHTML()
+
+        $conv = new HTML::TextToHTML(titlefirst=>1,
+            ...
+        );
+
+    Create a new object with new. If arguments are given, these arguments
+    will be used in invocations of other methods.
+
+    See "OPTIONS" for the possible values of the arguments.
+
+  args
+        $conv->args(short_line_length=>60,
+            titlefirst=>1,
+            ....
+        );
+
+    Updates the current arguments/options of the HTML::TextToHTML object.
+    Takes hash of arguments, which will be used in invocations of other
+    methods. See "OPTIONS" for the possible values of the arguments.
+
+  process_chunk
+    $newstring = $conv->process_chunk($mystring);
+
+    Convert a string to a HTML fragment. This assumes that this string is at
+    the least, a single paragraph, but it can contain more than that. This
+    returns the processed string. If you want to pass arguments to alter the
+    behaviour of this conversion, you need to do that earlier, either when
+    you create the object, or with the "args" method.
+
+        $newstring = $conv->process_chunk($mystring,
+                                close_tags=>0);
+
+    If there are open tags (such as lists) in the input string,
+    process_chunk will automatically close them, unless you specify not to,
+    with the close_tags option.
+
+        $newstring = $conv->process_chunk($mystring,
+                                is_fragment=>1);
+
+    If you want this string to be treated as a fragment, and not assumed to
+    be a paragraph, set is_fragment to true. If there is more than one
+    paragraph in the string (ie it contains blank lines) then this option
+    will be ignored.
+
+  process_para
+    $newstring = $conv->process_para($mystring);
+
+    Convert a string to a HTML fragment. This assumes that this string is at
+    the most a single paragraph, with no blank lines in it. If you don't
+    know whether your string will contain blank lines or not, use the
+    "process_chunk" method instead.
+
+    This returns the processed string. If you want to pass arguments to
+    alter the behaviour of this conversion, you need to do that earlier,
+    either when you create the object, or with the "args" method.
+
+        $newstring = $conv->process_para($mystring,
+                                close_tags=>0);
+
+    If there are open tags (such as lists) in the input string, process_para
+    will automatically close them, unless you specify not to, with the
+    close_tags option.
+
+        $newstring = $conv->process_para($mystring,
+                                is_fragment=>1);
+
+    If you want this string to be treated as a fragment, and not assumed to
+    be a paragraph, set is_fragment to true.
+
+  txt2html
+        $conv->txt2html(%args);
+
+    Convert a text file to HTML. Takes a hash of arguments. See "OPTIONS"
+    for the possible values of the arguments. Arguments which have already
+    been set with new or args will remain as they are, unless they are
+    overridden.
+
+PRIVATE METHODS
+    These are methods used internally, only of interest to developers.
+
+  init_our_data
+    $self->init_our_data();
+
+    Initializes the internal object data.
+
+  deal_with_options
+    $self->deal_with_options();
+
+    do extra processing related to particular options
+
+  escape
+    $newtext = escape($text);
+
+    Escape & < and >
+
+  demoronize_char
+    $newtext = demoronize_char($text);
+
+    Convert Microsoft character entities into characters.
+
+    Added by Alan Jackson, alan at ajackson dot org, and based on the
+    demoronize script by John Walker, http://www.fourmilab.ch/
+
+  demoronize_code
+    $newtext = demoronize_code($text);
+
+    convert Microsoft character entities into HTML code
+
+  get_tag
+    $tag = $self->get_tag($in_tag);
+
+    $tag = $self->get_tag($in_tag, tag_type=>TAG_START, inside_tag=>'');
+
+    output the tag wanted (add the <> and the / if necessary) - output in
+    lower or upper case - do tag-related processing options:
+    tag_type=>TAG_START | tag_type=>TAG_END | tag_type=>TAG_EMPTY (default
+    start) inside_tag=>string (default empty)
+
+  close_tag
+    $tag = $self->close_tag($in_tag);
+
+    close the open tag
+
+  hrule
+       $self->hrule(para_lines_ref=>$para_lines,
+                 para_action_ref=>$para_action,
+                 ind=>0);
+
+    Deal with horizontal rules.
+
+  shortline
+        $self->shortline(line_ref=>$line_ref,
+                         line_action_ref=>$line_action_ref,
+                         prev_ref=>$prev_ref,
+                         prev_action_ref=>$prev_action_ref,
+                         prev_line_len=>$prev_line_len);
+
+    Deal with short lines.
+
+  is_mailheader
+        if ($self->is_mailheader(rows_ref=>$rows_ref))
+        {
+            ...
+        }
+
+    Is this a mailheader line?
+
+  mailheader
+        $self->mailheader(rows_ref=>$rows_ref);
+
+    Deal with a mailheader.
+
+  mailquote
+        $self->mailquote(line_ref=>$line_ref,
+                         line_action_ref=>$line_action_ref,
+                         prev_ref=>$prev_ref,
+                         prev_action_ref=>$prev_action_ref,
+                         next_ref=>$next_ref);
+
+    Deal with quoted mail.
+
+  subtract_modes
+        $newvector = subtract_modes($vector, $mask);
+
+    Subtracts modes listed in $mask from $vector.
+
+  paragraph
+        $self->paragraph(line_ref=>$line_ref,
+                         line_action_ref=>$line_action_ref,
+                         prev_ref=>$prev_ref,
+                         prev_action_ref=>$prev_action_ref,
+                         line_indent=>$line_indent,
+                         prev_indent=>$prev_indent,
+                         is_fragment=>$is_fragment,
+                         ind=>$ind);
+
+    Detect paragraph indentation.
+
+  listprefix
+        ($prefix, $number, $rawprefix, $term) = $self->listprefix($line);
+
+    Detect and parse a list item.
+
+  startlist
+        $self->startlist(prefix=>$prefix,
+                         number=>0,
+                         rawprefix=>$rawprefix,
+                         term=>$term,
+                         para_lines_ref=>$para_lines_ref,
+                         para_action_ref=>$para_action_ref,
+                         ind=>0,
+                         prev_ref=>$prev_ref,
+                         total_prefix=>$total_prefix);
+
+    Start a list.
+
+  endlist
+        $self->endlist(num_lists=>0,
+            prev_ref=>$prev_ref,
+            line_action_ref=>$line_action_ref);
+
+    End N lists
+
+  continuelist
+        $self->continuelist(para_lines_ref=>$para_lines_ref,
+                            para_action_ref=>$para_action_ref,
+                            ind=>0,
+                            term=>$term);
+
+    Continue a list.
+
+  liststuff
+        $self->liststuff(para_lines_ref=>$para_lines_ref,
+                         para_action_ref=>$para_action_ref,
+                         para_line_indent_ref=>$para_line_indent_ref,
+                         ind=>0,
+                         prev_ref=>$prev_ref);
+
+    Process a list (higher-level method).
+
+  get_table_type
+        $table_type = $self->get_table_type(rows_ref=>$rows_ref,
+                                            para_len=>0);
+
+    Figure out the table type of this table, if any
+
+  is_aligned_table
+        if ($self->is_aligned_table(rows_ref=>$rows_ref, para_len=>0))
+        {
+            ...
+        }
+
+    Check if the given paragraph-array is an aligned table
+
+  is_pgsql_table
+        if ($self->is_pgsql_table(rows_ref=>$rows_ref, para_len=>0))
+        {
+            ...
+        }
+
+    Check if the given paragraph-array is a Postgresql table (the ascii
+    format produced by Postgresql)
+
+    A PGSQL table can start with an optional table-caption,
+
+        then it has a row of column headings separated by |
+        then it has a row of ------+-----
+        then it has one or more rows of column values separated by |
+        then it has a row-count (N rows)
+
+  is_border_table
+        if ($self->is_border_table(rows_ref=>$rows_ref, para_len=>0))
+        {
+            ...
+        }
+
+    Check if the given paragraph-array is a Border table.
+
+    A BORDER table can start with an optional table-caption,
+
+        then it has a row of +------+-----+
+        then it has a row of column headings separated by |
+        then it has a row of +------+-----+
+        then it has one or more rows of column values separated by |
+        then it has a row of +------+-----+
+
+  is_delim_table
+        if ($self->is_delim_table(rows_ref=>$rows_ref, para_len=>0))
+        {
+            ...
+        }
+
+    Check if the given paragraph-array is a Delimited table.
+
+    A DELIM table can start with an optional table-caption, then it has at
+    least two rows which start and end and are punctuated by a
+    non-alphanumeric delimiter.
+
+        | val1 | val2 |
+        | val3 | val4 |
+
+  tablestuff
+        $self->tablestuff(table_type=>0,
+                          rows_ref=>$rows_ref,
+                          para_len=>0);
+
+    Process a table.
+
+  make_aligned_table
+        $self->make_aligned_table(rows_ref=>$rows_ref,
+                                  para_len=>0);
+
+    Make an Aligned table.
+
+  make_pgsql_table
+        $self->make_pgsql_table(rows_ref=>$rows_ref,
+                                  para_len=>0);
+
+    Make a PGSQL table.
+
+  make_border_table
+        $self->make_border_table(rows_ref=>$rows_ref,
+                                 para_len=>0);
+
+    Make a BORDER table.
+
+  make_delim_table
+        $self->make_delim_table(rows_ref=>$rows_ref,
+                                para_len=>0);
+
+    Make a Delimited table.
+
+  is_preformatted
+        if ($self->is_preformatted($line))
+        {
+            ...
+        }
+
+    Returns true if the passed string is considered to be preformatted.
+
+  split_end_explicit_preformat
+        $front = $self->split_end_explicit_preformat(para_ref=>$para_ref);
+
+    Modifies the given string, and returns the front preformatted part.
+
+  endpreformat
+        $self->endpreformat(para_lines_ref=>$para_lines_ref,
+                            para_action_ref=>$para_action_ref,
+                            ind=>0,
+                            prev_ref=>$prev_ref);
+
+    End a preformatted section.
+
+  preformat
+        $self->preformat(mode_ref=>$mode_ref,
+                         line_ref=>$line_ref,
+                         line_action_ref=>$line_action_ref,
+                         prev_ref=>$prev_ref,
+                         next_ref=>$next_ref,
+                         prev_action_ref);
+
+    Detect and process a preformatted section.
+
+  make_new_anchor
+        $anchor = $self->make_new_anchor($heading_level);
+
+    Make a new anchor.
+
+  anchor_mail
+        $self->anchor_mail($line_ref);
+
+    Make an anchor for a mail section.
+
+  anchor_heading
+        $self->anchor_heading($heading_level, $line_ref);
+
+    Make an anchor for a heading.
+
+  heading_level
+        $self->heading_level($style);
+
+    Add a new heading style if this is a new heading style.
+
+  is_ul_list_line
+        if ($self->is_ul_list_line($line))
+        {
+            ...
+        }
+
+    Tests if this line starts a UL list item.
+
+  is_heading
+        if ($self->is_heading(line_ref=>$line_ref, next_ref=>$next_ref))
+        {
+            ...
+        }
+
+    Tests if this line is a heading. Needs to take account of the next line,
+    because a standard heading is defined by "underlining" the text of the
+    heading.
+
+  heading
+        $self->heading(line_ref=>$line_ref,
+            next_ref=>$next_ref);
+
+    Make a heading. Assumes is_heading is true.
+
+  is_custom_heading
+        if ($self->is_custom_heading($line))
+        {
+            ...
+        }
+
+    Check if the given line matches a custom heading.
+
+  custom_heading
+        $self->custom_heading(line_ref=>$line_ref);
+
+    Make a custom heading. Assumes is_custom_heading is true.
+
+  unhyphenate_para
+        $self->unhyphenate_para($para_ref);
+
+    Join up hyphenated words that are split across lines.
+
+  tagline
+        $self->tagline($tag, $line_ref);
+
+    Put the given tag around the given line.
+
+  iscaps
+        if ($self->iscaps($line))
+        {
+            ...
+        }
+
+    Check if a line is all capitals.
+
+  caps
+        $self->caps(line_ref=>$line_ref,
+                    line_action_ref=>$line_action_ref);
+
+    Detect and deal with an all-caps line.
+
+  do_delim
+        $self->do_delim(line_ref=>$line_ref,
+                        line_action_ref=>$line_action_ref,
+                        delim=>'*',
+                        tag=>'STRONG');
+
+    Deal with a line which has words delimited by the given delimiter; this
+    is used to deal with italics, bold and underline formatting.
+
+  glob2regexp
+        $regexp = glob2regexp($glob);
+
+    Convert very simple globs to regexps
+
+  add_regexp_to_links_table
+        $self->add_regexp_to_links_table(label=>$label,
+                                         pattern=>$pattern,
+                                         url=>$url,
+                                         switches=>$switches);
+
+    Add the given regexp "link definition" to the links table.
+
+  add_literal_to_links_table
+        $self->add_literal_to_links_table(label=>$label,
+                                          pattern=>$pattern,
+                                          url=>$url,
+                                          switches=>$switches);
+
+    Add the given literal "link definition" to the links table.
+
+  add_glob_to_links_table
+        $self->add_glob_to_links_table(label=>$label,
+                                       pattern=>$pattern,
+                                       url=>$url,
+                                       switches=>$switches);
+
+    Add the given glob "link definition" to the links table.
+
+  parse_dict
+        $self->parse_dict($dictfile, $dict);
+
+    Parse the dictionary file. (see also load_dictionary_links, for things
+    that were stripped)
+
+  setup_dict_checking
+        $self->setup_dict_checking();
+
+    Set up the dictionary checking.
+
+  in_link_context
+        if ($self->in_link_context($match, $before))
+        {
+            ...
+        }
+
+    Check if we are inside a link (<a ...>); certain kinds of substitution
+    are not allowed here.
+
+  apply_links
+        $self->apply_links(para_ref=>$para_ref,
+                           para_action_ref=>$para_action_ref);
+
+    Apply links and formatting to this paragraph.
+
+  check_dictionary_links
+        $self->check_dictionary_links(line_ref=>$line_ref,
+                                      line_action_ref=>$line_action_ref);
+
+    Check (and alter if need be) the bits in this line matching the patterns
+    in the link dictionary.
+
+  load_dictionary_links
+        $self->load_dictionary_links();
+
+    Load the dictionary links.
+
+  do_file_start
+        $self->do_file_start($outhandle, $para);
+
+    Extra stuff needed for the beginning: HTML headers, and prepending a
+    file if desired.
+
+  do_init_call
+        $self->do_init_call();
+
+    Certain things, like reading link dictionaries, need to be done only
+    once.
+
+FILE FORMATS
+    There are two files which are used which can affect the outcome of the
+    conversion. One is the link dictionary, which contains patterns (of how
+    to recognise http links and other things) and how to convert them. The
+    other is, naturally, the format of the input file itself.
+
+  Link Dictionary
+    A link dictionary file contains patterns to match, and what to convert
+    them to. It is called a "link" dictionary because it was intended to be
+    something which defined what a href link was, but it can be used for
+    more than that. However, if you wish to define your own links, it is
+    strongly advised to read up on regular expressions (regexes) because
+    this relies heavily on them.
+
+    The file consists of comments (which are lines starting with #) and
+    blank lines, and link entries. Each entry consists of a regular
+    expression, a -> separator (with optional flags), and a link "result".
+
+    In the simplest case, with no flags, the regular expression defines the
+    pattern to look for, and the result says what part of the regular
+    expression is the actual link, and the link which is generated has the
+    href as the link, and the whole matched pattern as the visible part of
+    the link. The first character of the regular expression is taken to be
+    the separator for the regex, so one could either use the traditional /
+    separator, or something else such as | (which can be helpful with URLs
+    which are full of / characters).
+
+    So, for example, an ftp URL might be defined as:
+
+        |ftp:[\w/\.:+\-]+|      -> $&
+
+    This takes the whole pattern as the href, and the resultant link has the
+    same thing in the href as in the contents of the anchor.
+
+    But sometimes the href isn't the whole pattern.
+
+        /&lt;URL:\s*(\S+?)\s*&gt;/ --> $1
+
+    With the above regex, a () grouping marks the first subexpression, which
+    is represented as $1 (rather than $& the whole expression). This entry
+    matches a URL which was marked explicity as a URL with the pattern
+    <URL:foo> (note the &lt; is shown as the entity, not the actual
+    character. This is because by the time the links dictionary is checked,
+    all such things have already been converted to their HTML entity forms,
+    unless, of course, the escape_HTML_chars option was turned off) This
+    would give us a link in the form <A HREF="foo">&lt;URL:foo&gt;</A>
+
+    The h flag
+
+    However, if we want more control over the way the link is constructed,
+    we can construct it ourself. If one gives the h flag, then the "result"
+    part of the entry is taken not to contain the href part of the link, but
+    the whole link.
+
+    For example, the entry:
+
+        /&lt;URL:\s*(\S+?)\s*&gt;/ -h-> <A HREF="$1">$1</A>
+
+    will take <URL:foo> and give us <A HREF="foo">foo</A>
+
+    However, this is a very powerful mechanism, because it can be used to
+    construct custom tags which aren't links at all. For example, to flag
+    *italicised words* the following entry will surround the words with EM
+    tags.
+
+        /\B\*([a-z][a-z -]*[a-z])\*\B/ -hi-> <EM>$1</EM>
+
+    The i flag
+
+    This turns on ignore case in the pattern matching.
+
+    The e flag
+
+    This turns on execute in the pattern substitution. This really only
+    makes sense if h is turned on too. In that case, the "result" part of
+    the entry is taken as perl code to be executed, and the result of that
+    code is what replaces the pattern.
+
+    The o flag
+
+    This marks the entry as a once-only link. This will convert the first
+    instance of a matching pattern, and ignore any others further on.
+
+    For example, the following pattern will take the first mention of
+    HTML::TextToHTML and convert it to a link to the module's home page.
+
+        "HTML::TextToHTML"  -io-> http://www.katspace.com/tools/text_to_html/
+
+  Input File Format
+    For the most part, this module tries to use intuitive conventions for
+    determining the structure of the text input. Unordered lists are marked
+    by bullets; ordered lists are marked by numbers or letters; in either
+    case, an increase in indentation marks a sub-list contained in the outer
+    list.
+
+    Headers (apart from custom headers) are distinguished by "underlines"
+    underneath them; headers in all-capitals are distinguished from those in
+    mixed case. All headers, both normal and custom headers, are expected to
+    start at the first line in a "paragraph".
+
+    In other words, the following is a header:
+
+        I am Head Man
+        -------------
+
+    But the following does not have a header:
+
+        I am not a head Man, man
+        I am Head Man
+        -------------
+
+    Tables require a more rigid convention. A table must be marked as a
+    separate paragraph, that is, it must be surrounded by blank lines.
+    Tables come in different types. For a table to be parsed, its
+    --table_type option must be on, and the --make_tables option must be
+    true.
+
+    ALIGN Table Type
+
+    Columns must be separated by two or more spaces (this prevents
+    accidental incorrect recognition of a paragraph where interword spaces
+    happen to line up). If there are two or more rows in a paragraph and all
+    rows share the same set of (two or more) columns, the paragraph is
+    assumed to be a table. For example
+
+        -e  File exists.
+        -z  File has zero size.
+        -s  File has nonzero size (returns size).
+
+    becomes
+
+        <table>
+        <tr><td>-e</td><td>File exists.</td></tr>
+        <tr><td>-z</td><td>File has zero size.</td></tr>
+        <tr><td>-s</td><td>File has nonzero size (returns size).</td></tr>
+        </table>
+
+    This guesses for each column whether it is intended to be left, centre
+    or right aligned.
+
+    BORDER Table Type
+
+    This table type has nice borders around it, and will be rendered with a
+    border, like so:
+
+        +---------+---------+
+        | Column1 | Column2 |
+        +---------+---------+
+        | val1    | val2    |
+        | val3    | val3    |
+        +---------+---------+
+
+    The above becomes
+
+        <table border="1">
+        <thead><tr><th>Column1</th><th>Column2</th></tr></thead>
+        <tbody>
+        <tr><td>val1</td><td>val2</td></tr>
+        <tr><td>val3</td><td>val3</td></tr>
+        </tbody>
+        </table>
+
+    It can also have an optional caption at the start.
+
+             My Caption
+        +---------+---------+
+        | Column1 | Column2 |
+        +---------+---------+
+        | val1    | val2    |
+        | val3    | val3    |
+        +---------+---------+
+
+    PGSQL Table Type
+
+    This format of table is what one gets from the output of a Postgresql
+    query.
+
+         Column1 | Column2
+        ---------+---------
+         val1    | val2
+         val3    | val3
+        (2 rows)
+
+    This can also have an optional caption at the start. This table is also
+    rendered with a border and table-headers like the BORDER type.
+
+    DELIM Table Type
+
+    This table type is delimited by non-alphanumeric characters, and has to
+    have at least two rows and two columns before it's recognised as a
+    table.
+
+    This one is delimited by the '| character:
+
+        | val1  | val2  |
+        | val3  | val3  |
+
+    But one can use almost any suitable character such as : # $ % + and so
+    on. This is clever enough to figure out what you are using as the
+    delimiter if you have your data set up like a table. Note that the line
+    has to both begin and end with the delimiter, as well as using it to
+    separate values.
+
+    This can also have an optional caption at the start.
+
+EXAMPLES
+        use HTML::TextToHTML;
+
+  Create a new object
+        my $conv = new HTML::TextToHTML();
+
+        my $conv = new HTML::TextToHTML(title=>"Wonderful Things",
+                                default_link_dict=>$my_link_file,
+          );
+
+  Add further arguments
+        $conv->args(short_line_length=>60,
+                   preformat_trigger_lines=>4,
+                   caps_tag=>"strong",
+          );
+
+  Convert a file
+        $conv->txt2html(infile=>[$text_file],
+                         outfile=>$html_file,
+                         title=>"Wonderful Things",
+                         mail=>1
+          );
+
+  Make a pipleline
+        open(IN, "ls |") or die "could not open!";
+        $conv->txt2html(inhandle=>[\*IN],
+                         outfile=>'-',
+          );
+
+NOTES
+    *   If the underline used to mark a header is off by more than 1, then
+        that part of the text will not be picked up as a header unless you
+        change the value of --underline_length_tolerance and/or
+        --underline_offset_tolerance. People tend to forget this.
+
+REQUIRES
+    HTML::TextToHTML requires Perl 5.8.1 or later.
+
+    For installation, it needs:
+
+        Module::Build
+
+    The txt2html script needs:
+
+        Getopt::Long
+        Getopt::ArgvFile
+        Pod::Usage
+        File::Basename
+
+    For testing, it also needs:
+
+        Test::More
+
+    For debugging, it also needs:
+
+        YAML::Syck
+
+INSTALLATION
+    Make sure you have the dependencies installed first! (see REQUIRES
+    above)
+
+    Some of those modules come standard with more recent versions of perl,
+    but I thought I'd mention them anyway, just in case you may not have
+    them.
+
+    If you don't know how to install these, try using the CPAN module, an
+    easy way of auto-installing modules from the Comprehensive Perl Archive
+    Network, where the above modules reside. Do "perldoc perlmodinstall" or
+    "perldoc CPAN" for more information.
+
+    To install this module type the following:
+
+       perl Build.PL
+       ./Build
+       ./Build test
+       ./Build install
+
+    Or, if you're on a platform (like DOS or Windows) that doesn't like the
+    "./" notation, you can do this:
+
+       perl Build.PL
+       perl Build
+       perl Build test
+       perl Build install
+
+    In order to install somewhere other than the default, such as in a
+    directory under your home directory, like "/home/fred/perl" go
+
+       perl Build.PL --install_base /home/fred/perl
+
+    as the first step instead.
+
+    This will install the files underneath /home/fred/perl.
+
+    You will then need to make sure that you alter the PERL5LIB variable to
+    find the modules, and the PATH variable to find the script.
+
+    Therefore you will need to change: your path, to include
+    /home/fred/perl/script (where the script will be)
+
+            PATH=/home/fred/perl/script:${PATH}
+
+    the PERL5LIB variable to add /home/fred/perl/lib
+
+            PERL5LIB=/home/fred/perl/lib:${PERL5LIB}
+
+    Note that the system links dictionary will be installed as
+    "/home/fred/perl/share/txt2html/txt2html.dict"
+
+    If you want to install in a temporary install directory (such as if you
+    are building a package) then instead of going
+
+       perl Build install
+
+    go
+
+       perl Build install destdir=/my/temp/dir
+
+    and it will be installed there, with a directory structure under
+    /my/temp/dir the same as it would be if it were installed plain. Note
+    that this is NOT the same as setting --install_base, because certain
+    things are done at build-time which use the install_base info.
+
+    See "perldoc perlrun" for more information on PERL5LIB, and see "perldoc
+    Module::Build" for more information on installation options.
+
+BUGS
+    Tell me about them.
+
+SEE ALSO
+    perl txt2html.
+
+AUTHOR
+        Kathryn Andersen (RUBYKAT)
+        perlkat AT katspace dot com
+        http//www.katspace.com/
+
+    based on txt2html by Seth Golub
+
+COPYRIGHT AND LICENCE
+    Original txt2html script copyright (c) 1994-2000 Seth Golub <seth AT
+    aigeek.com>
+
+    Copyright (c) 2002-2005 by Kathryn Andersen
+
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+

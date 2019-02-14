@@ -1,0 +1,28 @@
+---
+abstract: 'convert plain text file to HTML.'
+author:
+  - 'Kathryn Andersen <perlkat@katspace.org>'
+build_requires:
+  File::Find: 0
+  File::Temp: 0
+  Module::Build: 0.3601
+  Test::More: 0
+  warnings: 0
+configure_requires:
+  Module::Build: 0.3601
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 4.300034, CPAN::Meta::Converter version 2.120921'
+license: gpl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: txt2html
+requires:
+  File::Basename: 0
+  Getopt::Long: 0
+  Pod::Usage: 0
+  YAML::Syck: 0
+  constant: 0
+  perl: v5.8.1
+  strict: 0
+version: 2.5201
