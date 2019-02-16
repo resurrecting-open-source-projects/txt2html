@@ -348,7 +348,7 @@ OPTIONS
     par_indent
             par_indent=>I<n>
 
-        Minumum number of spaces indented in first lines of paragraphs. Only
+        Minimum number of spaces indented in first lines of paragraphs. Only
         used when there's no blank line preceding the new paragraph.
         (default: 2)
 
@@ -1071,7 +1071,7 @@ FILE FORMATS
 
     With the above regex, a () grouping marks the first subexpression, which
     is represented as $1 (rather than $& the whole expression). This entry
-    matches a URL which was marked explicity as a URL with the pattern
+    matches a URL which was marked explicitly as a URL with the pattern
     <URL:foo> (note the &lt; is shown as the entity, not the actual
     character. This is because by the time the links dictionary is checked,
     all such things have already been converted to their HTML entity forms,

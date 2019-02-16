@@ -347,7 +347,7 @@ to Standard Output.
 
 =item --par_indent I<n>
 
-Minumum number of spaces indented in first lines of paragraphs.
+Minimum number of spaces indented in first lines of paragraphs.
   Only used when there's no blank line
 preceding the new paragraph.
 (default: 2)
@@ -561,7 +561,7 @@ But sometimes the href isn't the whole pattern.
 
 With the above regex, a () grouping marks the first subexpression,
 which is represented as $1 (rather than $& the whole expression).
-This entry matches a URL which was marked explicity as a URL
+This entry matches a URL which was marked explicitly as a URL
 with the pattern <URL:foo>  (note the &lt; is shown as the
 entity, not the actual character.  This is because by the
 time the links dictionary is checked, all such things have
