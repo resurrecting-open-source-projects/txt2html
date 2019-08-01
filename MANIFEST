@@ -1,12 +1,13 @@
 Build.PL
-Changes
+ChangeLog
+CONTRIBUTING.md
 DEVNOTES
 LICENSE
 MANIFEST
 MANIFEST.SKIP
 META.yml
-OldChanges
-README
+README.md
+README.txt2html
 TODO
 lib/HTML/TextToHTML.pm
 scripts/txt2html
