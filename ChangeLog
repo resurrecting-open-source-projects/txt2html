@@ -1,5 +1,24 @@
-Revision history for txt2html
+Revision History for txt2html
 =============================
+
+2.53 2019-08-01
+
+  * New repository for this project (now in GitHub).
+    https://github.com/resurrecting-open-source-projects/txt2html
+  * Unified the changelogs.
+
+-----------------------  |
+---- OLD CHANGELOG ----  |
+---- OLD  UPSTREAM ---- \ /
+-----------------------  ·
+
+2.52.01 (aka 2.5201) 2013-05-21
+-------------------------------
+
+* 2013-05-21 16:25:10 +1000
+  rebuilding with new version
+* 2012-05-11 14:20:41 +1000
+  Updating website.
 
 2.51 Sun 4th March 2008
 	- fixed bug with underscores in links
