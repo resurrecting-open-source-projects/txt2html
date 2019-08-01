@@ -790,10 +790,10 @@ based on txt2html by Seth Golub
 
 =head1 COPYRIGHT
 
-Original txt2html script copyright (c) 1994-2000 Seth Golub seth AT aigeek.com
+Original txt2html script Copyright (c) 1994-2000 Seth Golub seth AT aigeek.com
 
 Copyright (c) 2002-2005 Kathryn Andersen
-Copyright (c) 2018      Joao Eriberto Mota Filho
+Copyright (c) 2018-2019 Joao Eriberto Mota Filho
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
