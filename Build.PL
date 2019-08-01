@@ -17,7 +17,7 @@ my %module_build_args = (
     "Kathryn Andersen <perlkat\@katspace.org>"
   ],
   "dist_name" => "txt2html",
-  "dist_version" => "2.5201",
+  "dist_version" => "2.53",
   "license" => "gpl",
   "module_name" => "txt2html",
   "recommends" => {},
