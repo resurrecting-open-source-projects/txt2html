@@ -5,12 +5,19 @@ Revision History for txt2html
 
   * New repository for this project (now in GitHub).
     https://github.com/resurrecting-open-source-projects/txt2html
+  * Added CONTRIBUTING.md file.
+  * Added README.md and renamed old README file to README.txt2html.
+  * Fixed the licensing in LICENSE file.
+  * Fixed some spelling errors.
+  * Fixed the path for Perl in scripts/txt2html.
   * Unified the changelogs.
 
------------------------  |
----- OLD CHANGELOG ----  |
----- OLD  UPSTREAM ---- \ /
------------------------  ·
+
+
+  |  -----------------------  |
+  |  ---- OLD CHANGELOG ----  |
+ \ / ---- OLD  UPSTREAM ---- \ /
+  ·  -----------------------  ·
 
 2.52.01 (aka 2.5201) 2013-05-21
 -------------------------------
