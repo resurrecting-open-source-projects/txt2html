@@ -49,7 +49,8 @@ DESCRIPTION
     http://sourceforge.net/projects/txt2html/). Earlier versions of the
     HTML::TextToHTML module called the included script texthyper so as not
     to clash with the original txt2html script, but now the projects have
-    all been merged.
+    all been merged. UPDATING: currently, the project is available on GitHub
+    at https://github.com/resurrecting-open-source-projects/txt2html
 
 OPTIONS
     All arguments can be set when the object is created, and further options

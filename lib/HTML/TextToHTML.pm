@@ -62,7 +62,8 @@ made into a sourceforge project by Sun Tong (see
 http://sourceforge.net/projects/txt2html/).  Earlier versions of the
 HTML::TextToHTML module called the included script texthyper so as not
 to clash with the original txt2html script, but now the projects have
-all been merged.
+all been merged. UPDATING: currently, the project is available on GitHub
+at https://github.com/resurrecting-open-source-projects/txt2html
 
 =head1 OPTIONS
 
@@ -1854,7 +1855,7 @@ sub init_our_data ($)
 # Seth and his amazing conversion program    :-)
 
 "Seth Golub"  -o-> http://www.aigeek.com/
-"txt2html"    -o-> http://txt2html.sourceforge.net/
+"txt2html"    -o-> https://github.com/resurrecting-open-source-projects/txt2html
 
 # Kathryn and her amazing modules 8-)
 "Kathryn Andersen"  -o-> http://www.katspace.com/

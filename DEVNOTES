@@ -46,10 +46,12 @@ Before releasing, don't forget to run
 
 (and usually "dzil install" as well)
 
-This bundle is released in three different external places:
+This bundle was released in three different external places in early:
 - CPAN
 - Sourceforge
 - FreshMeat
+
+Currently, txt2html is available in GitHub.
 
 CPAN Release
 ------------
@@ -88,3 +90,8 @@ Log in to freshmeat.net, and follow the instructions for new releases.
 The "changes this release" will need to be a summary of the changes.
 Since the file is on sourceforge, you won't need to alter the download
 URL.
+
+GitHub
+------
+
+Please, go to https://github.com/resurrecting-open-source-projects/txt2html
