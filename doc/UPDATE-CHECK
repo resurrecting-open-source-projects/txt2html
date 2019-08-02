@@ -1,0 +1,4 @@
+When updating, change the following files (if needed):
+
+- ChangeLog
+- Change version in all needed files (use rpl)
