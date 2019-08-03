@@ -5671,7 +5671,8 @@ installation options.
 
 =head1 BUGS
 
-Tell me about them.
+Please, send to
+https://github.com/resurrecting-open-source-projects/txt2html/issues
 
 =head1 SEE ALSO
 
@@ -5691,6 +5692,8 @@ based on txt2html by Seth Golub
 Original txt2html script copyright (c) 1994-2000 Seth Golub <seth AT aigeek.com>
 
 Copyright (c) 2002-2005 by Kathryn Andersen
+
+Copyright (c) 2018-2019 Joao Eriberto Mota Filho
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.

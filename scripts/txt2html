@@ -5,7 +5,7 @@ use strict;
 
 =head1 NAME
 
-txt2html - convert plain text file to HTML.
+txt2html - convert plain text file to HTML
 
 =head1 VERSION
 
@@ -788,11 +788,14 @@ Getopt::ArgvFile
 
 based on txt2html by Seth Golub
 
+Current homepage is https://github.com/resurrecting-open-source-projects/txt2html
+
 =head1 COPYRIGHT
 
 Original txt2html script Copyright (c) 1994-2000 Seth Golub seth AT aigeek.com
 
 Copyright (c) 2002-2005 Kathryn Andersen
+
 Copyright (c) 2018-2019 Joao Eriberto Mota Filho
 
 This program is free software; you can redistribute it and/or
