@@ -3,10 +3,10 @@
 
 
 <br><br>
-**1. HELP THIS PROJECT**<br>
-**2. WHAT IS TXT2HTML?**<br>
-**3. WHAT IS TXT2HTML NOT?**<br>
-**4. HOW TO INSTALL AND USE**<br>
+**[1. HELP THIS PROJECT](https://github.com/Francicoria/txt2html/blob/master/README.md#1-help-this-project)**<br>
+**[2. WHAT IS TXT2HTML?](https://github.com/Francicoria/txt2html/blob/master/README.md#2-what-is-txt2html)**<br>
+**[3. WHAT IS TXT2HTML NOT?](https://github.com/Francicoria/txt2html/blob/master/README.md#3-what-is-txt2html-not)**<br>
+**[4. HOW TO INSTALL AND USE](https://github.com/Francicoria/txt2html/blob/master/README.md#4-how-to-install-and-use)**<br>
 
 
 
