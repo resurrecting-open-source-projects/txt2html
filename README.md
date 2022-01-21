@@ -1,18 +1,13 @@
 # txt2html
 **Convert plain text file to HTML**
 
-
-<br><br>
-**1. HELP THIS PROJECT**<br>
-**2. WHAT IS TXT2HTML?**<br>
-**3. WHAT IS TXT2HTML NOT?**<br>
-**4. HOW TO INSTALL AND USE**<br>
+**[1. HELP THIS PROJECT](https://github.com/Francicoria/txt2html/blob/master/README.md#1-help-this-project)**<br>
+**[2. WHAT IS TXT2HTML?](https://github.com/Francicoria/txt2html/blob/master/README.md#2-what-is-txt2html)**<br>
+**[3. WHAT IS TXT2HTML NOT?](https://github.com/Francicoria/txt2html/blob/master/README.md#3-what-is-txt2html-not)**<br>
+**[4. HOW TO INSTALL AND USE](https://github.com/Francicoria/txt2html/blob/master/README.md#4-how-to-install-and-use)**<br>
 
 
-
---------------------
-1. HELP THIS PROJECT
---------------------
+## 1. HELP THIS PROJECT
 
 txt2html needs your help. **If you are a Perl programmer** and if you wants
 to help a nice project, this is your opportunity.
@@ -33,9 +28,8 @@ If you are interested to help txt2html, read the [CONTRIBUTING.md](CONTRIBUTING.
 [4] https://tracker.debian.org/pkg/txt2html
 
 
---------------------
-2. WHAT IS TXT2HTML?
---------------------
+## 2. WHAT IS TXT2HTML?
+
 
 txt2html is a Perl program that converts plain text to HTML, using
 HTML::TextToHTML Perl module.
@@ -51,9 +45,8 @@ text into a big PRE block. txt2html can also be used to aid in writing new
 HTML documents, but there are probably better ways of doing that.
 
 
-------------------------
-3. WHAT IS TXT2HTML NOT?
-------------------------
+## 3. WHAT IS TXT2HTML NOT?
+
 
 txt2html is not a program to convert wordprocessor files or other marked-up
 document formats. It is also not a program to convert HTML to text. Most HTML
@@ -66,10 +59,8 @@ txt2html is not a program for automatically generating a table-of-contents from
 a file. If you want that, then use txt2html to generate a HTML file, and then
 use htmltoc or hypertoc on the HTML file.
 
+## 4. HOW TO INSTALL AND USE
 
--------------------------
-4. HOW TO INSTALL AND USE
--------------------------
 
 Please, read the README.txt2html file and generated manpages txt2html(1) and
 HTML::TextToHTML(3).
