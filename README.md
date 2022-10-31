@@ -1,11 +1,11 @@
 # txt2html
+
 **Convert plain text file to HTML**
 
-**[1. HELP THIS PROJECT](https://github.com/Francicoria/txt2html/blob/master/README.md#1-help-this-project)**<br>
-**[2. WHAT IS TXT2HTML?](https://github.com/Francicoria/txt2html/blob/master/README.md#2-what-is-txt2html)**<br>
-**[3. WHAT IS TXT2HTML NOT?](https://github.com/Francicoria/txt2html/blob/master/README.md#3-what-is-txt2html-not)**<br>
-**[4. HOW TO INSTALL AND USE](https://github.com/Francicoria/txt2html/blob/master/README.md#4-how-to-install-and-use)**<br>
-
+1. **[HELP THIS PROJECT](https://github.com/resurrecting-open-source-projects/txt2html/blob/master/README.md#1-help-this-project)**
+2. **[WHAT IS TXT2HTML?](https://github.com/resurrecting-open-source-projects/txt2html/blob/master/README.md#2-what-is-txt2html)**
+3. **[WHAT IS TXT2HTML NOT?](https://github.com/resurrecting-open-source-projects/txt2html/blob/master/README.md#3-what-is-txt2html-not)**
+4. **[HOW TO INSTALL AND USE](https://github.com/resurrecting-open-source-projects/txt2html/blob/master/README.md#4-how-to-install-and-use)**
 
 ## 1. HELP THIS PROJECT
 
@@ -27,9 +27,7 @@ If you are interested to help txt2html, read the [CONTRIBUTING.md](CONTRIBUTING.
     inactive because a personal problem. So, txt2html needs help!
 [4] https://tracker.debian.org/pkg/txt2html
 
-
 ## 2. WHAT IS TXT2HTML?
-
 
 txt2html is a Perl program that converts plain text to HTML, using
 HTML::TextToHTML Perl module.
@@ -44,9 +42,7 @@ text documents to HTML format, giving something nicer than just whapping the
 text into a big PRE block. txt2html can also be used to aid in writing new
 HTML documents, but there are probably better ways of doing that.
 
-
 ## 3. WHAT IS TXT2HTML NOT?
-
 
 txt2html is not a program to convert wordprocessor files or other marked-up
 document formats. It is also not a program to convert HTML to text. Most HTML
@@ -60,7 +56,6 @@ a file. If you want that, then use txt2html to generate a HTML file, and then
 use htmltoc or hypertoc on the HTML file.
 
 ## 4. HOW TO INSTALL AND USE
-
 
 Please, read the README.txt2html file and generated manpages txt2html(1) and
 HTML::TextToHTML(3).
