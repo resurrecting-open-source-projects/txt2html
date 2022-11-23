@@ -25,4 +25,4 @@ requires:
   constant: 0
   perl: v5.8.1
   strict: 0
-version: 2.53
+version: 3.0

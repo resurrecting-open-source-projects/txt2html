@@ -1,6 +1,6 @@
 When updating, change the following files (if needed):
 
 - ChangeLog
-- Change version in all needed files (use rpl)
+- Change version in all needed files (use rpl for tfiles/*)
 - Update MANIFEST
 - Test in Debian
