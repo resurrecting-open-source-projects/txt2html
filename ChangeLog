@@ -1,6 +1,21 @@
 Revision History for txt2html
 =============================
 
+3.0 2022-11-23
+
+ [ Bruce Momjian ]
+
+  * Fixed --links_dictionaries option.
+
+ [ Francesco (Francicoria) ]
+
+  * Reformated README.md.
+
+ [ Joao Eriberto Mota Filho ]
+
+  * Added two example files to doc/ (sample.txt and txt2html.dict).
+  * Created CI tests for GitHub.
+
 2.53 2019-08-02
 
   * New repository for this project (now in GitHub).
