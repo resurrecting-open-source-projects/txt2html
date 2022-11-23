@@ -23,3 +23,7 @@ jobs:
            txt2html .github/workflows/test2.txt |
              egrep '<p><a href="ftp://example.com">ftp://example.com</a>' -C5 |
              egrep '<p>My site is <a href="https://github.com/resurrecting-open-source-projects/txt2html.">https://github.com/resurrecting-open-source-projects/txt2html.</a> Try it!'
+    - name: test3
+      run: >
+           txt2html --links_dictionaries .github/workflows/xyz.dict .github/workflows/test3.txt |
+             egrep '<p><a href="xyz://example.com">xyz://example.com</a>'

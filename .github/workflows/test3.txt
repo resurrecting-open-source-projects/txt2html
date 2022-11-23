@@ -1,0 +1,6 @@
+Hi,
+
+This is my protocol XYZ.
+
+xyz://example.com
+
