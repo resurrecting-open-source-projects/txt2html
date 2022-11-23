@@ -15,5 +15,6 @@ jobs:
            /usr/bin/perl Build.PL --installdirs vendor --config "optimize=-g -O2 -ffile-prefix-map=/PKGS/txt2html/txt2html=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2" --config "ld=x86_64-linux-gnu-gcc -g -O2 -ffile-prefix-map=/PKGS/txt2html/txt2html=. -fstack-protector-strong -Wformat -Werror=format-security -Wl,-z,relro"
            /usr/bin/perl Build
            sudo /usr/bin/perl Build install --create_packlist 0
-#    - name: run_program
-#      run: |
+    - name: run_program
+      run: |
+           txt2html .github/workflows/test1.txt | egrep '<p>This is a simple test.</p>'
