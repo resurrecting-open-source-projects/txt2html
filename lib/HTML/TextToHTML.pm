@@ -5291,7 +5291,7 @@ sub do_init_call ($)
 		if (-r $ld)
 		{
 		    $self->{'make_links'} = 1;
-		    $self->args(['--links_dictionaries', $ld]);
+		    push(@{$self->{links_dictionaries}}, $ld);
 		}
 		else
 		{
@@ -5687,13 +5687,15 @@ L<txt2html>.
 
 based on txt2html by Seth Golub
 
-=head1 COPYRIGHT AND LICENCE
+=head1 
+COPYRIGHT AND LICENCE
 
 Original txt2html script copyright (c) 1994-2000 Seth Golub <seth AT aigeek.com>
 
-Copyright (c) 2002-2005 by Kathryn Andersen
+Copyright (c) 2002-2005 by Kathryn Andersen <perlkat AT katspace dot com>
 
-Copyright (c) 2018-2019 Joao Eriberto Mota Filho
+Copyright (c) 2018-2019 Joao Eriberto Mota Filho <eriberto@eriberto.pro.br>
+Copyright (c) 2019      Bruce Momjian <bruce@momjian.us>
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
