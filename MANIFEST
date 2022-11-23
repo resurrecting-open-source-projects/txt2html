@@ -3,6 +3,9 @@ ChangeLog
 CONTRIBUTING.md
 DEVNOTES
 doc/UPDATE-CHECK
+doc/README.samples
+doc/sample.txt
+doc/txt2html.dict
 LICENSE
 MANIFEST
 MANIFEST.SKIP
